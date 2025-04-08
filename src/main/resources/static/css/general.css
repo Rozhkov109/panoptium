@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Quantico, serif;
+}
+
+html, body {
+    background: #1e5498;
+    min-height: 100svh;
+
+}
+
+h2 {
+    text-align: center;
+    font-size: 60px;
+    color: black;
+}
+
+hr {
+    border: 4px solid black;
+}
+
+header {
+    margin: 20px 40px 0 40px;
+}
+
+.header-inner {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo,
+.profile {
+    background: #5b87c6;
+    border-radius: 20px;
+    font-size: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+}
+
+.profile img {
+    width: 100%;
+    height: 100%;
+}
+
+.navigation-panel {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.navigation-panel ul {
+    background: #5b87c6;
+    border-radius: 20px;
+}
+
+.navigation-panel ul li {
+    display: inline;
+    list-style-type: none;
+}
+
+.navigation-panel ul li a {
+    font-size: 50px;
+    text-decoration: none;
+    color: white;
+    margin: 0 20px;
+    transition: color 0.5s;
+}
+
+.navigation-panel ul .market:hover {
+    color: #01c14e;
+}
+
+.navigation-panel ul .btc:hover {
+    color: #ffb700;
+}
+
+.navigation-panel ul .sol:hover {
+    color: #a253e3;
+}
+
+.wrapper {
+    max-width: 90%;
+    margin: 100px auto;
+}
+
+.content-wrapper {
+    background-color: white;
+    border-radius: 20px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.button-container a, .button-container button {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    padding: 15px 100px;
+    border-radius: 30px;
+    border: 4px solid black;
+    box-shadow: 4px 10px 0 black;
+    background-color: #2488cd;
+    font-size: 30px;
+    text-decoration: none;
+    color: white;
+    transition:
+            color 0.5s,
+            font-size 0.5s;
+}
+
+.button-container a:hover, .button-container button:hover {
+    color: #000000;
+    font-size: 36px;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.5s;
+}
+
+.button-container a:hover {
+    color: #000000;
+}

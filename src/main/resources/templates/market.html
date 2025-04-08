@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Market | Panoptium</title>
+    <link rel="stylesheet" th:href="@{/css/general.css}">
+    <link rel="stylesheet" th:href="@{/css/market.css}">
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <a th:href="@{/}">P</a>
+            </div>
+
+            <nav class="navigation-panel">
+                <ul>
+                    <li><a class="market" th:href="@{/market}">Market</a></li>
+                    <li><a class="btc" th:href="@{/bitcoin}">Bitcoin</a></li>
+                    <li><a class="sol" th:href="@{#}">Solana</a></li>
+                </ul>
+            </nav>
+
+
+            <div class="profile">
+                <img th:src="@{/images/profile.png}" alt="profile-icon">
+            </div>
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <h2>Market Data</h2>
+
+            <div class="data-card-container">
+                <div id="fear-and-greed" class="data-card">
+                    <h3 class="data-card-header">Fear and Greed</h3>
+                    <p class="main-data" th:text="${fearAndGreedIndex}"></p>
+                    <p class="additional-data" th:text="${classification}"></p>
+                </div>
+                <div id="btc-dominance" class="data-card">
+                    <h3 class="data-card-header">BTC Dominance</h3>
+                    <p class="main-data" th:text="${fearAndGreedIndex}"></p>
+                    <p class="additional-data" th:text="${classification}"></p>
+                </div>
+                <div id="eth-dominance" class="data-card">
+                    <h3 class="data-card-header">ETH Dominance</h3>
+                    <p class="main-data" th:text="${fearAndGreedIndex}"></p>
+                    <p class="additional-data" th:text="${classification}"></p>
+                </div>
+                <div id="market-cap" class="data-card">
+                    <h3 class="data-card-header">Market Cap</h3>
+                    <p class="main-data" th:text="${fearAndGreedIndex}"></p>
+                    <p class="additional-data" th:text="${classification}"></p>
+                </div>
+            </div>
+
+            <p th:text="${btcDominance}"></p>
+            <p th:text="${ethDominance}"></p>
+            <p th:text="${btcDominance24hChange}"></p>
+            <p th:text="${ethDominance24hChange}"></p>
+            <p th:text="${totalMarketCap}"></p>
+            <p th:text="${cryptoMarketCap24hChange}"></p>
+
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Market Cap</th>
+                    <th>30d%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each = "coin : ${coinsList}">
+                    <td th:text ="${coin.rank}"></td>
+                    <td th:text ="${coin.symbol}"></td>
+                    <td th:text ="${coin.name}"></td>
+                    <td th:text ="${coin.price}"></td>
+                    <td th:text ="${coin.marketCap}"></td>
+                    <td th:text ="${coin.change}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="button-container">
+                <button id="crypto-data-button">Crypto Data</button>
+            </div>
+
+            <div class="button-container">
+                <a th:href="@{/market/top-100-crypto-currencies}">Top 100 coins</a>
+            </div>
+        </div>
+    </div>
+
+<script th:src="@{/js/market.js}"></script>
+</body>
+</html>

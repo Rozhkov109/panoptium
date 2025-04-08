@@ -1,0 +1,7 @@
+package panoptiumtech.panoptium.api.services;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class SolanaApiService {
+}

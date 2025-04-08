@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Panoptium</title>
+    <link th:href="@{/css/general.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <a th:href="@{/}">P</a>
+            </div>
+
+            <nav class="navigation-panel">
+                <ul>
+                    <li><a class="market" th:href="@{/market}">Market</a></li>
+                    <li><a class="btc" th:href="@{/bitcoin}">Bitcoin</a></li>
+                    <li><a class="sol" th:href="@{#}">Solana</a></li>
+                </ul>
+            </nav>
+
+
+            <div class="profile">
+                <img th:src="@{/images/profile.png}" alt="profile-icon">
+            </div>
+        </div>
+    </header>
+
+</body>
+</html>
