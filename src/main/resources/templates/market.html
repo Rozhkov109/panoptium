@@ -35,39 +35,47 @@
             <div class="data-card-container">
                 <div id="fear-and-greed" class="data-card">
                     <h3 class="data-card-header">Fear and Greed</h3>
-                    <p class="main-data" th:text="${fearAndGreedIndex}"></p>
-                    <p class="additional-data" th:text="${classification}"></p>
+                    <div class="data-card-inner-wrapper">
+                        <p class="main-data"></p>
+                        <p class="additional-data"></p>
+                    </div>
                 </div>
                 <div id="btc-dominance" class="data-card">
                     <h3 class="data-card-header">BTC Dominance</h3>
-                    <p class="main-data" th:text="${fearAndGreedIndex}"></p>
-                    <p class="additional-data" th:text="${classification}"></p>
+                    <div class="data-card-inner-wrapper">
+                        <p class="main-data"></p>
+                        <div class="additional-data-wrapper">
+                            <p class="additional-data"></p>
+                            <img class = "trend-icon-small" src="" alt="">
+                        </div>
+                    </div>
                 </div>
                 <div id="eth-dominance" class="data-card">
                     <h3 class="data-card-header">ETH Dominance</h3>
-                    <p class="main-data" th:text="${fearAndGreedIndex}"></p>
-                    <p class="additional-data" th:text="${classification}"></p>
+                    <div class="data-card-inner-wrapper">
+                        <p class="main-data"></p>
+                        <div class="additional-data-wrapper">
+                            <p class="additional-data"></p>
+                            <img class = "trend-icon-small" src="" alt="">
+                        </div>
+                    </div>
                 </div>
                 <div id="market-cap" class="data-card">
                     <h3 class="data-card-header">Market Cap</h3>
-                    <p class="main-data" th:text="${fearAndGreedIndex}"></p>
-                    <p class="additional-data" th:text="${classification}"></p>
+                    <div class="data-card-inner-wrapper">
+                        <p class="main-data"></p>
+                        <div class="additional-data-wrapper">
+                            <p class="additional-data"></p>
+                            <img class = "trend-icon-small" src="" alt="">
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <p th:text="${btcDominance}"></p>
-            <p th:text="${ethDominance}"></p>
-            <p th:text="${btcDominance24hChange}"></p>
-            <p th:text="${ethDominance24hChange}"></p>
-            <p th:text="${totalMarketCap}"></p>
-            <p th:text="${cryptoMarketCap24hChange}"></p>
-
-
-            <table>
+            <table class="top-100-coins-table">
                 <thead>
                 <tr>
                     <th>Rank</th>
-                    <th>Symbol</th>
                     <th>Name</th>
                     <th>Price</th>
                     <th>Market Cap</th>
@@ -75,27 +83,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each = "coin : ${coinsList}">
-                    <td th:text ="${coin.rank}"></td>
-                    <td th:text ="${coin.symbol}"></td>
-                    <td th:text ="${coin.name}"></td>
-                    <td th:text ="${coin.price}"></td>
-                    <td th:text ="${coin.marketCap}"></td>
-                    <td th:text ="${coin.change}"></td>
-                </tr>
                 </tbody>
             </table>
 
             <div class="button-container">
                 <button id="crypto-data-button">Crypto Data</button>
             </div>
-
-            <div class="button-container">
-                <a th:href="@{/market/top-100-crypto-currencies}">Top 100 coins</a>
-            </div>
         </div>
     </div>
 
-<script th:src="@{/js/market.js}"></script>
+<script th:type="module" th:src="@{/js/market.js}"></script>
 </body>
 </html>
