@@ -94,16 +94,16 @@ th {
 
 .coin-name-container {
     display: flex;
-    align-items: center;
-    justify-content: right;
     flex-direction: column;
 }
 
 .coin-symbol-text {
+    text-align: right;
     font-size: 15px;
 }
 
 .coin-full-name-text {
+    text-align: right;
     font-size: 12px;
 }
 

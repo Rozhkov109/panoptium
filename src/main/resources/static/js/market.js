@@ -8,20 +8,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const marketCapCard = document.getElementById("market-cap")
     const cards = [fearAndGreedCard, btcCard, ethCard, marketCapCard]
 
-
     const top100CoinsTableBody = document.getElementsByClassName("top-100-coins-table")[0].getElementsByTagName("tbody")[0]
 
-    async function fetchFearAndGreedIndex() {
-        let responseBody = await fetch("http://localhost:8080/api/market/fear-and-greed")
-        return await responseBody.json();
+    let marketData
+    let fearAndGreedData
+    let coinsData
+
+    async function getData() {
+        marketData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/market/crypto-data")
+        fearAndGreedData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/market/fear-and-greed")
+        coinsData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/market/top-100-crypto-currencies")
     }
 
 
     async function fillCards() {
-        let responseBody = await fetch("http://localhost:8080/api/market/crypto-data")
-        let data = await responseBody.json()
-        let fearAndGreedData = await fetchFearAndGreedIndex()
-
         cards.forEach(card => {
             const mainText = card.getElementsByClassName("main-data")[0]
             const additionalText = card.getElementsByClassName("additional-data")[0]
@@ -52,16 +52,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     break;
                 case "btc-dominance":
-                    mainText.textContent = parseFloat(data.btc_dominance).toFixed(2) + "%"
-                    Helper.Format.formatNumberToPercentWithColorAndPicture(data.btc_dominance_24h_percentage_change, additionalText, percentChangeIcon)
+                    mainText.textContent = parseFloat(marketData.btc_dominance).toFixed(2) + "%"
+                    Helper.Format.formatNumberToPercentWithColorAndPicture(marketData.btc_dominance_24h_percentage_change, additionalText, percentChangeIcon)
                     break;
                 case "eth-dominance":
-                    mainText.textContent = parseFloat(data.eth_dominance).toFixed(2) + "%"
-                    Helper.Format.formatNumberToPercentWithColorAndPicture(data.eth_dominance_24h_percentage_change, additionalText, percentChangeIcon)
+                    mainText.textContent = parseFloat(marketData.eth_dominance).toFixed(2) + "%"
+                    Helper.Format.formatNumberToPercentWithColorAndPicture(marketData.eth_dominance_24h_percentage_change, additionalText, percentChangeIcon)
                     break;
                 case "market-cap":
-                    mainText.textContent = Helper.Format.formatMarketCap(data.total_market_cap)
-                    Helper.Format.formatNumberToPercentWithColorAndPicture(data.total_market_cap_yesterday_percentage_change, additionalText, percentChangeIcon)
+                    mainText.textContent = Helper.Format.formatMarketCap(marketData.total_market_cap)
+                    Helper.Format.formatNumberToPercentWithColorAndPicture(marketData.total_market_cap_yesterday_percentage_change, additionalText, percentChangeIcon)
                     break;
                 default:
                     mainText.textContent = "Data not available";
@@ -72,12 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function showTop100CryptoCurrenciesTable() {
-        const response = await fetch("http://localhost:8080/api/market/top-100-crypto-currencies")
-        const data = await response.json();
-
-        console.log(top100CoinsTableBody.innerHTML)
-
-        data.forEach(coinData => {
+        coinsData.forEach(coinData => {
             const tr = document.createElement("tr")
 
             // Rank
@@ -86,24 +81,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Name
             const tdNameContainer = document.createElement("td")
-            tdNameContainer.classList.add("coin-info-container")
-                const coinImage = document.createElement("img")
-                coinImage.classList.add("coin-icon")
-                coinImage.setAttribute("src", coinData.iconUrl)
-                coinImage.setAttribute("alt", coinData.name + "-icon")
-                const coinNameContainer = document.createElement("div")
-                coinNameContainer.classList.add("coin-name-container")
-                    const coinSymbol = document.createElement("p")
-                    coinSymbol.classList.add("coin-symbol-text")
-                    const coinFullName = document.createElement("p")
-                    coinFullName.classList.add("coin-full-name-text")
+                    const coinNameWrapper = document.createElement("div")
+                    coinNameWrapper.classList.add("coin-info-container")
+                        const coinImage = document.createElement("img")
+                        coinImage.classList.add("coin-icon")
+                        coinImage.setAttribute("src", coinData.iconUrl)
+                        coinImage.setAttribute("alt", coinData.name + "-icon")
+                        const coinNameContainer = document.createElement("div")
+                        coinNameContainer.classList.add("coin-name-container")
+                            const coinSymbol = document.createElement("p")
+                            coinSymbol.classList.add("coin-symbol-text")
+                            const coinFullName = document.createElement("p")
+                            coinFullName.classList.add("coin-full-name-text")
 
             coinSymbol.textContent = coinData.symbol
             coinFullName.textContent = coinData.name
             coinNameContainer.append(coinSymbol, coinFullName)
 
-            tdNameContainer.append(coinImage)
-            tdNameContainer.append(coinNameContainer)
+            coinNameWrapper.append(coinImage)
+            coinNameWrapper.append(coinNameContainer)
+
+            tdNameContainer.append(coinNameWrapper)
             tdNameContainer.style.background = Helper.Color.convertHEXtoRGBA(coinData.color,0.6)
 
             // Price
@@ -129,14 +127,14 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (change === 0) td30dPriceChange.textContent = change.toString() + "%"
             else td30dPriceChange.textContent = "No Data"
 
-
             tr.append(tdRank, tdNameContainer, tdPrice, tdMarketCap, td30dPriceChange)
 
             top100CoinsTableBody.appendChild(tr)
         })
     }
 
-    cryptoDataButton.addEventListener("click", () => {
+    cryptoDataButton.addEventListener("click", async () => {
+        await getData()
         fillCards()
         showTop100CryptoCurrenciesTable()
     })

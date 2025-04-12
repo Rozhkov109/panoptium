@@ -87,4 +87,11 @@ export class Helper {
         }
     }
 
+    static FetchAPI = class {
+        static async getJSONResponse(url) {
+            let responseBody = await fetch(url)
+            return await responseBody.json()
+        }
+    }
+
 }

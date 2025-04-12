@@ -4,37 +4,43 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import panoptiumtech.panoptium.api.clients.AlphaVantageClient;
 import panoptiumtech.panoptium.api.clients.AlternativeMeClient;
 import panoptiumtech.panoptium.api.clients.CoinMarketCapClient;
 import panoptiumtech.panoptium.api.clients.CoinRankingClient;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class MarketApiService {
 
     private final String COIN_MARKET_CAP_API_KEY;
     private final String COIN_RANKING_API_KEY;
+    private final String ALPHA_VANTAGE_API_KEY;
 
     private final AlternativeMeClient alternativeMeClient;
     private final CoinMarketCapClient coinMarketCapClient;
     private final CoinRankingClient coinRankingClient;
+    private final AlphaVantageClient alphaVantageClient;
     private final ObjectMapper objectMapper;
 
     MarketApiService(
             @Value("${api.coinMarketCap.key}") String COIN_MARKET_CAP_API_KEY,
             @Value("${api.coinRanking.key}") String COIN_RANKING_API_KEY,
+            @Value("${api.alphaVantage.key}") String ALPHA_VANTAGE_API_KEY,
             AlternativeMeClient alternativeMeClient,
             CoinMarketCapClient coinMarketCapClient,
             CoinRankingClient coinRankingClient,
+            AlphaVantageClient alphaVantageClient,
             ObjectMapper objectMapper) {
         this.COIN_MARKET_CAP_API_KEY = COIN_MARKET_CAP_API_KEY;
         this.COIN_RANKING_API_KEY = COIN_RANKING_API_KEY;
+        this.ALPHA_VANTAGE_API_KEY = ALPHA_VANTAGE_API_KEY;
         this.alternativeMeClient = alternativeMeClient;
         this.coinMarketCapClient = coinMarketCapClient;
         this.coinRankingClient = coinRankingClient;
+        this.alphaVantageClient = alphaVantageClient;
         this.objectMapper = objectMapper;
     }
 
@@ -46,7 +52,7 @@ public class MarketApiService {
         int index = Integer.parseInt(fearAndGreed.get("value").toString());
         String classification = fearAndGreed.get("value_classification").toString();
 
-        Map<String, Object> answer = new HashMap<>();
+        Map<String, Object> answer = new LinkedHashMap<>();
         answer.put("index", index);
         answer.put("classification", classification);
 
@@ -66,7 +72,7 @@ public class MarketApiService {
         long totalMarketCap = (long) (Double.parseDouble(usdResponse.get("total_market_cap").toString()));
         double cryptoMarketCap24hChange = Double.parseDouble(usdResponse.get("total_market_cap_yesterday_percentage_change").toString());
 
-        Map<String, Object> answer = new HashMap<>();
+        Map<String, Object> answer = new LinkedHashMap<>();
 
         answer.put("btc_dominance", btcDominance);
         answer.put("btc_dominance_24h_percentage_change", btcDominance24hChange);
@@ -95,5 +101,45 @@ public class MarketApiService {
             coin.remove("contractAddresses");
         }
         return coinsList;
+    }
+
+    public Map<String,Object> getStockMarketData(String symbol) {
+        Map<String, Object> apiResponse = alphaVantageClient.getStockMarketData("TIME_SERIES_DAILY",symbol,ALPHA_VANTAGE_API_KEY);
+        Map<String, Object> metaDataResponse = objectMapper.convertValue(apiResponse.get("Meta Data"), new TypeReference<>(){});
+        Map<String, Object> dataResponse = objectMapper.convertValue(apiResponse.get("Time Series (Daily)"), new TypeReference<>(){});
+
+        String lastUpdatedDate = objectMapper.convertValue(metaDataResponse.get("3. Last Refreshed"), new TypeReference<>(){});
+
+        List<Map<String,Object>> listOfAllDates = new ArrayList<>();
+
+        for(Map.Entry<String,Object> entry : dataResponse.entrySet()) {
+            if(entry.getValue() instanceof Map) {
+                Map<String,Object> data = objectMapper.convertValue(entry.getValue(), new TypeReference<>(){});
+                data.remove("1. open");
+                data.remove("2. high");
+                data.remove("3. low");
+                data.remove("5. volume");
+
+                String price = data.get("4. close").toString();
+                data.remove("4. close");
+
+                data.put("date", entry.getKey());
+                data.put("closePrice", price);
+
+                listOfAllDates.add(data);
+            }
+        }
+        List<Map<String,Object>> listOfImportantDates = new ArrayList<>();
+        listOfImportantDates.add(listOfAllDates.get(0));
+        listOfImportantDates.add(listOfAllDates.get(1));
+        listOfImportantDates.add(listOfAllDates.get(7));
+        listOfImportantDates.add(listOfAllDates.get(30));
+
+        Map<String,Object> response = new LinkedHashMap<>();
+        response.put("symbol", symbol);
+        response.put("lastUpdatedAt", lastUpdatedDate);
+        response.put("data", listOfImportantDates);
+
+        return response;
     }
 }

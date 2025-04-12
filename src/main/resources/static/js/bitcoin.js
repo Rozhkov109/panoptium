@@ -1,11 +1,15 @@
+import { Helper } from "./helper.js";
+
 document.addEventListener("DOMContentLoaded", () => {
     const btcButton = document.getElementById("btc-button")
     const priceText = document.getElementById("btc-price")
 
-    btcButton.addEventListener("click", () => {
-        fetch("http://localhost:8080/api/bitcoin/price")
-            .then(response => response.json())
-            .then(data => priceText.textContent = data.usd)
-            .catch(error => console.error("Error fetching Bitcoin price:", error));
+    async function setBtcPrice() {
+        let btcData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/bitcoin/price")
+        priceText.textContent = btcData.usd;
+    }
+
+    btcButton.addEventListener("click",  () => {
+        setBtcPrice()
     })
 })
