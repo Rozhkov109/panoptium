@@ -42,9 +42,9 @@ th {
 
 .data-card {
     display: flex;
-    align-items: center;
+    justify-content: space-between;
     flex-direction: column;
-    height: 140px;
+    height: 180px;
     width: 200px;
     padding: 10px 5px;
     margin: 15px 30px;
@@ -52,15 +52,15 @@ th {
     background: rgba(30, 152, 138, 0.7);
 }
 
-.data-card-inner-wrapper {
-    height: 100%;
+.data-card-wrapper {
+    min-width: 70px;
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: 75%;
+    width: 75%;
     background: rgb(240, 248, 255);
     border-radius: 20px;
 }

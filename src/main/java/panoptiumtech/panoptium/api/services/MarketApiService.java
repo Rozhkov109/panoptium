@@ -9,7 +9,6 @@ import panoptiumtech.panoptium.api.clients.AlternativeMeClient;
 import panoptiumtech.panoptium.api.clients.CoinMarketCapClient;
 import panoptiumtech.panoptium.api.clients.CoinRankingClient;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -84,23 +83,53 @@ public class MarketApiService {
         return answer;
     }
 
-    public List<Map<String, Object>> getTop100CryptoCurrencies() {
-        Map<String,Object> apiResponse = coinRankingClient.getTop100CryptoCurrencies(COIN_RANKING_API_KEY, 100, "30d");
-        Map<String, Object> dataResponse = objectMapper.convertValue(apiResponse.get("data"), new TypeReference<>(){});
+    private Map<String,Object> getCoinsPriceChangeMap(Map<String, Object> data) {
+        Map<String, Object> dataResponse = objectMapper.convertValue(data.get("data"), new TypeReference<>(){});
         List<Map<String,Object>> coinsList = objectMapper.convertValue(dataResponse.get("coins"), new TypeReference<>(){});
 
+        Map<String,Object> priceChangeMap = new HashMap<>();
+
         for (Map<String,Object> coin : coinsList) {
-            coin.remove("uuid");
-            coin.remove("listedAt");
-            coin.remove("tier");
-            coin.remove("sparkline");
-            coin.remove("lowVolume");
-            coin.remove("coinrankingUrl");
-            coin.remove("24hVolume");
-            coin.remove("btcPrice");
-            coin.remove("contractAddresses");
+            String uuid = coin.get("uuid").toString();
+            String change = coin.get("change").toString();
+            priceChangeMap.put(uuid, change);
         }
-        return coinsList;
+        return priceChangeMap;
+    }
+
+    public List<Map<String, Object>> getTop100CryptoCurrencies() {
+        Map<String,Object> apiResponse30d = coinRankingClient.getTop100CryptoCurrencies(COIN_RANKING_API_KEY, 100, "30d");
+        Map<String,Object> apiResponse7d = coinRankingClient.getTop100CryptoCurrencies(COIN_RANKING_API_KEY, 100, "7d");
+        Map<String,Object> apiResponse1d = coinRankingClient.getTop100CryptoCurrencies(COIN_RANKING_API_KEY, 100, "24h");
+
+        Map<String,Object> coinsPriceChange7d = getCoinsPriceChangeMap(apiResponse7d);
+        Map<String,Object> coinsPriceChange1d = getCoinsPriceChangeMap(apiResponse1d);
+
+        Map<String, Object> dataResponse30d = objectMapper.convertValue(apiResponse30d.get("data"), new TypeReference<>(){});
+        List<Map<String,Object>> coinsList30d = objectMapper.convertValue(dataResponse30d.get("coins"), new TypeReference<>(){});
+
+        List<Map<String,Object>> response = new ArrayList<>();
+
+            for(Map<String,Object> coin : coinsList30d) {
+                Map<String,Object> coinFullData = new LinkedHashMap<>();
+                String uuid = coin.get("uuid").toString();
+
+                coinFullData.put("rank", Integer.parseInt(coin.get("rank").toString()));
+                coinFullData.put("symbol", coin.get("symbol").toString());
+                coinFullData.put("name", coin.get("name").toString());
+                coinFullData.put("price", coin.get("price").toString());
+                coinFullData.put("marketCap", coin.get("marketCap").toString());
+
+                coinFullData.put("priceChange1d", coinsPriceChange1d.getOrDefault(uuid,"No data").toString());
+                coinFullData.put("priceChange7d", coinsPriceChange7d.getOrDefault(uuid,"No data").toString());
+                coinFullData.put("priceChange30d", coin.get("change").toString());
+
+                coinFullData.put("color", coin.get("color") == null ? "No data" : coin.get("color").toString());
+                coinFullData.put("iconUrl", coin.get("iconUrl").toString());
+
+                response.add(coinFullData);
+            }
+        return response;
     }
 
     public Map<String,Object> getStockMarketData(String symbol) {
