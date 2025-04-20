@@ -34,3 +34,6 @@ build/
 
 ### Private Data ###
 /src/main/resources/application-dev.properties
+
+### Others ###
+/documentation/diagrams/.$Panoptium.drawio.bkp
