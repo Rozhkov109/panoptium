@@ -3,15 +3,15 @@ package panoptiumtech.panoptium.entities.Wallet;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "wallet", uniqueConstraints = {
         @UniqueConstraint(name = "unique_address",columnNames = "address")
 })
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Wallet {

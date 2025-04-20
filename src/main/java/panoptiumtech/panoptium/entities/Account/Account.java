@@ -1,17 +1,17 @@
-package panoptiumtech.panoptium.entities.User;
+package panoptiumtech.panoptium.entities.Account;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "account", uniqueConstraints = {
         @UniqueConstraint(name = "unique_nickname",columnNames = "nickname")
 })
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {

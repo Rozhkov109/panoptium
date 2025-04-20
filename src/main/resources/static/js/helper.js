@@ -26,11 +26,8 @@ export class Helper {
                 title: "Fear and Greed",
                 mainInfo: true,
                 additionalInfo: true,
-                trendIcon: false,
                 onlyOneAdditionalField: true,
-                dayChange: false,
-                weekChange: false,
-                monthChange: false,
+                trendIcon: false,
             },
             {
                 id: "btc-dominance",
@@ -38,10 +35,7 @@ export class Helper {
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
-                onlyOneAdditionalField: false,
                 dayChange: true,
-                weekChange: false,
-                monthChange: false,
             },
             {
                 id: "eth-dominance",
@@ -49,10 +43,7 @@ export class Helper {
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
-                onlyOneAdditionalField: false,
                 dayChange: true,
-                weekChange: false,
-                monthChange: false,
             },
             {
                 id: "market-cap",
@@ -60,10 +51,7 @@ export class Helper {
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
-                onlyOneAdditionalField: false,
                 dayChange: true,
-                weekChange: false,
-                monthChange: false,
             },
         ]
 
@@ -87,21 +75,21 @@ export class Helper {
                         const cardWrapper = this.createHtmlElement("div","data-card-wrapper")
                             const mainDataText = this.createHtmlElement("p","main-data","",{id: `${config.id}-main-data`})
                             cardWrapper.appendChild(mainDataText)
-                            if(config.additionalInfo === true) {
+                            if(config.additionalInfo) {
                                 // const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
-                                if(config.onlyOneAdditionalField === true) {
+                                if(config.onlyOneAdditionalField) {
                                     const additionalData = this.createHtmlElement("p","additional-data", "", {id: `${config.id}-additional-data`})
                                     cardWrapper.appendChild(additionalData)
                                 }
-                                if(config.dayChange === true) {
+                                if(config.dayChange) {
                                     const dayChange = this.createHtmlElement("p","additional-data", "",{id: `${config.id}-day-change`})
                                     cardWrapper.appendChild(dayChange)
                                 }
-                                if(config.weekChange === true) {
+                                if(config.weekChange) {
                                     const weekChange = this.createHtmlElement("p","additional-data", "", {id: `${config.id}-week-change`})
                                     cardWrapper.appendChild(weekChange)
                                 }
-                                if(config.monthChange === true) {
+                                if(config.monthChange) {
                                     const monthChange = this.createHtmlElement("p","additional-data", "", {id: `${config.id}-month-change`})
                                     cardWrapper.appendChild(monthChange)
                                 }
@@ -150,21 +138,21 @@ export class Helper {
                         mainText = card.querySelector("#btc-dominance-main-data")
                         additionalText = card.querySelector("#btc-dominance-day-change")
 
-                        mainText.textContent = (mainText) ? parseFloat(data.btc_dominance).toFixed(2) + "%" : "No Data"
+                        mainText.textContent = Helper.Format.formatNumberToPercents(data.btc_dominance)
                         Helper.Format.formatNumberToPercentWithColor(data.btc_dominance_24h_percentage_change, additionalText)
                         break;
                     case "eth-dominance":
                         mainText = card.querySelector("#eth-dominance-main-data")
                         additionalText = card.querySelector("#eth-dominance-day-change")
 
-                        mainText.textContent = parseFloat(data.eth_dominance).toFixed(2) + "%"
+                        mainText.textContent = Helper.Format.formatNumberToPercents(data.eth_dominance)
                         Helper.Format.formatNumberToPercentWithColor(data.eth_dominance_24h_percentage_change, additionalText)
                         break;
                     case "market-cap":
                         mainText = card.querySelector("#market-cap-main-data")
                         additionalText = card.querySelector("#market-cap-day-change")
 
-                        mainText.textContent = Helper.Format.formatMarketCap(data.total_market_cap)
+                        mainText.textContent = Helper.Format.formatNumberToMarketCap(data.total_market_cap)
                         Helper.Format.formatNumberToPercentWithColor(data.total_market_cap_yesterday_percentage_change, additionalText)
                         break;
                 }
@@ -196,7 +184,16 @@ export class Helper {
     }
 
     static Format = class {
-       static formatMarketCap(marketCap) {
+        static formatNumberToPercents(number) {
+            let normalizedNumber = parseFloat(number)
+            if (!isNaN(normalizedNumber)) {
+                normalizedNumber = normalizedNumber.toFixed(2)
+                return normalizedNumber + "%"
+            }
+            else return "No Data"
+        }
+
+       static formatNumberToMarketCap(marketCap) {
             if (marketCap >= 1e12) {
                 return "$" + (marketCap / 1e12).toFixed(3) + "T";
             } else if (marketCap >= 1e9) {
@@ -210,7 +207,7 @@ export class Helper {
                 return "$" + marketCap.toLocaleString();
             }
        }
-        static formatCoinPrice(price) {
+        static formatNumberToCoinPrice(price) {
             let normalizedPrice = parseFloat(price).toFixed(15)
 
             if (normalizedPrice >= 1e3) {
@@ -265,5 +262,4 @@ export class Helper {
             return await responseBody.json()
         }
     }
-
 }

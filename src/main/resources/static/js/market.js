@@ -65,11 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Price
             const tdPrice = document.createElement("td")
-            tdPrice.textContent = Helper.Format.formatCoinPrice(coinData.price)
+            tdPrice.textContent = Helper.Format.formatNumberToCoinPrice(coinData.price)
 
             // Market Cap
             const tdMarketCap = document.createElement("td")
-            tdMarketCap.textContent = Helper.Format.formatMarketCap(coinData.marketCap)
+            tdMarketCap.textContent = Helper.Format.formatNumberToMarketCap(coinData.marketCap)
 
             // 1,7,30 days price change
             const td1dPriceChange = document.createElement("td")
