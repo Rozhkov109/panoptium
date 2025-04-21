@@ -1,10 +1,11 @@
 package panoptiumtech.panoptium.api.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import panoptiumtech.panoptium.api.services.MarketApiService;
+import panoptiumtech.panoptium.api.services.api.MarketApiService;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class MarketApiController {
     private final MarketApiService marketApiService;
 
+    @Autowired
     public MarketApiController(final MarketApiService marketApiService) {
         this.marketApiService = marketApiService;
     }

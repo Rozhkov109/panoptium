@@ -1,0 +1,21 @@
+package panoptiumtech.panoptium.api.entities.ApiCache;
+
+import java.time.Duration;
+
+public enum ApiCacheType {
+    MARKET_DATA(Duration.ofMinutes(30)),
+    FEAR_AND_GREED(Duration.ofHours(24)),
+    TOP_100_CRYPTOCURRENCIES(Duration.ofMinutes(30)),
+    BTC_PRICE(Duration.ofMinutes(30)),
+    SOL_PRICE(Duration.ofMinutes(30));
+
+    private final Duration timeToLive;
+
+    ApiCacheType(Duration timeToLive) {
+        this.timeToLive = timeToLive;
+    }
+
+    public Duration getTimeToLive() {
+        return timeToLive;
+    }
+}

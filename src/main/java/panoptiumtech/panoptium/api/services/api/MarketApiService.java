@@ -1,22 +1,29 @@
-package panoptiumtech.panoptium.api.services;
+package panoptiumtech.panoptium.api.services.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import panoptiumtech.panoptium.api.clients.AlphaVantageClient;
 import panoptiumtech.panoptium.api.clients.AlternativeMeClient;
 import panoptiumtech.panoptium.api.clients.CoinMarketCapClient;
 import panoptiumtech.panoptium.api.clients.CoinRankingClient;
+import panoptiumtech.panoptium.api.entities.ApiCache.ApiCache;
+import panoptiumtech.panoptium.api.entities.ApiCache.ApiCacheType;
+import panoptiumtech.panoptium.api.services.db.ApiCache.ApiCacheServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class MarketApiService {
-
     private final String COIN_MARKET_CAP_API_KEY;
     private final String COIN_RANKING_API_KEY;
     private final String ALPHA_VANTAGE_API_KEY;
+
+    private final ApiCacheServiceImpl apiCacheService;
 
     private final AlternativeMeClient alternativeMeClient;
     private final CoinMarketCapClient coinMarketCapClient;
@@ -24,10 +31,12 @@ public class MarketApiService {
     private final AlphaVantageClient alphaVantageClient;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     MarketApiService(
             @Value("${api.coinMarketCap.key}") String COIN_MARKET_CAP_API_KEY,
             @Value("${api.coinRanking.key}") String COIN_RANKING_API_KEY,
             @Value("${api.alphaVantage.key}") String ALPHA_VANTAGE_API_KEY,
+            ApiCacheServiceImpl apiCacheService,
             AlternativeMeClient alternativeMeClient,
             CoinMarketCapClient coinMarketCapClient,
             CoinRankingClient coinRankingClient,
@@ -36,6 +45,7 @@ public class MarketApiService {
         this.COIN_MARKET_CAP_API_KEY = COIN_MARKET_CAP_API_KEY;
         this.COIN_RANKING_API_KEY = COIN_RANKING_API_KEY;
         this.ALPHA_VANTAGE_API_KEY = ALPHA_VANTAGE_API_KEY;
+        this.apiCacheService = apiCacheService;
         this.alternativeMeClient = alternativeMeClient;
         this.coinMarketCapClient = coinMarketCapClient;
         this.coinRankingClient = coinRankingClient;
@@ -44,6 +54,12 @@ public class MarketApiService {
     }
 
     public Map<String,Object> getFearAndGreedIndex() {
+        Optional<Map<String,Object>> responseFromDB = apiCacheService.getLastApiResponseByType(ApiCacheType.FEAR_AND_GREED);
+        if (responseFromDB.isPresent()) {
+            System.out.println("Data has been taken from cache!");
+            return responseFromDB.get();
+        }
+
         Map<String,Object> apiResponse = alternativeMeClient.getFearAndGreedIndex();
         List<Map<String,Object>> response = objectMapper.convertValue(apiResponse.get("data"), new TypeReference<>(){});
         Map<String,Object> fearAndGreed = response.get(0);
@@ -54,6 +70,15 @@ public class MarketApiService {
         Map<String, Object> answer = new LinkedHashMap<>();
         answer.put("index", index);
         answer.put("classification", classification);
+
+        String responseString;
+        try {
+            responseString = objectMapper.writeValueAsString(answer);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Conversion Map to String error!", e);
+        }
+        apiCacheService.addApiCache(new ApiCache(null,ApiCacheType.FEAR_AND_GREED, responseString, LocalDateTime.now()));
+        System.out.println("Data has been taken from api!");
 
         return answer;
     }

@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.entities.ApiCache;
+package panoptiumtech.panoptium.api.entities.ApiCache;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -19,10 +19,11 @@ public class ApiCache {
     private Long id;
 
     @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
     @NotNull
     private ApiCacheType type;
 
-    @Column(name = "response", nullable = false)
+    @Column(columnDefinition = "TEXT", name = "response", nullable = false)
     @NotNull
     private String response;
 

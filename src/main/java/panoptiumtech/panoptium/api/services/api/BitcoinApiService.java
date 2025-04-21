@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.api.services;
+package panoptiumtech.panoptium.api.services.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

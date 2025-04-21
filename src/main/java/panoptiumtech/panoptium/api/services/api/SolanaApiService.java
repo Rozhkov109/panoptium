@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.api.services;
+package panoptiumtech.panoptium.api.services.api;
 
 import org.springframework.stereotype.Service;
 
