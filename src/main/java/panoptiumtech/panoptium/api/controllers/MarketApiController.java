@@ -3,11 +3,9 @@ package panoptiumtech.panoptium.api.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import panoptiumtech.panoptium.api.services.api.MarketApiService;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,12 +21,12 @@ public class MarketApiController {
     @GetMapping("/fear-and-greed")
     public Map<String, Object> getFearAndIndex() { return marketApiService.getFearAndGreedIndex(); }
 
-    @GetMapping("/crypto-data")
+    @GetMapping("/crypto")
     public Map<String, Object> getCryptoData() { return marketApiService.getCryptoData(); }
 
     @GetMapping("/top-100-crypto-currencies")
-    public List<Map<String, Object>> getTop100CryptoCurrencies() { return marketApiService.getTop100CryptoCurrencies(); }
+    public Map<String, Object> getTop100CryptoCurrencies() { return marketApiService.getTop100CryptoCurrencies(); }
 
-    @GetMapping("/stock-market-data")
-    public Map<String,Object> getStockMarketData(@RequestParam String symbol) { return marketApiService.getStockMarketData(symbol); }
+    @GetMapping("/stock")
+    public Map<String,Object> getStockMarketData() { return marketApiService.getStockMarketData(); }
 }

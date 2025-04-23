@@ -6,32 +6,45 @@ document.addEventListener("DOMContentLoaded", () => {
     let cryptoData
     let fearAndGreedData
     let coinsData
+    let stockMarketData
 
     async function getData() {
-       cryptoData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/market/crypto-data")
+       cryptoData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/market/crypto")
        fearAndGreedData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/market/fear-and-greed")
        coinsData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/market/top-100-crypto-currencies")
+       stockMarketData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/market/stock")
     }
 
     function createCards() {
-        const cardWrapper = Helper.HTML.createHtmlElement("div","data-card-container")
-        cardWrapper.append(
+        const cryptoMarketCardWrapper = Helper.HTML.createHtmlElement("div","data-card-container")
+        cryptoMarketCardWrapper.append(
             Helper.HTML.getDataCard("fear-and-greed", fearAndGreedData),
             Helper.HTML.getDataCard("btc-dominance", cryptoData),
             Helper.HTML.getDataCard("eth-dominance", cryptoData),
-            Helper.HTML.getDataCard("market-cap", cryptoData)
+            Helper.HTML.getDataCard("market-cap", cryptoData),
         )
-        if(cardWrapper.hasChildNodes()) {
+        if(cryptoMarketCardWrapper.hasChildNodes()) {
             const contentWrapper = document.querySelector(".content-wrapper")
-            const header = contentWrapper.querySelector("#market-data")
-            contentWrapper.insertBefore(cardWrapper,header.nextSibling)
+            const header = contentWrapper.querySelector("#crypto-data")
+            contentWrapper.insertBefore(cryptoMarketCardWrapper,header.nextSibling)
+        }
+
+        const stockMarketCardWrapper = Helper.HTML.createHtmlElement("div","data-card-container")
+        stockMarketCardWrapper.append(
+            Helper.HTML.getDataCard("gold", stockMarketData),
+            Helper.HTML.getDataCard("silver", stockMarketData)
+        )
+        if(stockMarketCardWrapper.hasChildNodes()) {
+            const contentWrapper = document.querySelector(".content-wrapper")
+            const header = contentWrapper.querySelector("#stock-data")
+            contentWrapper.insertBefore(stockMarketCardWrapper,header.nextSibling)
         }
     }
 
-    async function fillCryptoCurrenciesTable() {
+    function fillCryptoCurrenciesTable() {
         const top100CoinsTableBody = document.getElementsByClassName("top-100-coins-table")[0].getElementsByTagName("tbody")[0]
 
-        coinsData.forEach(coinData => {
+        coinsData.coins.forEach(coinData => {
             const tr = document.createElement("tr")
 
             // Rank

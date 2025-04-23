@@ -35,7 +35,7 @@ export class Helper {
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
-                dayChange: true,
+                oneDayPercentChange: true,
             },
             {
                 id: "eth-dominance",
@@ -43,7 +43,7 @@ export class Helper {
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
-                dayChange: true,
+                oneDayPercentChange: true,
             },
             {
                 id: "market-cap",
@@ -51,7 +51,29 @@ export class Helper {
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
-                dayChange: true,
+                oneDayPercentChange: true,
+            },
+            {
+                id: "gold",
+                title: "Gold",
+                cardColor: "#e4d100",
+                mainInfo: true,
+                additionalInfo: true,
+                dayPriceChange: true,
+                weekPriceChange: true,
+                monthPriceChange: true,
+                trendIcon: true,
+            },
+            {
+                id: "silver",
+                title: "Silver",
+                cardColor: "#c1c1c1",
+                mainInfo: true,
+                additionalInfo: true,
+                dayPriceChange: true,
+                weekPriceChange: true,
+                monthPriceChange: true,
+                trendIcon: true,
             },
         ]
 
@@ -71,27 +93,86 @@ export class Helper {
                     if(cardTemplateId === config.id) {
                         card.setAttribute("id", config.id)
                         const header = this.createHtmlElement("h3","data-card-header",config.title)
+                        if (config.cardColor) card.style.background = config.cardColor
                         card.appendChild(header)
                         const cardWrapper = this.createHtmlElement("div","data-card-wrapper")
                             const mainDataText = this.createHtmlElement("p","main-data","",{id: `${config.id}-main-data`})
                             cardWrapper.appendChild(mainDataText)
                             if(config.additionalInfo) {
-                                // const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
                                 if(config.onlyOneAdditionalField) {
                                     const additionalData = this.createHtmlElement("p","additional-data", "", {id: `${config.id}-additional-data`})
                                     cardWrapper.appendChild(additionalData)
                                 }
-                                if(config.dayChange) {
-                                    const dayChange = this.createHtmlElement("p","additional-data", "",{id: `${config.id}-day-change`})
-                                    cardWrapper.appendChild(dayChange)
+                                if(config.oneDayPercentChange) {
+                                    const additionalDataWrapper = this.createHtmlElement("div","percent-change-wrapper")
+                                    if(config.trendIcon) {
+                                        const dayChange = this.createHtmlElement("p","additional-data", "",{id: `${config.id}-day-change`})
+                                        const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-trend-icon`})
+                                        additionalDataWrapper.append(dayChange,trendIcon)
+                                        cardWrapper.appendChild(additionalDataWrapper)
+                                    }
+                                    else {
+                                        const dayChange = this.createHtmlElement("p","additional-data", "",{id: `${config.id}-day-change`})
+                                        cardWrapper.appendChild(dayChange)
+                                    }
                                 }
-                                if(config.weekChange) {
-                                    const weekChange = this.createHtmlElement("p","additional-data", "", {id: `${config.id}-week-change`})
-                                    cardWrapper.appendChild(weekChange)
+                                if(config.dayPriceChange) {
+                                    const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
+                                    if(config.trendIcon) {
+                                        const sign = this.createHtmlElement("p","additional-data", "1d%:")
+                                        sign.style.fontSize = "10px"
+                                        const dayAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-day-ago-price`})
+                                        const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
+                                            const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-day-change-percent`})
+                                            percents.style.fontSize = "10px"
+                                            const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-day-trend-icon`})
+                                        percentWrapper.append(percents,trendIcon)
+                                        additionalDataWrapper.append(sign,dayAgoPrice,percentWrapper)
+                                        cardWrapper.appendChild(additionalDataWrapper)
+                                    }
+                                    else {
+                                        const weekChange = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-day-change`})
+                                        cardWrapper.appendChild(weekChange)
+                                    }
+
                                 }
-                                if(config.monthChange) {
-                                    const monthChange = this.createHtmlElement("p","additional-data", "", {id: `${config.id}-month-change`})
-                                    cardWrapper.appendChild(monthChange)
+                                if(config.weekPriceChange) {
+                                    const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
+                                    if(config.trendIcon) {
+                                        const sign = this.createHtmlElement("p","additional-data", "1w%:")
+                                        sign.style.fontSize = "10px"
+                                        const weekAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-week-ago-price`})
+                                        const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
+                                            const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-week-change-percent`})
+                                            percents.style.fontSize = "10px"
+                                            const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-week-trend-icon`})
+                                        percentWrapper.append(percents,trendIcon)
+                                        additionalDataWrapper.append(sign,weekAgoPrice,percentWrapper)
+                                        cardWrapper.appendChild(additionalDataWrapper)
+                                    }
+                                    else {
+                                        const weekChange = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-week-change`})
+                                        cardWrapper.appendChild(weekChange)
+                                    }
+                                }
+                                if(config.monthPriceChange) {
+                                    const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
+                                    if(config.trendIcon) {
+                                        const sign = this.createHtmlElement("p","additional-data", "1m%:")
+                                        sign.style.fontSize = "10px"
+                                        const monthAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-month-ago-price`})
+                                        const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
+                                            const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-month-change-percent`})
+                                            percents.style.fontSize = "10px"
+                                            const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-month-trend-icon`})
+                                        percentWrapper.append(percents,trendIcon)
+                                        additionalDataWrapper.append(sign,monthAgoPrice,percentWrapper)
+                                        cardWrapper.appendChild(additionalDataWrapper)
+                                    }
+                                    else {
+                                        const weekChange = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-month-change`})
+                                        cardWrapper.appendChild(weekChange)
+                                    }
                                 }
                             }
                             card.appendChild(cardWrapper)
@@ -104,6 +185,10 @@ export class Helper {
             if (card && data && Object.keys(data).length > 0) {
                 let mainText
                 let additionalText
+
+                let dayPercentChange
+                let weekPercentChange
+                let monthPercentChange
 
                 switch (card.id) {
                     case "fear-and-greed":
@@ -135,29 +220,76 @@ export class Helper {
                         else additionalText.textContent = "No data"
                         break;
                     case "btc-dominance":
-                        mainText = card.querySelector("#btc-dominance-main-data")
-                        additionalText = card.querySelector("#btc-dominance-day-change")
-
-                        mainText.textContent = Helper.Format.formatNumberToPercents(data.btc_dominance)
-                        Helper.Format.formatNumberToPercentWithColor(data.btc_dominance_24h_percentage_change, additionalText)
+                        card.querySelector("#btc-dominance-main-data").textContent = Helper.Format.formatNumberToPercents(data.btc_dominance)
+                        Helper.Format.formatNumberToPercentWithColor(data.btc_dominance_24h_percentage_change, card.querySelector("#btc-dominance-day-change"))
+                        this.setTrendIconDataByNumber(data.btc_dominance_24h_percentage_change,card.querySelector("#btc-dominance-trend-icon"))
                         break;
                     case "eth-dominance":
-                        mainText = card.querySelector("#eth-dominance-main-data")
-                        additionalText = card.querySelector("#eth-dominance-day-change")
-
-                        mainText.textContent = Helper.Format.formatNumberToPercents(data.eth_dominance)
-                        Helper.Format.formatNumberToPercentWithColor(data.eth_dominance_24h_percentage_change, additionalText)
+                        card.querySelector("#eth-dominance-main-data").textContent = Helper.Format.formatNumberToPercents(data.eth_dominance)
+                        Helper.Format.formatNumberToPercentWithColor(data.eth_dominance_24h_percentage_change, card.querySelector("#eth-dominance-day-change"))
+                        this.setTrendIconDataByNumber(data.eth_dominance_24h_percentage_change,card.querySelector("#eth-dominance-trend-icon"))
                         break;
                     case "market-cap":
-                        mainText = card.querySelector("#market-cap-main-data")
-                        additionalText = card.querySelector("#market-cap-day-change")
+                        card.querySelector("#market-cap-main-data").textContent = Helper.Format.formatNumberToMarketCap(data.total_market_cap)
+                        Helper.Format.formatNumberToPercentWithColor(data.total_market_cap_yesterday_percentage_change, card.querySelector("#market-cap-day-change"))
+                        this.setTrendIconDataByNumber(data.total_market_cap_yesterday_percentage_change,card.querySelector("#market-cap-trend-icon"))
+                        break;
+                    case "gold":
+                        const gold = data.stockMarketDatalist.find(item => item.symbol === "XAUUSD")
 
-                        mainText.textContent = Helper.Format.formatNumberToMarketCap(data.total_market_cap)
-                        Helper.Format.formatNumberToPercentWithColor(data.total_market_cap_yesterday_percentage_change, additionalText)
+                        card.querySelector("#gold-main-data").textContent = Helper.Format.formatNumberToCoinPrice(gold.data[0].closePrice)
+
+                        card.querySelector("#gold-day-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(gold.data[1].closePrice)
+                        dayPercentChange = Helper.Format.getPercentChangeByTwoNumbers(gold.data[0].closePrice,gold.data[1].closePrice)
+                        Helper.Format.formatNumberToPercentWithColor(dayPercentChange,card.querySelector("#gold-day-change-percent"))
+                        this.setTrendIconDataByNumber(dayPercentChange, card.querySelector("#gold-day-trend-icon"))
+
+                        card.querySelector("#gold-week-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(gold.data[2].closePrice)
+                        weekPercentChange = Helper.Format.getPercentChangeByTwoNumbers(gold.data[0].closePrice,gold.data[2].closePrice)
+                        Helper.Format.formatNumberToPercentWithColor(weekPercentChange,card.querySelector("#gold-week-change-percent"))
+                        this.setTrendIconDataByNumber(weekPercentChange, card.querySelector("#gold-week-trend-icon"))
+
+                        card.querySelector("#gold-month-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(gold.data[3].closePrice)
+                        monthPercentChange = Helper.Format.getPercentChangeByTwoNumbers(gold.data[0].closePrice,gold.data[3].closePrice)
+                        Helper.Format.formatNumberToPercentWithColor(monthPercentChange,card.querySelector("#gold-month-change-percent"))
+                        this.setTrendIconDataByNumber(monthPercentChange, card.querySelector("#gold-month-trend-icon"))
+                        break;
+                    case "silver":
+                        const silver = data.stockMarketDatalist.find(item => item.symbol === "XAGUSD")
+
+                        card.querySelector("#silver-main-data").textContent = Helper.Format.formatNumberToCoinPrice(silver.data[0].closePrice)
+
+                        card.querySelector("#silver-day-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(silver.data[1].closePrice)
+                        dayPercentChange = Helper.Format.getPercentChangeByTwoNumbers(silver.data[0].closePrice,silver.data[1].closePrice)
+                        Helper.Format.formatNumberToPercentWithColor(dayPercentChange,card.querySelector("#silver-day-change-percent"))
+                        this.setTrendIconDataByNumber(dayPercentChange, card.querySelector("#silver-day-trend-icon"))
+
+                        card.querySelector("#silver-week-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(silver.data[2].closePrice)
+                        weekPercentChange = Helper.Format.getPercentChangeByTwoNumbers(silver.data[0].closePrice,silver.data[2].closePrice)
+                        Helper.Format.formatNumberToPercentWithColor(weekPercentChange,card.querySelector("#silver-week-change-percent"))
+                        this.setTrendIconDataByNumber(weekPercentChange, card.querySelector("#silver-week-trend-icon"))
+
+                        card.querySelector("#silver-month-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(silver.data[3].closePrice)
+                        monthPercentChange = Helper.Format.getPercentChangeByTwoNumbers(silver.data[0].closePrice,silver.data[3].closePrice)
+                        Helper.Format.formatNumberToPercentWithColor(monthPercentChange,card.querySelector("#silver-month-change-percent"))
+                        this.setTrendIconDataByNumber(monthPercentChange, card.querySelector("#silver-month-trend-icon"))
+
                         break;
                 }
             }
             return card;
+        }
+        static setTrendIconDataByNumber(number,imgHtmlElement) {
+            const normalizedNumber = parseFloat(number)
+
+            if(normalizedNumber < 0) {
+                imgHtmlElement.setAttribute("src","/images/red-arrow.png")
+                imgHtmlElement.setAttribute("alt","red-arrow.png")
+            }
+            else if(normalizedNumber > 0) {
+                imgHtmlElement.setAttribute("src","/images/green-arrow.png")
+                imgHtmlElement.setAttribute("alt","green-arrow.png")
+            }
         }
     }
 
@@ -253,6 +385,12 @@ export class Helper {
            else {
                 textHtmlElement.textContent = "No Data"
            }
+        }
+
+        static getPercentChangeByTwoNumbers(firstNumber,secondNumber) {
+            let normalizedFirstNumber = parseFloat(firstNumber)
+            let normalizedSecondNumber = parseFloat(secondNumber)
+            return ((normalizedFirstNumber - normalizedSecondNumber) / normalizedSecondNumber) * 100
         }
     }
 

@@ -1,6 +1,5 @@
 package panoptiumtech.panoptium.api.services.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,9 @@ import panoptiumtech.panoptium.api.clients.AlphaVantageClient;
 import panoptiumtech.panoptium.api.clients.AlternativeMeClient;
 import panoptiumtech.panoptium.api.clients.CoinMarketCapClient;
 import panoptiumtech.panoptium.api.clients.CoinRankingClient;
-import panoptiumtech.panoptium.api.entities.ApiCache.ApiCache;
 import panoptiumtech.panoptium.api.entities.ApiCache.ApiCacheType;
-import panoptiumtech.panoptium.api.services.db.ApiCache.ApiCacheServiceImpl;
+import panoptiumtech.panoptium.api.utils.ApiCacheManager;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -23,7 +20,7 @@ public class MarketApiService {
     private final String COIN_RANKING_API_KEY;
     private final String ALPHA_VANTAGE_API_KEY;
 
-    private final ApiCacheServiceImpl apiCacheService;
+    private final ApiCacheManager apiCacheManager;
 
     private final AlternativeMeClient alternativeMeClient;
     private final CoinMarketCapClient coinMarketCapClient;
@@ -36,7 +33,7 @@ public class MarketApiService {
             @Value("${api.coinMarketCap.key}") String COIN_MARKET_CAP_API_KEY,
             @Value("${api.coinRanking.key}") String COIN_RANKING_API_KEY,
             @Value("${api.alphaVantage.key}") String ALPHA_VANTAGE_API_KEY,
-            ApiCacheServiceImpl apiCacheService,
+            ApiCacheManager apiCacheManager,
             AlternativeMeClient alternativeMeClient,
             CoinMarketCapClient coinMarketCapClient,
             CoinRankingClient coinRankingClient,
@@ -45,7 +42,7 @@ public class MarketApiService {
         this.COIN_MARKET_CAP_API_KEY = COIN_MARKET_CAP_API_KEY;
         this.COIN_RANKING_API_KEY = COIN_RANKING_API_KEY;
         this.ALPHA_VANTAGE_API_KEY = ALPHA_VANTAGE_API_KEY;
-        this.apiCacheService = apiCacheService;
+        this.apiCacheManager = apiCacheManager;
         this.alternativeMeClient = alternativeMeClient;
         this.coinMarketCapClient = coinMarketCapClient;
         this.coinRankingClient = coinRankingClient;
@@ -54,10 +51,10 @@ public class MarketApiService {
     }
 
     public Map<String,Object> getFearAndGreedIndex() {
-        Optional<Map<String,Object>> responseFromDB = apiCacheService.getLastApiResponseByType(ApiCacheType.FEAR_AND_GREED);
-        if (responseFromDB.isPresent()) {
-            System.out.println("Data has been taken from cache!");
-            return responseFromDB.get();
+        Map<String,Object> json = apiCacheManager.getCachedResponse(ApiCacheType.FEAR_AND_GREED);
+        if(!json.isEmpty())  {
+            System.out.println(ApiCacheType.FEAR_AND_GREED + " has been taken from cache");
+            return json;
         }
 
         Map<String,Object> apiResponse = alternativeMeClient.getFearAndGreedIndex();
@@ -71,19 +68,20 @@ public class MarketApiService {
         answer.put("index", index);
         answer.put("classification", classification);
 
-        String responseString;
-        try {
-            responseString = objectMapper.writeValueAsString(answer);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Conversion Map to String error!", e);
+        if(apiCacheManager.cacheRequest(ApiCacheType.FEAR_AND_GREED, answer)) {
+            System.out.println(ApiCacheType.FEAR_AND_GREED + " has been taken from API and cached");
         }
-        apiCacheService.addApiCache(new ApiCache(null,ApiCacheType.FEAR_AND_GREED, responseString, LocalDateTime.now()));
-        System.out.println("Data has been taken from api!");
 
         return answer;
     }
 
     public Map<String,Object> getCryptoData() {
+        Map<String,Object> json = apiCacheManager.getCachedResponse(ApiCacheType.CRYPTO_MARKET);
+        if(!json.isEmpty())  {
+            System.out.println(ApiCacheType.CRYPTO_MARKET + " has been taken from cache");
+            return json;
+        }
+
         Map<String, Object> apiResponse = coinMarketCapClient.getCryptoData(COIN_MARKET_CAP_API_KEY);
         Map<String,Object> dataResponse = objectMapper.convertValue(apiResponse.get("data"), new TypeReference<>(){});
         Map<String,Object> quoteResponse = objectMapper.convertValue(dataResponse.get("quote"), new TypeReference<>(){});
@@ -105,6 +103,10 @@ public class MarketApiService {
         answer.put("total_market_cap", totalMarketCap);
         answer.put("total_market_cap_yesterday_percentage_change", cryptoMarketCap24hChange);
 
+        if(apiCacheManager.cacheRequest(ApiCacheType.CRYPTO_MARKET, answer)) {
+            System.out.println(ApiCacheType.CRYPTO_MARKET + " has been taken from API and cached");
+        }
+
         return answer;
     }
 
@@ -122,10 +124,16 @@ public class MarketApiService {
         return priceChangeMap;
     }
 
-    public List<Map<String, Object>> getTop100CryptoCurrencies() {
+    public Map<String, Object> getTop100CryptoCurrencies() {
+        Map<String,Object> json = apiCacheManager.getCachedResponse(ApiCacheType.TOP_100_CRYPTOCURRENCIES);
+        if(!json.isEmpty())  {
+            System.out.println(ApiCacheType.TOP_100_CRYPTOCURRENCIES + " has been taken from cache");
+            return json;
+        }
+
         Map<String,Object> apiResponse30d = coinRankingClient.getTop100CryptoCurrencies(COIN_RANKING_API_KEY, 100, "30d");
         Map<String,Object> apiResponse7d = coinRankingClient.getTop100CryptoCurrencies(COIN_RANKING_API_KEY, 100, "7d");
-        Map<String,Object> apiResponse1d = coinRankingClient.getTop100CryptoCurrencies(COIN_RANKING_API_KEY, 100, "24h");
+        Map<String,Object> apiResponse1d = coinRankingClient.getTop100CryptoCurrencies(COIN_RANKING_API_KEY,100, "24h");
 
         Map<String,Object> coinsPriceChange7d = getCoinsPriceChangeMap(apiResponse7d);
         Map<String,Object> coinsPriceChange1d = getCoinsPriceChangeMap(apiResponse1d);
@@ -133,32 +141,39 @@ public class MarketApiService {
         Map<String, Object> dataResponse30d = objectMapper.convertValue(apiResponse30d.get("data"), new TypeReference<>(){});
         List<Map<String,Object>> coinsList30d = objectMapper.convertValue(dataResponse30d.get("coins"), new TypeReference<>(){});
 
-        List<Map<String,Object>> response = new ArrayList<>();
+        Map<String,Object> answer = new HashMap<>();
+        List<Map<String,Object>> coinsList = new ArrayList<>();
 
-            for(Map<String,Object> coin : coinsList30d) {
-                Map<String,Object> coinFullData = new LinkedHashMap<>();
-                String uuid = coin.get("uuid").toString();
+        for(Map<String,Object> coin : coinsList30d) {
+            Map<String,Object> coinFullData = new LinkedHashMap<>();
+            String uuid = coin.get("uuid").toString();
 
-                coinFullData.put("rank", Integer.parseInt(coin.get("rank").toString()));
-                coinFullData.put("symbol", coin.get("symbol").toString());
-                coinFullData.put("name", coin.get("name").toString());
-                coinFullData.put("price", coin.get("price").toString());
-                coinFullData.put("marketCap", coin.get("marketCap").toString());
+            coinFullData.put("rank", Integer.parseInt(coin.get("rank").toString()));
+            coinFullData.put("symbol", coin.get("symbol").toString());
+            coinFullData.put("name", coin.get("name").toString());
+            coinFullData.put("price", coin.get("price").toString());
+            coinFullData.put("marketCap", coin.get("marketCap").toString());
 
-                coinFullData.put("priceChange1d", coinsPriceChange1d.getOrDefault(uuid,"No data").toString());
-                coinFullData.put("priceChange7d", coinsPriceChange7d.getOrDefault(uuid,"No data").toString());
-                coinFullData.put("priceChange30d", coin.get("change").toString());
+            coinFullData.put("priceChange1d", coinsPriceChange1d.getOrDefault(uuid,"No data").toString());
+            coinFullData.put("priceChange7d", coinsPriceChange7d.getOrDefault(uuid,"No data").toString());
+            coinFullData.put("priceChange30d", coin.getOrDefault("change","No data").toString());
 
-                coinFullData.put("color", coin.get("color") == null ? "No data" : coin.get("color").toString());
-                coinFullData.put("iconUrl", coin.get("iconUrl").toString());
+            coinFullData.put("color", coin.get("color") == null ? "No data" : coin.get("color").toString());
+            coinFullData.put("iconUrl", coin.get("iconUrl").toString());
 
-                response.add(coinFullData);
-            }
-        return response;
+            coinsList.add(coinFullData);
+        }
+        answer.put("coins", coinsList);
+
+        if(apiCacheManager.cacheRequest(ApiCacheType.TOP_100_CRYPTOCURRENCIES, answer)) {
+            System.out.println(ApiCacheType.TOP_100_CRYPTOCURRENCIES + " has been taken from API and cached");
+        }
+
+        return answer;
     }
 
-    public Map<String,Object> getStockMarketData(String symbol) {
-        Map<String, Object> apiResponse = alphaVantageClient.getStockMarketData("TIME_SERIES_DAILY",symbol,ALPHA_VANTAGE_API_KEY);
+    private Map<String,Object> getStockMarketAssetData(String ticker) {
+        Map<String, Object> apiResponse = alphaVantageClient.getStockMarketData("TIME_SERIES_DAILY",ticker,ALPHA_VANTAGE_API_KEY);
         Map<String, Object> metaDataResponse = objectMapper.convertValue(apiResponse.get("Meta Data"), new TypeReference<>(){});
         Map<String, Object> dataResponse = objectMapper.convertValue(apiResponse.get("Time Series (Daily)"), new TypeReference<>(){});
 
@@ -189,11 +204,38 @@ public class MarketApiService {
         listOfImportantDates.add(listOfAllDates.get(7));
         listOfImportantDates.add(listOfAllDates.get(30));
 
-        Map<String,Object> response = new LinkedHashMap<>();
-        response.put("symbol", symbol);
-        response.put("lastUpdatedAt", lastUpdatedDate);
-        response.put("data", listOfImportantDates);
+        Map<String,Object> answer = new LinkedHashMap<>();
+        answer.put("symbol", ticker);
+        answer.put("lastUpdatedAt", lastUpdatedDate);
+        answer.put("data", listOfImportantDates);
 
-        return response;
+        return answer;
+    }
+
+    public Map<String,Object> getStockMarketData() {
+        Map<String,Object> json = apiCacheManager.getCachedResponse(ApiCacheType.STOCK_MARKET);
+        if(!json.isEmpty())  {
+            System.out.println(ApiCacheType.STOCK_MARKET + " has been taken from cache");
+            return json;
+        }
+
+        Map<String,Object> answer = new LinkedHashMap<>();
+        List<Map<String,Object>> stockMarketData = new ArrayList<>();
+
+        stockMarketData.add(getStockMarketAssetData("SPY")); // S&P 500
+        stockMarketData.add(getStockMarketAssetData("DIA")); // Dow Jones
+        stockMarketData.add(getStockMarketAssetData("QQQ")); // Nasdaq Composite
+        stockMarketData.add(getStockMarketAssetData("IWM")); // Russel 2000
+        stockMarketData.add(getStockMarketAssetData("VXX")); // Volatility Index
+        stockMarketData.add(getStockMarketAssetData("XAUUSD")); // Gold
+        stockMarketData.add(getStockMarketAssetData("XAGUSD")); // Silver
+
+        answer.put("stockMarketData", stockMarketData);
+
+        if(apiCacheManager.cacheRequest(ApiCacheType.STOCK_MARKET, answer)) {
+            System.out.println(ApiCacheType.STOCK_MARKET + " has been taken from API and cached");
+        }
+
+        return answer;
     }
 }
