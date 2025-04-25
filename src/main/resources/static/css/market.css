@@ -1,30 +1,33 @@
+h2 {
+    margin-top: 30px;
+}
+
 p {
     text-align: center;
     font-size: 60px;
     color: #000000;
 }
 
-table {
+.top-100-coins-table {
     margin: 0 auto;
     border-radius: 15px;
     overflow: hidden;
-    padding-bottom: 20px;
 }
 
-table, th, td {
+.top-100-coins-table, .top-100-coins-table th, .top-100-coins-table td {
     border: 1px solid black;
     background-color: #dcdcdc;
     border-collapse: collapse;
 }
 
-th, td {
+.top-100-coins-table th, .top-100-coins-table td {
     font-size: 18px;
     padding: 10px 5px;
     text-align: center;
 }
 
-th {
-    background-color: cadetblue;
+.top-100-coins-table th {
+    background: rgba(30, 152, 152, 0.73);
 }
 
 .data-card-container {
@@ -48,8 +51,9 @@ th {
     padding: 10px 5px;
     margin: 15px 30px;
     border-radius: 20px;
-    background: rgba(30, 152, 138, 0.7);
+    background: rgba(30, 152, 152, 0.73);
 }
+
 
 .data-card-wrapper {
     min-width: 70px;

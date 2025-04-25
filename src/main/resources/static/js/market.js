@@ -1,8 +1,6 @@
 import {Helper} from "./helper.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-    const cryptoDataButton = document.getElementById("crypto-data-button")
-
+document.addEventListener("DOMContentLoaded", async () => {
     let cryptoData
     let fearAndGreedData
     let coinsData
@@ -31,6 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const stockMarketCardWrapper = Helper.HTML.createHtmlElement("div","data-card-container")
         stockMarketCardWrapper.append(
+            Helper.HTML.getDataCard("top-500", stockMarketData),
+            Helper.HTML.getDataCard("dow-jones", stockMarketData),
+            Helper.HTML.getDataCard("nasdaq", stockMarketData),
+            Helper.HTML.getDataCard("russel-2000", stockMarketData),
+            Helper.HTML.getDataCard("volatility-index", stockMarketData),
             Helper.HTML.getDataCard("gold", stockMarketData),
             Helper.HTML.getDataCard("silver", stockMarketData)
         )
@@ -99,10 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     }
 
-    cryptoDataButton.addEventListener("click", async () => {
-        await getData()
-        createCards()
-        fillCryptoCurrenciesTable()
-    })
-
+    await getData()
+    createCards()
+    fillCryptoCurrenciesTable()
 })

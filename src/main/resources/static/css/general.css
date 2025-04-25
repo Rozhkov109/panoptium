@@ -96,6 +96,7 @@ header {
 .content-wrapper {
     background-color: white;
     border-radius: 20px;
+    padding: 20px 0;
 }
 
 .button-container {
@@ -136,4 +137,14 @@ a {
 
 .button-container a:hover {
     color: #000000;
+}
+
+footer {
+    background-color: #00ddfa;
+}
+
+footer p {
+    margin: 0;
+    text-align: center;
+    font-size: 20px;
 }

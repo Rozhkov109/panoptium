@@ -91,7 +91,7 @@ public class MarketApiService {
         double btcDominance24hChange = Double.parseDouble(dataResponse.get("btc_dominance_24h_percentage_change").toString());
         double ethDominance = Double.parseDouble(dataResponse.get("eth_dominance").toString());
         double ethDominance24hChange = Double.parseDouble(dataResponse.get("eth_dominance_24h_percentage_change").toString());
-        long totalMarketCap = (long) (Double.parseDouble(usdResponse.get("total_market_cap").toString()));
+        long marketCap = (long) (Double.parseDouble(usdResponse.get("total_market_cap").toString()));
         double cryptoMarketCap24hChange = Double.parseDouble(usdResponse.get("total_market_cap_yesterday_percentage_change").toString());
 
         Map<String, Object> answer = new LinkedHashMap<>();
@@ -100,8 +100,8 @@ public class MarketApiService {
         answer.put("btc_dominance_24h_percentage_change", btcDominance24hChange);
         answer.put("eth_dominance", ethDominance);
         answer.put("eth_dominance_24h_percentage_change", ethDominance24hChange);
-        answer.put("total_market_cap", totalMarketCap);
-        answer.put("total_market_cap_yesterday_percentage_change", cryptoMarketCap24hChange);
+        answer.put("market_cap", marketCap);
+        answer.put("market_cap_24h_percentage_change", cryptoMarketCap24hChange);
 
         if(apiCacheManager.cacheRequest(ApiCacheType.CRYPTO_MARKET, answer)) {
             System.out.println(ApiCacheType.CRYPTO_MARKET + " has been taken from API and cached");
@@ -205,7 +205,7 @@ public class MarketApiService {
         listOfImportantDates.add(listOfAllDates.get(30));
 
         Map<String,Object> answer = new LinkedHashMap<>();
-        answer.put("symbol", ticker);
+        answer.put("ticker", ticker);
         answer.put("lastUpdatedAt", lastUpdatedDate);
         answer.put("data", listOfImportantDates);
 

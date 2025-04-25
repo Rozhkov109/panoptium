@@ -24,6 +24,7 @@ export class Helper {
             {
                 id: "fear-and-greed",
                 title: "Fear and Greed",
+                size: "default",
                 mainInfo: true,
                 additionalInfo: true,
                 onlyOneAdditionalField: true,
@@ -32,6 +33,7 @@ export class Helper {
             {
                 id: "btc-dominance",
                 title: "Bitcoin Dominance",
+                size: "default",
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
@@ -40,6 +42,7 @@ export class Helper {
             {
                 id: "eth-dominance",
                 title: "Ethereum Dominance",
+                size: "default",
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
@@ -48,14 +51,82 @@ export class Helper {
             {
                 id: "market-cap",
                 title: "Market Capitalization",
+                size: "default",
                 mainInfo: true,
                 additionalInfo: true,
                 trendIcon: true,
                 oneDayPercentChange: true,
             },
             {
+                id: "top-500",
+                title: "S&P 500 (SPDR ETF)",
+                ticker: "SPY",
+                size: "big",
+                cardColor: "#a80000",
+                mainInfo: true,
+                additionalInfo: true,
+                dayPriceChange: true,
+                weekPriceChange: true,
+                monthPriceChange: true,
+                trendIcon: true,
+            },
+            {
+                id: "dow-jones",
+                title: "Dow Jones (SPDR ETF)",
+                ticker: "DIA",
+                size: "big",
+                cardColor: "#00b399",
+                mainInfo: true,
+                additionalInfo: true,
+                dayPriceChange: true,
+                weekPriceChange: true,
+                monthPriceChange: true,
+                trendIcon: true,
+            },
+            {
+                id: "nasdaq",
+                title: "Nasdaq Composite (Invesco QQQ Trust ETF)",
+                ticker: "QQQ",
+                size: "big",
+                cardColor: "#125883",
+                mainInfo: true,
+                additionalInfo: true,
+                dayPriceChange: true,
+                weekPriceChange: true,
+                monthPriceChange: true,
+                trendIcon: true,
+            },
+            {
+                id: "russel-2000",
+                title: "Russel 2000 (iShares ETF)",
+                ticker: "IWM",
+                size: "big",
+                cardColor: "#6e0440",
+                mainInfo: true,
+                additionalInfo: true,
+                dayPriceChange: true,
+                weekPriceChange: true,
+                monthPriceChange: true,
+                trendIcon: true,
+            },
+            {
+                id: "volatility-index",
+                title: "Volatility Index (iPath VIX ETN)",
+                ticker: "VXX",
+                size: "big",
+                cardColor: "#0092fa",
+                mainInfo: true,
+                additionalInfo: true,
+                dayPriceChange: true,
+                weekPriceChange: true,
+                monthPriceChange: true,
+                trendIcon: true,
+            },
+            {
                 id: "gold",
                 title: "Gold",
+                ticker: "XAUUSD",
+                size: "big",
                 cardColor: "#e4d100",
                 mainInfo: true,
                 additionalInfo: true,
@@ -67,6 +138,8 @@ export class Helper {
             {
                 id: "silver",
                 title: "Silver",
+                ticker: "XAGUSD",
+                size: "big",
                 cardColor: "#c1c1c1",
                 mainInfo: true,
                 additionalInfo: true,
@@ -87,6 +160,19 @@ export class Helper {
             return el
         }
 
+        static setTrendIconDataByNumber(number,imgHtmlElement) {
+            const normalizedNumber = parseFloat(number)
+
+            if(normalizedNumber < 0) {
+                imgHtmlElement.setAttribute("src","/images/red-arrow.png")
+                imgHtmlElement.setAttribute("alt","red-arrow.png")
+            }
+            else if(normalizedNumber > 0) {
+                imgHtmlElement.setAttribute("src","/images/green-arrow.png")
+                imgHtmlElement.setAttribute("alt","green-arrow.png")
+            }
+        }
+
         static getDataCardFrame(cardTemplateId) {
             const card = this.createHtmlElement("div","data-card")
                 this.dataCardsConfig.forEach(config => {
@@ -94,6 +180,10 @@ export class Helper {
                         card.setAttribute("id", config.id)
                         const header = this.createHtmlElement("h3","data-card-header",config.title)
                         if (config.cardColor) card.style.background = config.cardColor
+                        if (config.size === "big") {
+                            card.style.height = "270px"
+                            card.style.width = "290px"
+                        }
                         card.appendChild(header)
                         const cardWrapper = this.createHtmlElement("div","data-card-wrapper")
                             const mainDataText = this.createHtmlElement("p","main-data","",{id: `${config.id}-main-data`})
@@ -120,11 +210,11 @@ export class Helper {
                                     const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
                                     if(config.trendIcon) {
                                         const sign = this.createHtmlElement("p","additional-data", "1d%:")
-                                        sign.style.fontSize = "10px"
+                                        if(config.size === "default") sign.style.fontSize = "10px"
                                         const dayAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-day-ago-price`})
                                         const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
                                             const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-day-change-percent`})
-                                            percents.style.fontSize = "10px"
+                                        if(config.size === "default") percents.style.fontSize = "10px"
                                             const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-day-trend-icon`})
                                         percentWrapper.append(percents,trendIcon)
                                         additionalDataWrapper.append(sign,dayAgoPrice,percentWrapper)
@@ -140,11 +230,11 @@ export class Helper {
                                     const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
                                     if(config.trendIcon) {
                                         const sign = this.createHtmlElement("p","additional-data", "1w%:")
-                                        sign.style.fontSize = "10px"
+                                        if(config.size === "default") sign.style.fontSize = "10px"
                                         const weekAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-week-ago-price`})
                                         const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
                                             const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-week-change-percent`})
-                                            percents.style.fontSize = "10px"
+                                        if(config.size === "default") percents.style.fontSize = "10px"
                                             const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-week-trend-icon`})
                                         percentWrapper.append(percents,trendIcon)
                                         additionalDataWrapper.append(sign,weekAgoPrice,percentWrapper)
@@ -159,11 +249,11 @@ export class Helper {
                                     const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
                                     if(config.trendIcon) {
                                         const sign = this.createHtmlElement("p","additional-data", "1m%:")
-                                        sign.style.fontSize = "10px"
+                                        if(config.size === "default") sign.style.fontSize = "10px"
                                         const monthAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-month-ago-price`})
                                         const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
                                             const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-month-change-percent`})
-                                            percents.style.fontSize = "10px"
+                                        if(config.size === "default") percents.style.fontSize = "10px"
                                             const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-month-trend-icon`})
                                         percentWrapper.append(percents,trendIcon)
                                         additionalDataWrapper.append(sign,monthAgoPrice,percentWrapper)
@@ -180,116 +270,84 @@ export class Helper {
             })
             return card.hasChildNodes() ? card : null
         }
+
+        static fillCryptoMarketCard(card, jsonResponse) {
+            const cardId = card.id
+            const combinedKey = cardId.replaceAll("-","_") + "_24h_percentage_change"
+
+            if(cardId === "market-cap") card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToMarketCap(jsonResponse[cardId.replaceAll("-","_")])
+            else card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToPercents(jsonResponse[cardId.replaceAll("-","_")])
+            Helper.Format.formatNumberToPercentWithColor(jsonResponse[combinedKey], card.querySelector(`#${cardId}-day-change`))
+            this.setTrendIconDataByNumber(jsonResponse[combinedKey],card.querySelector(`#${cardId}-trend-icon`))
+        }
+
+        static fillStockMarketCard(card, jsonResponse) {
+            const cardId = card.id
+            const cardConfig = this.dataCardsConfig.find(config => config.id === cardId)
+            const asset = jsonResponse.stockMarketData.find(assetData => assetData.ticker === cardConfig.ticker)
+
+            card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[0].closePrice)
+
+            card.querySelector(`#${cardId}-day-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[1].closePrice)
+            let dayPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[1].closePrice)
+            Helper.Format.formatNumberToPercentWithColor(dayPercentChange,card.querySelector(`#${cardId}-day-change-percent`))
+            this.setTrendIconDataByNumber(dayPercentChange, card.querySelector(`#${cardId}-day-trend-icon`))
+
+            card.querySelector(`#${cardId}-week-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[2].closePrice)
+            let weekPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[2].closePrice)
+            Helper.Format.formatNumberToPercentWithColor(weekPercentChange,card.querySelector(`#${cardId}-week-change-percent`))
+            this.setTrendIconDataByNumber(weekPercentChange, card.querySelector(`#${cardId}-week-trend-icon`))
+
+            card.querySelector(`#${cardId}-month-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[3].closePrice)
+            let monthPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[3].closePrice)
+            Helper.Format.formatNumberToPercentWithColor(monthPercentChange,card.querySelector(`#${cardId}-month-change-percent`))
+            this.setTrendIconDataByNumber(monthPercentChange, card.querySelector(`#${cardId}-month-trend-icon`))
+        }
+
+
         static getDataCard(cardId, data) {
             const card = this.getDataCardFrame(cardId)
             if (card && data && Object.keys(data).length > 0) {
                 let mainText
                 let additionalText
 
-                let dayPercentChange
-                let weekPercentChange
-                let monthPercentChange
-
-                switch (card.id) {
-                    case "fear-and-greed":
-                        mainText = card.querySelector("#fear-and-greed-main-data")
-                        additionalText = card.querySelector("#fear-and-greed-additional-data")
-                        mainText.textContent = (mainText) ?  data.index : "No data"
-                        if(additionalText) {
-                            additionalText.textContent = data.classification
-                            switch (additionalText.textContent) {
-                                case "Extreme Fear":
-                                    additionalText.style.color = "#ca0101";
-                                    break;
-                                case "Fear":
-                                    additionalText.style.color = "#ff8c00";
-                                    break;
-                                case "Neutral":
-                                    additionalText.style.color = "#f1c40f";
-                                    break;
-                                case "Greed":
-                                    additionalText.style.color = "#27ae60";
-                                    break;
-                                case "Extreme Greed":
-                                    additionalText.style.color = "#2fa016";
-                                    break;
-                                default:
-                                    additionalText.style.color = "#000";
-                            }
+                if(card.id === "fear-and-greed") {
+                    mainText = card.querySelector("#fear-and-greed-main-data")
+                    additionalText = card.querySelector("#fear-and-greed-additional-data")
+                    mainText.textContent = (mainText) ?  data.index : "No data"
+                    if(additionalText) {
+                        additionalText.textContent = data.classification
+                        switch (additionalText.textContent) {
+                            case "Extreme Fear":
+                                additionalText.style.color = "#ca0101";
+                                break;
+                            case "Fear":
+                                additionalText.style.color = "#ff8c00";
+                                break;
+                            case "Neutral":
+                                additionalText.style.color = "#f1c40f";
+                                break;
+                            case "Greed":
+                                additionalText.style.color = "#27ae60";
+                                break;
+                            case "Extreme Greed":
+                                additionalText.style.color = "#2fa016";
+                                break;
+                            default:
+                                additionalText.style.color = "#000";
                         }
-                        else additionalText.textContent = "No data"
-                        break;
-                    case "btc-dominance":
-                        card.querySelector("#btc-dominance-main-data").textContent = Helper.Format.formatNumberToPercents(data.btc_dominance)
-                        Helper.Format.formatNumberToPercentWithColor(data.btc_dominance_24h_percentage_change, card.querySelector("#btc-dominance-day-change"))
-                        this.setTrendIconDataByNumber(data.btc_dominance_24h_percentage_change,card.querySelector("#btc-dominance-trend-icon"))
-                        break;
-                    case "eth-dominance":
-                        card.querySelector("#eth-dominance-main-data").textContent = Helper.Format.formatNumberToPercents(data.eth_dominance)
-                        Helper.Format.formatNumberToPercentWithColor(data.eth_dominance_24h_percentage_change, card.querySelector("#eth-dominance-day-change"))
-                        this.setTrendIconDataByNumber(data.eth_dominance_24h_percentage_change,card.querySelector("#eth-dominance-trend-icon"))
-                        break;
-                    case "market-cap":
-                        card.querySelector("#market-cap-main-data").textContent = Helper.Format.formatNumberToMarketCap(data.total_market_cap)
-                        Helper.Format.formatNumberToPercentWithColor(data.total_market_cap_yesterday_percentage_change, card.querySelector("#market-cap-day-change"))
-                        this.setTrendIconDataByNumber(data.total_market_cap_yesterday_percentage_change,card.querySelector("#market-cap-trend-icon"))
-                        break;
-                    case "gold":
-                        const gold = data.stockMarketDatalist.find(item => item.symbol === "XAUUSD")
+                    }
+                    else additionalText.textContent = "No data"
+                }
+                if(card.id === "btc-dominance" || card.id === "eth-dominance" || card.id === "market-cap") {
+                    this.fillCryptoMarketCard(card,data)
+                }
 
-                        card.querySelector("#gold-main-data").textContent = Helper.Format.formatNumberToCoinPrice(gold.data[0].closePrice)
-
-                        card.querySelector("#gold-day-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(gold.data[1].closePrice)
-                        dayPercentChange = Helper.Format.getPercentChangeByTwoNumbers(gold.data[0].closePrice,gold.data[1].closePrice)
-                        Helper.Format.formatNumberToPercentWithColor(dayPercentChange,card.querySelector("#gold-day-change-percent"))
-                        this.setTrendIconDataByNumber(dayPercentChange, card.querySelector("#gold-day-trend-icon"))
-
-                        card.querySelector("#gold-week-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(gold.data[2].closePrice)
-                        weekPercentChange = Helper.Format.getPercentChangeByTwoNumbers(gold.data[0].closePrice,gold.data[2].closePrice)
-                        Helper.Format.formatNumberToPercentWithColor(weekPercentChange,card.querySelector("#gold-week-change-percent"))
-                        this.setTrendIconDataByNumber(weekPercentChange, card.querySelector("#gold-week-trend-icon"))
-
-                        card.querySelector("#gold-month-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(gold.data[3].closePrice)
-                        monthPercentChange = Helper.Format.getPercentChangeByTwoNumbers(gold.data[0].closePrice,gold.data[3].closePrice)
-                        Helper.Format.formatNumberToPercentWithColor(monthPercentChange,card.querySelector("#gold-month-change-percent"))
-                        this.setTrendIconDataByNumber(monthPercentChange, card.querySelector("#gold-month-trend-icon"))
-                        break;
-                    case "silver":
-                        const silver = data.stockMarketDatalist.find(item => item.symbol === "XAGUSD")
-
-                        card.querySelector("#silver-main-data").textContent = Helper.Format.formatNumberToCoinPrice(silver.data[0].closePrice)
-
-                        card.querySelector("#silver-day-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(silver.data[1].closePrice)
-                        dayPercentChange = Helper.Format.getPercentChangeByTwoNumbers(silver.data[0].closePrice,silver.data[1].closePrice)
-                        Helper.Format.formatNumberToPercentWithColor(dayPercentChange,card.querySelector("#silver-day-change-percent"))
-                        this.setTrendIconDataByNumber(dayPercentChange, card.querySelector("#silver-day-trend-icon"))
-
-                        card.querySelector("#silver-week-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(silver.data[2].closePrice)
-                        weekPercentChange = Helper.Format.getPercentChangeByTwoNumbers(silver.data[0].closePrice,silver.data[2].closePrice)
-                        Helper.Format.formatNumberToPercentWithColor(weekPercentChange,card.querySelector("#silver-week-change-percent"))
-                        this.setTrendIconDataByNumber(weekPercentChange, card.querySelector("#silver-week-trend-icon"))
-
-                        card.querySelector("#silver-month-ago-price").textContent = Helper.Format.formatNumberToCoinPrice(silver.data[3].closePrice)
-                        monthPercentChange = Helper.Format.getPercentChangeByTwoNumbers(silver.data[0].closePrice,silver.data[3].closePrice)
-                        Helper.Format.formatNumberToPercentWithColor(monthPercentChange,card.querySelector("#silver-month-change-percent"))
-                        this.setTrendIconDataByNumber(monthPercentChange, card.querySelector("#silver-month-trend-icon"))
-
-                        break;
+                if(["top-500","dow-jones","nasdaq","russel-2000","volatility-index","gold","silver"].includes(card.id)) {
+                    this.fillStockMarketCard(card, data)
                 }
             }
             return card;
-        }
-        static setTrendIconDataByNumber(number,imgHtmlElement) {
-            const normalizedNumber = parseFloat(number)
-
-            if(normalizedNumber < 0) {
-                imgHtmlElement.setAttribute("src","/images/red-arrow.png")
-                imgHtmlElement.setAttribute("alt","red-arrow.png")
-            }
-            else if(normalizedNumber > 0) {
-                imgHtmlElement.setAttribute("src","/images/green-arrow.png")
-                imgHtmlElement.setAttribute("alt","green-arrow.png")
-            }
         }
     }
 
