@@ -9,7 +9,7 @@ import panoptiumtech.panoptium.api.services.api.MarketApiService;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/market")
+@RequestMapping("/api/v1/market")
 public class MarketApiController {
     private final MarketApiService marketApiService;
 

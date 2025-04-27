@@ -7,8 +7,8 @@ public enum ApiCacheType {
     CRYPTO_MARKET(Duration.ofMinutes(30)),
     FEAR_AND_GREED(Duration.ofHours(24)),
     TOP_100_CRYPTOCURRENCIES(Duration.ofMinutes(30)),
-    BTC_PRICE(Duration.ofMinutes(30)),
-    SOL_PRICE(Duration.ofMinutes(30));
+    BTC_INFO(Duration.ofMinutes(30)),
+    SOL_INFO(Duration.ofMinutes(30));
 
     private final Duration timeToLive;
 

@@ -24,129 +24,71 @@ export class Helper {
             {
                 id: "fear-and-greed",
                 title: "Fear and Greed",
-                size: "default",
-                mainInfo: true,
-                additionalInfo: true,
-                onlyOneAdditionalField: true,
-                trendIcon: false,
+                type: "fear-and-greed"
             },
             {
                 id: "btc-dominance",
                 title: "Bitcoin Dominance",
-                size: "default",
-                mainInfo: true,
-                additionalInfo: true,
-                trendIcon: true,
-                oneDayPercentChange: true,
+                type: "crypto-market"
             },
             {
                 id: "eth-dominance",
                 title: "Ethereum Dominance",
-                size: "default",
-                mainInfo: true,
-                additionalInfo: true,
-                trendIcon: true,
-                oneDayPercentChange: true,
+                type: "crypto-market"
             },
             {
                 id: "market-cap",
                 title: "Market Capitalization",
-                size: "default",
-                mainInfo: true,
-                additionalInfo: true,
-                trendIcon: true,
-                oneDayPercentChange: true,
+                type: "crypto-market"
             },
             {
                 id: "top-500",
                 title: "S&P 500 (SPDR ETF)",
                 ticker: "SPY",
-                size: "big",
                 cardColor: "#a80000",
-                mainInfo: true,
-                additionalInfo: true,
-                dayPriceChange: true,
-                weekPriceChange: true,
-                monthPriceChange: true,
-                trendIcon: true,
+                type: "stock-market"
             },
             {
                 id: "dow-jones",
                 title: "Dow Jones (SPDR ETF)",
                 ticker: "DIA",
-                size: "big",
                 cardColor: "#00b399",
-                mainInfo: true,
-                additionalInfo: true,
-                dayPriceChange: true,
-                weekPriceChange: true,
-                monthPriceChange: true,
-                trendIcon: true,
+                type: "stock-market"
             },
             {
                 id: "nasdaq",
                 title: "Nasdaq Composite (Invesco QQQ Trust ETF)",
                 ticker: "QQQ",
-                size: "big",
                 cardColor: "#125883",
-                mainInfo: true,
-                additionalInfo: true,
-                dayPriceChange: true,
-                weekPriceChange: true,
-                monthPriceChange: true,
-                trendIcon: true,
+                type: "stock-market"
             },
             {
                 id: "russel-2000",
                 title: "Russel 2000 (iShares ETF)",
                 ticker: "IWM",
-                size: "big",
                 cardColor: "#6e0440",
-                mainInfo: true,
-                additionalInfo: true,
-                dayPriceChange: true,
-                weekPriceChange: true,
-                monthPriceChange: true,
-                trendIcon: true,
+                type: "stock-market"
             },
             {
                 id: "volatility-index",
                 title: "Volatility Index (iPath VIX ETN)",
                 ticker: "VXX",
-                size: "big",
                 cardColor: "#0092fa",
-                mainInfo: true,
-                additionalInfo: true,
-                dayPriceChange: true,
-                weekPriceChange: true,
-                monthPriceChange: true,
-                trendIcon: true,
+                type: "stock-market"
             },
             {
                 id: "gold",
                 title: "Gold",
                 ticker: "XAUUSD",
-                size: "big",
                 cardColor: "#e4d100",
-                mainInfo: true,
-                additionalInfo: true,
-                dayPriceChange: true,
-                weekPriceChange: true,
-                monthPriceChange: true,
-                trendIcon: true,
+                type: "stock-market"
             },
             {
                 id: "silver",
                 title: "Silver",
                 ticker: "XAGUSD",
-                size: "big",
                 cardColor: "#c1c1c1",
-                mainInfo: true,
-                additionalInfo: true,
-                dayPriceChange: true,
-                weekPriceChange: true,
-                monthPriceChange: true,
-                trendIcon: true,
+                type: "stock-market"
             },
         ]
 
@@ -173,100 +115,66 @@ export class Helper {
             }
         }
 
-        static getDataCardFrame(cardTemplateId) {
+        static createDataCardFrame(cardId) {
             const card = this.createHtmlElement("div","data-card")
-                this.dataCardsConfig.forEach(config => {
-                    if(cardTemplateId === config.id) {
-                        card.setAttribute("id", config.id)
-                        const header = this.createHtmlElement("h3","data-card-header",config.title)
-                        if (config.cardColor) card.style.background = config.cardColor
-                        if (config.size === "big") {
-                            card.style.height = "270px"
-                            card.style.width = "290px"
-                        }
-                        card.appendChild(header)
-                        const cardWrapper = this.createHtmlElement("div","data-card-wrapper")
-                            const mainDataText = this.createHtmlElement("p","main-data","",{id: `${config.id}-main-data`})
-                            cardWrapper.appendChild(mainDataText)
-                            if(config.additionalInfo) {
-                                if(config.onlyOneAdditionalField) {
-                                    const additionalData = this.createHtmlElement("p","additional-data", "", {id: `${config.id}-additional-data`})
-                                    cardWrapper.appendChild(additionalData)
-                                }
-                                if(config.oneDayPercentChange) {
-                                    const additionalDataWrapper = this.createHtmlElement("div","percent-change-wrapper")
-                                    if(config.trendIcon) {
-                                        const dayChange = this.createHtmlElement("p","additional-data", "",{id: `${config.id}-day-change`})
-                                        const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-trend-icon`})
-                                        additionalDataWrapper.append(dayChange,trendIcon)
-                                        cardWrapper.appendChild(additionalDataWrapper)
-                                    }
-                                    else {
-                                        const dayChange = this.createHtmlElement("p","additional-data", "",{id: `${config.id}-day-change`})
-                                        cardWrapper.appendChild(dayChange)
-                                    }
-                                }
-                                if(config.dayPriceChange) {
-                                    const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
-                                    if(config.trendIcon) {
-                                        const sign = this.createHtmlElement("p","additional-data", "1d%:")
-                                        if(config.size === "default") sign.style.fontSize = "10px"
-                                        const dayAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-day-ago-price`})
-                                        const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
-                                            const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-day-change-percent`})
-                                        if(config.size === "default") percents.style.fontSize = "10px"
-                                            const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-day-trend-icon`})
-                                        percentWrapper.append(percents,trendIcon)
-                                        additionalDataWrapper.append(sign,dayAgoPrice,percentWrapper)
-                                        cardWrapper.appendChild(additionalDataWrapper)
-                                    }
-                                    else {
-                                        const weekChange = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-day-change`})
-                                        cardWrapper.appendChild(weekChange)
-                                    }
+            this.dataCardsConfig.forEach(config => {
+                if(config.id === cardId) {
+                    card.setAttribute("id", config.id)
+                    card.innerHTML = `
+                    <h3 class="data-card-header">${config.title}</h3>
+                    <div class="data-card-wrapper"></div>`
 
-                                }
-                                if(config.weekPriceChange) {
-                                    const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
-                                    if(config.trendIcon) {
-                                        const sign = this.createHtmlElement("p","additional-data", "1w%:")
-                                        if(config.size === "default") sign.style.fontSize = "10px"
-                                        const weekAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-week-ago-price`})
-                                        const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
-                                            const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-week-change-percent`})
-                                        if(config.size === "default") percents.style.fontSize = "10px"
-                                            const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-week-trend-icon`})
-                                        percentWrapper.append(percents,trendIcon)
-                                        additionalDataWrapper.append(sign,weekAgoPrice,percentWrapper)
-                                        cardWrapper.appendChild(additionalDataWrapper)
-                                    }
-                                    else {
-                                        const weekChange = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-week-change`})
-                                        cardWrapper.appendChild(weekChange)
-                                    }
-                                }
-                                if(config.monthPriceChange) {
-                                    const additionalDataWrapper = this.createHtmlElement("div","additional-data-wrapper")
-                                    if(config.trendIcon) {
-                                        const sign = this.createHtmlElement("p","additional-data", "1m%:")
-                                        if(config.size === "default") sign.style.fontSize = "10px"
-                                        const monthAgoPrice = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-month-ago-price`})
-                                        const percentWrapper = this.createHtmlElement("div","additional-data-wrapper")
-                                            const percents = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-month-change-percent`})
-                                        if(config.size === "default") percents.style.fontSize = "10px"
-                                            const trendIcon = this.createHtmlElement("img","trend-icon-small","", {id: `${config.id}-month-trend-icon`})
-                                        percentWrapper.append(percents,trendIcon)
-                                        additionalDataWrapper.append(sign,monthAgoPrice,percentWrapper)
-                                        cardWrapper.appendChild(additionalDataWrapper)
-                                    }
-                                    else {
-                                        const weekChange = this.createHtmlElement("p", "additional-data", "", {id: `${config.id}-month-change`})
-                                        cardWrapper.appendChild(weekChange)
-                                    }
-                                }
-                            }
-                            card.appendChild(cardWrapper)
+                    const cardWrapper = card.getElementsByClassName("data-card-wrapper")[0]
+                    cardWrapper.innerHTML = `<p class="main-data" id="${config.id}-main-data"></p>`
+
+                    if (config.type === "fear-and-greed") {
+                        cardWrapper.innerHTML += `
+                        <p class="additional-data" id="${config.id}-additional-data"></p>`
                     }
+                    else if(config.type === "crypto-market") {
+                        cardWrapper.innerHTML += `
+                        <div class="additional-data-wrapper">
+                            <p class="additional-data">1d%:</p>
+                            <div class="percent-change-wrapper">
+                                <p class="additional-data" id="${config.id}-day-change"></p>
+                                <img class="trend-icon-small" id="${config.id}-day-trend-icon" alt="">
+                            </div>
+                        </div>`
+                    }
+                    else if (config.type === "stock-market") {
+                        cardWrapper.innerHTML += `
+                            <div class="additional-data-wrapper">
+                                <p class="additional-data">1d%:</p>
+                                <p class="additional-data" id="${config.id}-day-ago-price"></p>
+                                <div class="percent-change-wrapper">
+                                    <p class="additional-data" id="${config.id}-day-change"></p>
+                                    <img class="trend-icon-small" id="${config.id}-day-trend-icon" alt="">
+                                </div>
+                            </div>
+                                
+                            <div class="additional-data-wrapper">
+                                <p class="additional-data">1w%:</p>
+                                <p class="additional-data" id="${config.id}-week-ago-price"></p>
+                                <div class="percent-change-wrapper">
+                                    <p class="additional-data" id="${config.id}-week-change"></p>
+                                    <img class="trend-icon-small" id="${config.id}-week-trend-icon" alt="">
+                                </div>
+                            </div>
+                                
+                            <div class="additional-data-wrapper">
+                                <p class="additional-data">1m%:</p>
+                                <p class="additional-data" id="${config.id}-month-ago-price"></p>
+                                <div class="percent-change-wrapper">
+                                    <p class="additional-data" id="${config.id}-month-change"></p>
+                                    <img class="trend-icon-small" id="${config.id}-month-trend-icon" alt="">
+                                </div>
+                            </div>`
+
+                        card.style.background = config.cardColor;
+                        card.style.height = "270px"
+                        card.style.width = "290px"
+                    }
+                }
             })
             return card.hasChildNodes() ? card : null
         }
@@ -278,7 +186,7 @@ export class Helper {
             if(cardId === "market-cap") card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToMarketCap(jsonResponse[cardId.replaceAll("-","_")])
             else card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToPercents(jsonResponse[cardId.replaceAll("-","_")])
             Helper.Format.formatNumberToPercentWithColor(jsonResponse[combinedKey], card.querySelector(`#${cardId}-day-change`))
-            this.setTrendIconDataByNumber(jsonResponse[combinedKey],card.querySelector(`#${cardId}-trend-icon`))
+            this.setTrendIconDataByNumber(jsonResponse[combinedKey],card.querySelector(`#${cardId}-day-trend-icon`))
         }
 
         static fillStockMarketCard(card, jsonResponse) {
@@ -290,23 +198,23 @@ export class Helper {
 
             card.querySelector(`#${cardId}-day-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[1].closePrice)
             let dayPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[1].closePrice)
-            Helper.Format.formatNumberToPercentWithColor(dayPercentChange,card.querySelector(`#${cardId}-day-change-percent`))
+            Helper.Format.formatNumberToPercentWithColor(dayPercentChange,card.querySelector(`#${cardId}-day-change`))
             this.setTrendIconDataByNumber(dayPercentChange, card.querySelector(`#${cardId}-day-trend-icon`))
 
             card.querySelector(`#${cardId}-week-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[2].closePrice)
             let weekPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[2].closePrice)
-            Helper.Format.formatNumberToPercentWithColor(weekPercentChange,card.querySelector(`#${cardId}-week-change-percent`))
+            Helper.Format.formatNumberToPercentWithColor(weekPercentChange,card.querySelector(`#${cardId}-week-change`))
             this.setTrendIconDataByNumber(weekPercentChange, card.querySelector(`#${cardId}-week-trend-icon`))
 
             card.querySelector(`#${cardId}-month-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[3].closePrice)
             let monthPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[3].closePrice)
-            Helper.Format.formatNumberToPercentWithColor(monthPercentChange,card.querySelector(`#${cardId}-month-change-percent`))
+            Helper.Format.formatNumberToPercentWithColor(monthPercentChange,card.querySelector(`#${cardId}-month-change`))
             this.setTrendIconDataByNumber(monthPercentChange, card.querySelector(`#${cardId}-month-trend-icon`))
         }
 
 
         static getDataCard(cardId, data) {
-            const card = this.getDataCardFrame(cardId)
+            const card = this.createDataCardFrame(cardId)
             if (card && data && Object.keys(data).length > 0) {
                 let mainText
                 let additionalText
@@ -339,7 +247,7 @@ export class Helper {
                     }
                     else additionalText.textContent = "No data"
                 }
-                if(card.id === "btc-dominance" || card.id === "eth-dominance" || card.id === "market-cap") {
+                if(["btc-dominance","eth-dominance","market-cap"].includes(card.id)) {
                     this.fillCryptoMarketCard(card,data)
                 }
 
@@ -348,6 +256,80 @@ export class Helper {
                 }
             }
             return card;
+        }
+
+        static createCryptoCurrenciesTable(coinsData) {
+            const table = this.createHtmlElement("table", "top-100-coins-table")
+
+                table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Market Cap</th>
+                        <th>1d%</th>
+                        <th>1w%</th>
+                        <th>1m%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>`
+
+            coinsData.coins.forEach(coinData => {
+                const tr = document.createElement("tr")
+
+                // Rank
+                const tdRank = document.createElement("td")
+                tdRank.textContent = coinData.rank
+
+                // Name
+                const tdNameContainer = document.createElement("td")
+                const coinNameWrapper = document.createElement("div")
+                coinNameWrapper.classList.add("coin-info-container")
+                const coinImage = document.createElement("img")
+                coinImage.classList.add("coin-icon")
+                coinImage.setAttribute("src", coinData.iconUrl)
+                coinImage.setAttribute("alt", coinData.name + "-icon")
+                const coinNameContainer = document.createElement("div")
+                coinNameContainer.classList.add("coin-name-container")
+                const coinSymbol = document.createElement("p")
+                coinSymbol.classList.add("coin-symbol-text")
+                const coinFullName = document.createElement("p")
+                coinFullName.classList.add("coin-full-name-text")
+
+                coinSymbol.textContent = coinData.symbol
+                coinFullName.textContent = coinData.name
+                coinNameContainer.append(coinSymbol, coinFullName)
+
+                coinNameWrapper.append(coinImage)
+                coinNameWrapper.append(coinNameContainer)
+
+                tdNameContainer.append(coinNameWrapper)
+                tdNameContainer.style.background = Helper.Color.convertHEXtoRGBA(coinData.color,0.6)
+
+                // Price
+                const tdPrice = document.createElement("td")
+                tdPrice.textContent = Helper.Format.formatNumberToCoinPrice(coinData.price)
+
+                // Market Cap
+                const tdMarketCap = document.createElement("td")
+                tdMarketCap.textContent = Helper.Format.formatNumberToMarketCap(coinData.marketCap)
+
+                // 1,7,30 days price change
+                const td1dPriceChange = document.createElement("td")
+                const td7dPriceChange = document.createElement("td")
+                const td30dPriceChange = document.createElement("td")
+
+                Helper.Style.fillPercentChangeTableDataCell(td1dPriceChange, coinData.priceChange1d)
+                Helper.Style.fillPercentChangeTableDataCell(td7dPriceChange, coinData.priceChange7d)
+                Helper.Style.fillPercentChangeTableDataCell(td30dPriceChange, coinData.priceChange30d)
+
+                tr.append(tdRank, tdNameContainer, tdPrice, tdMarketCap, td1dPriceChange, td7dPriceChange, td30dPriceChange)
+
+                table.appendChild(tr)
+            })
+            return table
         }
     }
 
