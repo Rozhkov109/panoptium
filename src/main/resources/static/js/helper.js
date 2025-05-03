@@ -90,6 +90,30 @@ export class Helper {
                 cardColor: "#c1c1c1",
                 type: "stock-market"
             },
+            {
+                id: "btc-rank",
+                title: "Rank",
+                cardColor: "#df9901",
+                type: "simple"
+            },
+            {
+                id: "btc-cap",
+                title: "Capitalization",
+                cardColor: "#df9901",
+                type: "simple"
+            },
+            {
+                id: "btc-dom",
+                title: "Dominance",
+                cardColor: "#df9901",
+                type: "simple"
+            },
+            {
+                id: "btc-price",
+                title: "Price",
+                cardColor: "#df9901",
+                type: "bitcoin-full"
+            }
         ]
 
         static createHtmlElement(tag, className, textContent = "", attributes = {}) {
@@ -131,7 +155,7 @@ export class Helper {
                         cardWrapper.innerHTML += `
                         <p class="additional-data" id="${config.id}-additional-data"></p>`
                     }
-                    else if(config.type === "crypto-market") {
+                    else if(config.type === "crypto-market" || config.type === "bitcoin") {
                         cardWrapper.innerHTML += `
                         <div class="additional-data-wrapper">
                             <p class="additional-data">1d%:</p>
@@ -169,14 +193,71 @@ export class Helper {
                                     <img class="trend-icon-small" id="${config.id}-month-trend-icon" alt="">
                                 </div>
                             </div>`
-
-                        card.style.background = config.cardColor;
                         card.style.height = "270px"
                         card.style.width = "290px"
                     }
+                    else if (config.type === "bitcoin-full") {
+                        cardWrapper.innerHTML += `
+                            <div class="additional-data-wrapper">
+                                <p class="additional-data">1d%:</p>
+                                <div class="percent-change-wrapper">
+                                    <p class="additional-data" id="${config.id}-day-change"></p>
+                                    <img class="trend-icon-small" id="${config.id}-day-trend-icon" alt="">
+                                </div>
+                            </div>
+                                
+                            <div class="additional-data-wrapper">
+                                <p class="additional-data">1w%:</p>
+                                <div class="percent-change-wrapper">
+                                    <p class="additional-data" id="${config.id}-week-change"></p>
+                                    <img class="trend-icon-small" id="${config.id}-week-trend-icon" alt="">
+                                </div>
+                            </div>
+                                
+                            <div class="additional-data-wrapper">
+                                <p class="additional-data">1m%:</p>
+                                <div class="percent-change-wrapper">
+                                    <p class="additional-data" id="${config.id}-month-change"></p>
+                                    <img class="trend-icon-small" id="${config.id}-month-trend-icon" alt="">
+                                </div>
+                            </div>`
+                        card.style.height = "270px"
+                        card.style.width = "290px"
+                    }
+                    card.style.background = config.cardColor;
                 }
             })
             return card.hasChildNodes() ? card : null
+        }
+
+        static fillBtcCard (card, jsonResponse) {
+            const cardId = card.id
+
+            if(cardId === "btc-rank") {
+                card.querySelector(`#${cardId}-main-data`).textContent = "#" + jsonResponse.rank
+                card.querySelector(`#${cardId}-main-data`).style.fontSize = "40px"
+            }
+            else if(cardId === "btc-cap")  {
+                card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToMarketCap(jsonResponse.marketCap)
+                card.querySelector(`#${cardId}-main-data`).style.fontSize = "40px"
+            }
+            else if(cardId === "btc-dom") {
+                card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToPercents(jsonResponse.btcDominance)
+                card.querySelector(`#${cardId}-main-data`).style.fontSize = "40px"
+            }
+            else if(cardId === "btc-price") {
+                card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToCoinPrice(jsonResponse.price)
+                card.querySelector(`#${cardId}-main-data`).style.fontSize = "40px"
+
+                Helper.Format.formatNumberToPercentWithColor(jsonResponse.priceChange1d,card.querySelector(`#${cardId}-day-change`))
+                this.setTrendIconDataByNumber(jsonResponse.priceChange1d, card.querySelector(`#${cardId}-day-trend-icon`))
+
+                Helper.Format.formatNumberToPercentWithColor(jsonResponse.priceChange7d,card.querySelector(`#${cardId}-week-change`))
+                this.setTrendIconDataByNumber(jsonResponse.priceChange7d, card.querySelector(`#${cardId}-week-trend-icon`))
+
+                Helper.Format.formatNumberToPercentWithColor(jsonResponse.priceChange30d,card.querySelector(`#${cardId}-month-change`))
+                this.setTrendIconDataByNumber(jsonResponse.priceChange30d, card.querySelector(`#${cardId}-month-trend-icon`))
+            }
         }
 
         static fillCryptoMarketCard(card, jsonResponse) {
@@ -253,6 +334,9 @@ export class Helper {
 
                 if(["top-500","dow-jones","nasdaq","russel-2000","volatility-index","gold","silver"].includes(card.id)) {
                     this.fillStockMarketCard(card, data)
+                }
+                if(["btc-rank","btc-dom","btc-cap","btc-price"].includes(card.id)) {
+                    this.fillBtcCard(card, data)
                 }
             }
             return card;

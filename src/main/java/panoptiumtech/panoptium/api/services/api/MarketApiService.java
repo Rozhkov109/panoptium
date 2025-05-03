@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import panoptiumtech.panoptium.api.clients.AlphaVantageClient;
-import panoptiumtech.panoptium.api.clients.AlternativeMeClient;
-import panoptiumtech.panoptium.api.clients.CoinMarketCapClient;
-import panoptiumtech.panoptium.api.clients.CoinRankingClient;
+import panoptiumtech.panoptium.api.clients.market.AlphaVantageClient;
+import panoptiumtech.panoptium.api.clients.market.AlternativeMeClient;
+import panoptiumtech.panoptium.api.clients.market.CoinMarketCapClient;
+import panoptiumtech.panoptium.api.clients.market.CoinRankingClient;
 import panoptiumtech.panoptium.api.entities.ApiCache.ApiCacheType;
 import panoptiumtech.panoptium.api.utils.ApiCacheManager;
 

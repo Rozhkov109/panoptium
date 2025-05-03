@@ -2,22 +2,147 @@ package panoptiumtech.panoptium.api.services.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import panoptiumtech.panoptium.api.clients.CoinGeckoClient;
+import panoptiumtech.panoptium.api.clients.bitcoin.BlockstreamClient;
+import panoptiumtech.panoptium.api.clients.market.CoinMarketCapClient;
+import panoptiumtech.panoptium.api.clients.market.CoinRankingClient;
+import panoptiumtech.panoptium.api.entities.ApiCache.ApiCacheType;
+import panoptiumtech.panoptium.api.utils.ApiCacheManager;
 
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class BitcoinApiService {
-    private final CoinGeckoClient coinGeckoClient;
+    private final BlockstreamClient blockstreamClient;
+    private final MarketApiService marketApiService;
+    private final ApiCacheManager apiCacheManager;
     private final ObjectMapper objectMapper;
 
-    public BitcoinApiService(final CoinGeckoClient coinGeckoClient , final ObjectMapper objectMapper) {
-        this.coinGeckoClient = coinGeckoClient;
+    public BitcoinApiService(final BlockstreamClient blockstreamClient,
+                             final MarketApiService marketApiService,
+                             final ApiCacheManager apiCacheManager,
+                             final ObjectMapper objectMapper) {
+        this.blockstreamClient = blockstreamClient;
+        this.marketApiService = marketApiService;
+        this.apiCacheManager = apiCacheManager;
         this.objectMapper = objectMapper;
     }
 
-    public Map<String, Object> getBitcoinPrice() {
-        return objectMapper.convertValue(coinGeckoClient.getBitcoinPrice("bitcoin","usd").get("bitcoin"), new TypeReference<Map<String, Object>>() {});
+    public Map<String, Object> getBtcInfo() {
+        Map<String,Object> json = apiCacheManager.getCachedResponse(ApiCacheType.BTC_INFO);
+        if(!json.isEmpty())  {
+            System.out.println(ApiCacheType.BTC_INFO + " has been taken from cache");
+            return json;
+        }
+
+        Map<String,Object> answer = new LinkedHashMap<>();
+
+        Map<String, Object> coinData = marketApiService.getTop100CryptoCurrencies();
+        List<Map<String,Object>> coinsList = objectMapper.convertValue(coinData.get("coins"), new TypeReference<>() {});
+
+        for (Map<String,Object> coin : coinsList) {
+            if(coin.get("symbol").equals("BTC") && coin.get("name").equals("Bitcoin")) {
+                answer.put("rank", coin.get("rank"));
+                answer.put("price", coin.get("price"));
+                answer.put("marketCap", coin.get("marketCap"));
+                answer.put("priceChange1d", coin.get("priceChange1d"));
+                answer.put("priceChange7d", coin.get("priceChange7d"));
+                answer.put("priceChange30d", coin.get("priceChange30d"));
+                break;
+            }
+        }
+
+        Map<String,Object> marketData = marketApiService.getCryptoData();
+        answer.put("btcDominance", marketData.get("btc_dominance"));
+        answer.put("btcDominance24hChange", marketData.get("btc_dominance_24h_percentage_change"));
+
+        if(apiCacheManager.cacheRequest(ApiCacheType.BTC_INFO, answer)) {
+            System.out.println(ApiCacheType.BTC_INFO + " has been taken from Panoptium API and cached");
+        }
+
+        return answer;
+    }
+
+    private BigDecimal convertSatoshiToBTC(Number satoshi) {
+        return BigDecimal.valueOf(satoshi.longValue()).movePointLeft(8);
+    }
+
+    public Map<String, Object> getBtcWalletTransactions(String address) {
+        Map<String, Object> answer = new LinkedHashMap<>();
+        answer.put("address", address);
+
+        List<Map<String, Object>> normalizedTransactionList = new ArrayList<>();
+
+        List<Map<String, Object>> transactionsListApi = blockstreamClient.getBtcWalletTransactions(address);
+        for (Map<String, Object> transaction : transactionsListApi) {
+            Map<String, Object> normalizedTransaction = new LinkedHashMap<>();
+            normalizedTransaction.put("transactionId", transaction.get("txid"));
+
+            List<Map<String,Object>> inputsApi = objectMapper.convertValue(transaction.get("vin"), new TypeReference<>(){});
+            List<Map<String,Object>> normalizedInputs = new ArrayList<>();
+            for (Map<String, Object> input : inputsApi) {
+                Map<String, Object> normalizedInput = new LinkedHashMap<>();
+                normalizedInput.put("transactionId", input.get("txid"));
+                normalizedInput.put("outputIndex", input.get("vout"));
+
+                Map<String, Object> prevoutApi = objectMapper.convertValue(input.get("prevout"), new TypeReference<>(){});
+                normalizedInput.put("address", prevoutApi.get("scriptpubkey_address"));
+                normalizedInput.put("value", convertSatoshiToBTC((Number)prevoutApi.get("value")));
+                
+                normalizedInput.put("isCoinbase", input.get("is_coinbase"));
+
+                normalizedInputs.add(normalizedInput);
+            }
+            normalizedTransaction.put("inputs", normalizedInputs);
+
+            List<Map<String, Object>> outputsApi = objectMapper.convertValue(transaction.get("vout"), new TypeReference<>(){});
+            List<Map<String,Object>> normalizedOutputs = new ArrayList<>();
+            for (Map<String, Object> output : outputsApi) {
+                Map<String, Object> normalizedOutput = new LinkedHashMap<>();
+                normalizedOutput.put("address", output.get("scriptpubkey_address"));
+                normalizedOutput.put("value", convertSatoshiToBTC((Number)output.get("value")));
+
+                normalizedOutputs.add(normalizedOutput);
+            }
+            normalizedTransaction.put("outputs", normalizedOutputs);
+
+            normalizedTransaction.put("fee",convertSatoshiToBTC((Number)transaction.get("fee")));
+
+            Map<String, Object> statusApi = objectMapper.convertValue(transaction.get("status"), new TypeReference<>(){});
+            Map<String, Object> normalizedStatus = new LinkedHashMap<>();
+            normalizedStatus.put("confirmed", statusApi.get("confirmed"));
+            normalizedStatus.put("confirmedAt", statusApi.get("block_time"));
+            normalizedTransaction.put("status", normalizedStatus);
+
+            normalizedTransactionList.add(normalizedTransaction);
+        }
+
+        // BTC Balance
+        Collections.reverse(normalizedTransactionList);
+        BigDecimal btcBalance = BigDecimal.ZERO;
+
+        for (Map<String, Object> normalizedTransaction : normalizedTransactionList) {
+            List<Map<String, Object>> normalizedInputs = objectMapper.convertValue(normalizedTransaction.get("inputs"), new TypeReference<>(){});
+            List<Map<String, Object>> normalizedOutputs = objectMapper.convertValue(normalizedTransaction.get("outputs"), new TypeReference<>(){});
+
+            for (Map<String, Object> normalizedInput : normalizedInputs) {
+                if(normalizedInput.get("address").equals(address)) {
+                  btcBalance = btcBalance.subtract((BigDecimal)normalizedInput.get("value"));
+                }
+            }
+            for (Map<String, Object> normalizedOutput : normalizedOutputs) {
+                if(normalizedOutput.get("address").equals(address)) {
+                    btcBalance = btcBalance.add((BigDecimal) normalizedOutput.get("value"));
+                }
+            }
+            normalizedTransaction.put("btcBalance", btcBalance);
+        }
+
+        answer.put("currentBalance", btcBalance);
+        answer.put("transactions",normalizedTransactionList);
+        return answer;
     }
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Bitcoin | Panoptium</title>
     <link rel="stylesheet" th:href="@{/css/general.css}">
+    <link rel="stylesheet" th:href="@{/css/market.css}">
     <link rel="stylesheet" th:href="@{/css/bitcoin.css}">
 </head>
 <body>
@@ -29,11 +30,23 @@
 
     <div class="wrapper">
         <div class="content-wrapper">
+            <h2 id="bitcoin-header">Bitcoin</h2>
+
+            <form class="search-form" action="" method="post">
+                <fieldset>
+                    <legend>BTC Transactions Analyzer</legend>
+                    <label for="address">BTC Address:</label>
+                    <input type="text" id="address" name="address" required/>
+                    <div class = "action-buttons-container">
+                        <button type="submit" name="search" value="searchByName">Search</button>
+                    </div>
+                </fieldset>
+            </form>
         </div>
     </div>
 
     <footer>
-        <p>&#169 2025 Panoptium Tech<br>All rights NOT reserved</p>
+        <p>&#169 2025 Panoptium Tech<br>All rights reserved</p>
     </footer>
 <script th:type="module" th:src="@{/js/bitcoin.js}"></script>
 </body>

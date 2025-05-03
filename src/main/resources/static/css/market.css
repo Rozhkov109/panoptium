@@ -1,3 +1,8 @@
+#stock-data {
+    margin-top: 0;
+}
+
+
 h2 {
     margin-top: 30px;
 }
@@ -28,70 +33,6 @@ p {
 
 .top-100-coins-table th {
     background: rgba(30, 152, 152, 0.73);
-}
-
-.data-card-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.data-card-header {
-    text-align: center;
-    font-size: 25px;
-}
-
-.data-card {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 200px;
-    width: 220px;
-    padding: 10px 5px;
-    margin: 15px 30px;
-    border-radius: 20px;
-    background: rgba(30, 152, 152, 0.73);
-}
-
-
-.data-card-wrapper {
-    min-width: 70px;
-    margin: 0 auto;
-    padding: 0 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 90%;
-    background: rgb(240, 248, 255);
-    border-radius: 20px;
-}
-
-.data-card .main-data {
-    font-size: 25px;
-}
-
-.data-card .additional-data {
-    font-size: 15px;
-}
-
-.additional-data-wrapper {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
-.percent-change-wrapper {
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-}
-
-.trend-icon-small {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
 }
 
 .coin-info-container {
