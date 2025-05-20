@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Bitcoin | Panoptium</title>
     <link rel="stylesheet" th:href="@{/css/general.css}">
-    <link rel="stylesheet" th:href="@{/css/market.css}">
     <link rel="stylesheet" th:href="@{/css/bitcoin.css}">
+    <link rel="icon" type="image/png" href="/images/panoptium-icon.png">
 </head>
 <body>
     <header>
@@ -18,10 +18,10 @@
                 <ul>
                     <li><a class="market" th:href="@{/market}">Market</a></li>
                     <li><a class="btc" th:href="@{/bitcoin}">Bitcoin</a></li>
-                    <li><a class="sol" th:href="@{#}">Solana</a></li>
+                    <li><a class="report" th:href="@{#}">Reports</a></li>
+                    <li><a class="api-documentation" th:href="@{#}">API Documentation</a></li>
                 </ul>
             </nav>
-
             <div class="profile">
                 <img th:src="@{/images/profile.png}" alt="profile-icon">
             </div>
@@ -32,14 +32,12 @@
         <div class="content-wrapper">
             <h2 id="bitcoin-header">Bitcoin</h2>
 
-            <form class="search-form" action="" method="post">
+            <form class="search-form" id="btc-search-form">
                 <fieldset>
-                    <legend>BTC Transactions Analyzer</legend>
+                    <legend>BTC Wallet Analyzer</legend>
                     <label for="address">BTC Address:</label>
                     <input type="text" id="address" name="address" required/>
-                    <div class = "action-buttons-container">
-                        <button type="submit" name="search" value="searchByName">Search</button>
-                    </div>
+                    <button type="submit">Search</button>
                 </fieldset>
             </form>
         </div>
@@ -48,6 +46,7 @@
     <footer>
         <p>&#169 2025 Panoptium Tech<br>All rights reserved</p>
     </footer>
-<script th:type="module" th:src="@{/js/bitcoin.js}"></script>
+
+    <script type="module" src="/js/bitcoin.js"></script>
 </body>
 </html>

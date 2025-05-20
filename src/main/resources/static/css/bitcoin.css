@@ -55,3 +55,67 @@ input[type="text"] {
     width: 60%;
     transition: background-color 0.5s ease;
 }
+
+/* Wallet */
+
+.wallet-info-wrapper {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.wallet-main-info {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #df9901;
+    border-radius: 20px;
+}
+
+.transactions-wrapper {
+    width: 90%;
+    margin-top: 30px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background: #df9901;
+}
+
+.transaction-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.transaction {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.transaction-section {
+    display: flex;
+    width: 48%;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.transaction-header {
+    font-size: 22px;
+    text-align: center;
+}
+
+.transaction-data {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: #ffea00;
+    padding: 5px 5px;
+    margin-top: 10px;
+    border-radius: 20px;
+}
+

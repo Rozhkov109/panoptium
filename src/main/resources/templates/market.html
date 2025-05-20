@@ -5,6 +5,7 @@
     <title>Market | Panoptium</title>
     <link rel="stylesheet" th:href="@{/css/general.css}">
     <link rel="stylesheet" th:href="@{/css/market.css}">
+    <link rel="icon" type="image/png" href="/images/panoptium-icon.png">
 </head>
 <body>
     <header>
@@ -17,11 +18,10 @@
                 <ul>
                     <li><a class="market" th:href="@{/market}">Market</a></li>
                     <li><a class="btc" th:href="@{/bitcoin}">Bitcoin</a></li>
-                    <li><a class="sol" th:href="@{#}">Solana</a></li>
+                    <li><a class="report" th:href="@{#}">Reports</a></li>
+                    <li><a class="api-documentation" th:href="@{#}">API Documentation</a></li>
                 </ul>
             </nav>
-
-
             <div class="profile">
                 <img th:src="@{/images/profile.png}" alt="profile-icon">
             </div>
@@ -39,6 +39,6 @@
         <p>&#169 2025 Panoptium Tech<br>All rights reserved</p>
     </footer>
 
-<script th:type="module" th:src="@{/js/market.js}"></script>
+<script type="module" src="/js/market.js"></script>
 </body>
 </html>

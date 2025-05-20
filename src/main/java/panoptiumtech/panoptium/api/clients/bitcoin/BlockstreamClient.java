@@ -10,5 +10,11 @@ import java.util.Map;
 @FeignClient(name = "blockstreamClient", url = "https://blockstream.info/api/")
 public interface BlockstreamClient {
    @GetMapping("/address/{address}/txs/chain")
-   List<Map<String, Object>> getBtcWalletTransactions(@PathVariable String address);
+   List<Map<String, Object>> getLast25BtcWalletTransactions(
+           @PathVariable("address") String address);
+
+   @GetMapping("/address/{address}/txs/chain/{lastTransactionId}")
+   List<Map<String, Object>> getBtcWalletTransactionsByTransactionId(
+           @PathVariable("address") String address,
+           @PathVariable(value = "lastTransactionId") String lastTransactionId);
 }

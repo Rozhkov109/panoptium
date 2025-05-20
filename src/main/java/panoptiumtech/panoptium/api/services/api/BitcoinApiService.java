@@ -2,12 +2,8 @@ package panoptiumtech.panoptium.api.services.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import panoptiumtech.panoptium.api.clients.CoinGeckoClient;
 import panoptiumtech.panoptium.api.clients.bitcoin.BlockstreamClient;
-import panoptiumtech.panoptium.api.clients.market.CoinMarketCapClient;
-import panoptiumtech.panoptium.api.clients.market.CoinRankingClient;
 import panoptiumtech.panoptium.api.entities.ApiCache.ApiCacheType;
 import panoptiumtech.panoptium.api.utils.ApiCacheManager;
 
@@ -70,14 +66,15 @@ public class BitcoinApiService {
         return BigDecimal.valueOf(satoshi.longValue()).movePointLeft(8);
     }
 
-    public Map<String, Object> getBtcWalletTransactions(String address) {
-        Map<String, Object> answer = new LinkedHashMap<>();
-        answer.put("address", address);
+    private String getLastBtcTransactionId(List<Map<String,Object>> transactions) {
+        Map<String,Object> lastBtcTransaction = transactions.get(transactions.size() - 1);
+        return lastBtcTransaction.get("txid").toString();
+    }
 
+    private List<Map<String,Object>> normalizeBtcTransactions(List<Map<String,Object>> transactions) {
         List<Map<String, Object>> normalizedTransactionList = new ArrayList<>();
 
-        List<Map<String, Object>> transactionsListApi = blockstreamClient.getBtcWalletTransactions(address);
-        for (Map<String, Object> transaction : transactionsListApi) {
+        for (Map<String, Object> transaction : transactions) {
             Map<String, Object> normalizedTransaction = new LinkedHashMap<>();
             normalizedTransaction.put("transactionId", transaction.get("txid"));
 
@@ -85,13 +82,14 @@ public class BitcoinApiService {
             List<Map<String,Object>> normalizedInputs = new ArrayList<>();
             for (Map<String, Object> input : inputsApi) {
                 Map<String, Object> normalizedInput = new LinkedHashMap<>();
+                Map<String, Object> prevoutApi = objectMapper.convertValue(input.get("prevout"), new TypeReference<>(){});
+
+                if(prevoutApi == null || prevoutApi.get("scriptpubkey_address") == null) continue;
+
                 normalizedInput.put("transactionId", input.get("txid"));
                 normalizedInput.put("outputIndex", input.get("vout"));
-
-                Map<String, Object> prevoutApi = objectMapper.convertValue(input.get("prevout"), new TypeReference<>(){});
                 normalizedInput.put("address", prevoutApi.get("scriptpubkey_address"));
                 normalizedInput.put("value", convertSatoshiToBTC((Number)prevoutApi.get("value")));
-                
                 normalizedInput.put("isCoinbase", input.get("is_coinbase"));
 
                 normalizedInputs.add(normalizedInput);
@@ -102,6 +100,7 @@ public class BitcoinApiService {
             List<Map<String,Object>> normalizedOutputs = new ArrayList<>();
             for (Map<String, Object> output : outputsApi) {
                 Map<String, Object> normalizedOutput = new LinkedHashMap<>();
+                if(output.get("scriptpubkey_address") == null) continue;
                 normalizedOutput.put("address", output.get("scriptpubkey_address"));
                 normalizedOutput.put("value", convertSatoshiToBTC((Number)output.get("value")));
 
@@ -119,12 +118,40 @@ public class BitcoinApiService {
 
             normalizedTransactionList.add(normalizedTransaction);
         }
+        return normalizedTransactionList;
+    }
+
+    private List<Map<String,Object>> getAllBtcWalletTransactions(String address) {
+        List<Map<String, Object>> allTransactions = new ArrayList<>();
+        String lastBtcTransactionId = null;
+        List<Map<String, Object>> transactionsFromApi;
+
+        do {
+            if(lastBtcTransactionId == null) {
+                transactionsFromApi = blockstreamClient.getLast25BtcWalletTransactions(address);
+            }
+            else {
+                transactionsFromApi = blockstreamClient.getBtcWalletTransactionsByTransactionId(address, lastBtcTransactionId);
+            }
+            allTransactions.addAll(transactionsFromApi);
+            if(!transactionsFromApi.isEmpty()) lastBtcTransactionId = getLastBtcTransactionId(transactionsFromApi);
+
+        } while (transactionsFromApi.size() == 25);
+
+        return normalizeBtcTransactions(allTransactions);
+    }
+
+    public Map<String, Object> getBtcWalletTransactions(String address) {
+        Map<String, Object> answer = new LinkedHashMap<>();
+        answer.put("address", address);
+
+        List<Map<String, Object>> transactions = getAllBtcWalletTransactions(address);
 
         // BTC Balance
-        Collections.reverse(normalizedTransactionList);
+        Collections.reverse(transactions);
         BigDecimal btcBalance = BigDecimal.ZERO;
 
-        for (Map<String, Object> normalizedTransaction : normalizedTransactionList) {
+        for (Map<String, Object> normalizedTransaction : transactions) {
             List<Map<String, Object>> normalizedInputs = objectMapper.convertValue(normalizedTransaction.get("inputs"), new TypeReference<>(){});
             List<Map<String, Object>> normalizedOutputs = objectMapper.convertValue(normalizedTransaction.get("outputs"), new TypeReference<>(){});
 
@@ -140,9 +167,17 @@ public class BitcoinApiService {
             }
             normalizedTransaction.put("btcBalance", btcBalance);
         }
+        Collections.reverse(transactions);
 
+        // Wallet Data
+        Map<String, Object> firstTransactionStatus = objectMapper.convertValue(transactions.get(transactions.size() - 1).get("status"), new TypeReference<>(){});
+        Map<String, Object> lastTransactionStatus = objectMapper.convertValue(transactions.get(0).get("status"), new TypeReference<>(){});
+
+        answer.put("firstTransaction", firstTransactionStatus.get("confirmedAt"));
+        answer.put("lastTransaction", lastTransactionStatus.get("confirmedAt"));
+        answer.put("confirmedTransactions", transactions.size());
         answer.put("currentBalance", btcBalance);
-        answer.put("transactions",normalizedTransactionList);
+        answer.put("transactions",transactions);
         return answer;
     }
 }

@@ -342,79 +342,28 @@ export class Helper {
             return card;
         }
 
-        static createCryptoCurrenciesTable(coinsData) {
-            const table = this.createHtmlElement("table", "top-100-coins-table")
-
-                table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Market Cap</th>
-                        <th>1d%</th>
-                        <th>1w%</th>
-                        <th>1m%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>`
-
-            coinsData.coins.forEach(coinData => {
-                const tr = document.createElement("tr")
-
-                // Rank
-                const tdRank = document.createElement("td")
-                tdRank.textContent = coinData.rank
-
-                // Name
-                const tdNameContainer = document.createElement("td")
-                const coinNameWrapper = document.createElement("div")
-                coinNameWrapper.classList.add("coin-info-container")
-                const coinImage = document.createElement("img")
-                coinImage.classList.add("coin-icon")
-                coinImage.setAttribute("src", coinData.iconUrl)
-                coinImage.setAttribute("alt", coinData.name + "-icon")
-                const coinNameContainer = document.createElement("div")
-                coinNameContainer.classList.add("coin-name-container")
-                const coinSymbol = document.createElement("p")
-                coinSymbol.classList.add("coin-symbol-text")
-                const coinFullName = document.createElement("p")
-                coinFullName.classList.add("coin-full-name-text")
-
-                coinSymbol.textContent = coinData.symbol
-                coinFullName.textContent = coinData.name
-                coinNameContainer.append(coinSymbol, coinFullName)
-
-                coinNameWrapper.append(coinImage)
-                coinNameWrapper.append(coinNameContainer)
-
-                tdNameContainer.append(coinNameWrapper)
-                tdNameContainer.style.background = Helper.Color.convertHEXtoRGBA(coinData.color,0.6)
-
-                // Price
-                const tdPrice = document.createElement("td")
-                tdPrice.textContent = Helper.Format.formatNumberToCoinPrice(coinData.price)
-
-                // Market Cap
-                const tdMarketCap = document.createElement("td")
-                tdMarketCap.textContent = Helper.Format.formatNumberToMarketCap(coinData.marketCap)
-
-                // 1,7,30 days price change
-                const td1dPriceChange = document.createElement("td")
-                const td7dPriceChange = document.createElement("td")
-                const td30dPriceChange = document.createElement("td")
-
-                Helper.Style.fillPercentChangeTableDataCell(td1dPriceChange, coinData.priceChange1d)
-                Helper.Style.fillPercentChangeTableDataCell(td7dPriceChange, coinData.priceChange7d)
-                Helper.Style.fillPercentChangeTableDataCell(td30dPriceChange, coinData.priceChange30d)
-
-                tr.append(tdRank, tdNameContainer, tdPrice, tdMarketCap, td1dPriceChange, td7dPriceChange, td30dPriceChange)
-
-                table.appendChild(tr)
-            })
-            return table
+        static getErrorWindow(message) {
+            const errorWindow = this.createHtmlElement("div","error-message-wrapper")
+            errorWindow.innerHTML += `
+                    <p class="error-header">Error!</p>
+                    <p class="error-text">${message}</p>
+                    <button class="error-button">Close</button>`
+            errorWindow.querySelector(`.error-button`).addEventListener('click', function() { errorWindow.remove()})
+            return errorWindow
         }
+
+        static getMessageWithSpinner() {
+            const message = this.createHtmlElement("div", "loading-wrapper")
+            message.innerHTML += `
+            <div class="loading-wrapper">
+                <div class="loading-message">
+                    <p>Receiving transactions can take from a couple of seconds to 10 minutes.<br>Please wait and don't reload page</p>
+                    <div class="loading-slider"></div>
+                </div>
+            </div>`
+            return message;
+        }
+
     }
 
     static Style = class {
@@ -515,6 +464,20 @@ export class Helper {
             let normalizedFirstNumber = parseFloat(firstNumber)
             let normalizedSecondNumber = parseFloat(secondNumber)
             return ((normalizedFirstNumber - normalizedSecondNumber) / normalizedSecondNumber) * 100
+        }
+
+        static formatTimestampToDate(timestamp) {
+            const date = new Date(timestamp * 1000)
+
+            const day = String(date.getDate()).padStart(2, `0`)
+            const month = String(date.getMonth() + 1).padStart(2, `0`)
+            const year = String(date.getFullYear())
+
+            const hour = String(date.getHours()).padStart(2, `0`)
+            const minute = String(date.getMinutes()).padStart(2, `0`)
+            const second = String(date.getSeconds()).padStart(2, `0`)
+
+            return `${day}-${month}-${year} ${hour}:${minute}:${second}`
         }
     }
 

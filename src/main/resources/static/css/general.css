@@ -59,6 +59,10 @@ header {
 }
 
 .navigation-panel ul {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
     background: #5b87c6;
     border-radius: 20px;
 }
@@ -84,16 +88,22 @@ header {
     color: #ffb700;
 }
 
-.navigation-panel ul .sol:hover {
-    color: #a253e3;
+.navigation-panel ul .report:hover {
+    color: #da0c0c;
+}
+
+.navigation-panel ul .api-documentation:hover {
+    color: #3f0cda;
 }
 
 .wrapper {
+
     max-width: 90%;
     margin: 100px auto;
 }
 
 .content-wrapper {
+    min-height: 600px;
     background-color: white;
     border-radius: 20px;
     padding: 20px 0;
@@ -177,6 +187,7 @@ a {
 }
 
 .data-card .main-data {
+    text-align: center;
     font-size: 25px;
 }
 
@@ -211,4 +222,94 @@ footer p {
     margin: 0;
     text-align: center;
     font-size: 20px;
+}
+
+/* Error Window */
+
+.error-message-wrapper {
+    top: 0;
+    margin-top: 30px;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: rgb(154, 0, 0);
+    border-radius: 20px;
+    padding: 10px 0;
+    border: 5px solid black;
+}
+
+.error-header {
+    color: #ffffff;
+    text-align: center;
+    font-size: 30px;
+}
+
+.error-text {
+    color: #ffffff;
+    text-align: center;
+    font-size: 16px;
+}
+
+.error-button {
+    padding: 5px 20px;
+    border-radius: 10px;
+    border: 3px solid black;
+    box-shadow: 1px 2px 0 black;
+    background-color: #b83000;
+    font-size: 16px;
+    text-decoration: none;
+    color: white;
+    transition:
+            color 0.5s,
+            font-size 0.5s;
+}
+
+.error-button:hover {
+    color: #000000;
+    cursor: pointer;
+}
+
+/* Message with spinner */
+
+.loading-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.loading-message {
+    display: flex;
+    max-width: 400px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgb(223, 153, 1);
+    border-radius: 20px;
+    padding: 10px;
+    color: white;
+    text-align: center;
+}
+
+.loading-message p {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.loading-slider {
+    border: 5px solid #000000;
+    border-top: 5px solid #ffffff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

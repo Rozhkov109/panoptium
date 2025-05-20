@@ -154,9 +154,9 @@ public class MarketApiService {
             coinFullData.put("price", coin.get("price").toString());
             coinFullData.put("marketCap", coin.get("marketCap").toString());
 
-            coinFullData.put("priceChange1d", coinsPriceChange1d.getOrDefault(uuid,"No data").toString());
-            coinFullData.put("priceChange7d", coinsPriceChange7d.getOrDefault(uuid,"No data").toString());
-            coinFullData.put("priceChange30d", coin.getOrDefault("change","No data").toString());
+            coinFullData.put("priceChange1d", coinsPriceChange1d.get(uuid) == null ? "No data" : coinsPriceChange1d.get(uuid).toString());
+            coinFullData.put("priceChange7d", coinsPriceChange7d.get(uuid) == null ? "No data" : coinsPriceChange7d.get(uuid).toString());
+            coinFullData.put("priceChange30d", coin.get("change") == null ? "No data" : coin.get("change").toString());
 
             coinFullData.put("color", coin.get("color") == null ? "No data" : coin.get("color").toString());
             coinFullData.put("iconUrl", coin.get("iconUrl").toString());
