@@ -1,22 +1,23 @@
-package panoptiumtech.panoptium.entities.AccountWallet;
+package panoptiumtech.panoptium.entities.Portfolio;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import panoptiumtech.panoptium.entities.Account.Account;
-import panoptiumtech.panoptium.entities.Wallet.Wallet;
+import panoptiumtech.panoptium.entities.Asset.Asset;
 
 import java.util.List;
 
 @Entity
-@Table(name = "account_wallet")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountWallet {
+public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,12 +27,8 @@ public class AccountWallet {
     @NotNull
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "wallet_id", nullable = false, referencedColumnName = "id")
+    @Column(name = "name", nullable = false)
+    @Length(min = 1, max = 50)
     @NotNull
-    private Wallet wallet;
-
-    @Column(name = "alias")
-    @Size(min = 1, max = 40)
-    String alias;
+    private String name;
 }

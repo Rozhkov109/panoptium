@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Panoptium</title>
+    <link rel="stylesheet" th:href="@{/css/general.css}">
+    <link rel="icon" type="image/png" href="/images/panoptium-icon.png">
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <h2>Welcome again!</h2>
+        <form th:action="@{/login}" method="post">
+            <fieldset>
+                <legend>Login</legend>
+                <label for="username">Nickname</label>
+                <input type="text" id="username" name="username" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Login</button>
+
+                <p>First time? <a class="form-link" href="/register">Register</a></p>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<footer>
+    <p>&#169 2025 Panoptium Tech<br>All rights reserved</p>
+</footer>
+
+<script type="module" src="/js/bitcoin.js"></script>
+</body>
+</html>

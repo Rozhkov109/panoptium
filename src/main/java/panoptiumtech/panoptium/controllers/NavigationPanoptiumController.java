@@ -20,5 +20,4 @@ public class NavigationPanoptiumController {
     public String getMarketPage() {
         return "market";
     }
-
 }

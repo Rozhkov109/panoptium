@@ -7,11 +7,10 @@ import lombok.*;
 
 @Entity
 @Table(name = "account", uniqueConstraints = {
-        @UniqueConstraint(name = "unique_nickname",columnNames = "nickname")
+        @UniqueConstraint(name = "unique_username",columnNames = "username")
 })
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {
@@ -19,18 +18,13 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nickname",nullable = false)
+    @Column(name = "username",nullable = false)
     @NotNull
     @Size(min = 2, max = 20)
-    private String nickname;
+    private String username;
 
     @Column(name = "password",nullable = false)
     @NotNull
     @Size(min = 60, max = 60, message = "add error message")
     private String password;
-
-    @Column(name = "settings",columnDefinition = "json",nullable = false)
-    @NotNull
-    private String settings;
-
 }
