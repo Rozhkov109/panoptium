@@ -40,11 +40,12 @@ async function getWalletTransactions(walletAddress) {
     }
 
     if(!isValidBitcoinAddress(walletAddress)) {
-      document.body.append(Helper.HTML.getErrorWindow("The wallet address does not exist or incorrect. Try again!"))
+      document.body.append(Helper.HTML.getMessageWindow("Error","The wallet address does not exist or incorrect. Try again!"))
       return
     }
 
-    contentWrapper.insertBefore(Helper.HTML.getMessageWithSpinner(),document.getElementById("btc-search-form").nextSibling)
+    contentWrapper.insertBefore(Helper.HTML.getMessageWithSpinner("Receiving transactions can take from a couple of seconds to 10 minutes.<br>Please wait and don't reload page"),
+        document.getElementById("btc-search-form").nextSibling)
 
     const walletData = await Helper.FetchAPI.getJSONResponse(`http://localhost:8080/api/v1/bitcoin/wallet/${walletAddress}`)
 

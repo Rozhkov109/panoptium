@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.entities;
+package panoptiumtech.panoptium.entities.PortfolioAsset;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
-import panoptiumtech.panoptium.entities.Account.Account;
 import panoptiumtech.panoptium.entities.Asset.Asset;
 import panoptiumtech.panoptium.entities.Portfolio.Portfolio;
 

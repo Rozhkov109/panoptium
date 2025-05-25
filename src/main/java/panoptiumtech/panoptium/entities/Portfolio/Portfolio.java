@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import panoptiumtech.panoptium.entities.Account.Account;
-import panoptiumtech.panoptium.entities.Asset.Asset;
-
-import java.util.List;
 
 @Entity
 @Getter

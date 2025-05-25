@@ -1,0 +1,45 @@
+package panoptiumtech.panoptium.controllers;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import panoptiumtech.panoptium.dto.wallet.WalletDTO;
+import panoptiumtech.panoptium.entities.Account.AccountDetails;
+import panoptiumtech.panoptium.entities.Wallet.Wallet;
+import panoptiumtech.panoptium.servicies.Wallet.WalletService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/app/wallet")
+public class WalletController {
+
+    WalletService walletService;
+
+    public WalletController(WalletService walletService) {
+        this.walletService = walletService;
+    }
+
+    @GetMapping("/get-all")
+    public List<Wallet> getAllWallets(@AuthenticationPrincipal AccountDetails accountDetails) {
+        return walletService.getAllWallets(accountDetails);
+    }
+
+    @PostMapping("/add")
+    public String addWallet(
+            @AuthenticationPrincipal AccountDetails accountDetails,
+            @RequestBody WalletDTO walletDTO) {
+        return walletService.addWallet(walletDTO.getAlias(), walletDTO.getAddress(), walletDTO.getNetwork(), accountDetails);
+    }
+
+    @PostMapping("/edit")
+    public String editWallet(
+            @AuthenticationPrincipal AccountDetails accountDetails,
+            @RequestBody WalletDTO walletDTO) {
+        return walletService.updateWallet(walletDTO.getAlias(), walletDTO.getAddress(), walletDTO.getNetwork(), accountDetails);
+    }
+
+    @PostMapping("/delete/{address}")
+    public void deleteWallet(@PathVariable String address) {
+        walletService.deleteWalletByAddress(address);
+    }
+}

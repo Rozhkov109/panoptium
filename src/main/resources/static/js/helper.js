@@ -342,28 +342,40 @@ export class Helper {
             return card;
         }
 
-        static getErrorWindow(message) {
-            const errorWindow = this.createHtmlElement("div","error-message-wrapper")
-            errorWindow.innerHTML += `
-                    <p class="error-header">Error!</p>
-                    <p class="error-text">${message}</p>
-                    <button class="error-button">Close</button>`
-            errorWindow.querySelector(`.error-button`).addEventListener('click', function() { errorWindow.remove()})
-            return errorWindow
+        static getMessageWindow(type,message) {
+            const existing = document.querySelector(".message-wrapper");
+            if (existing) {
+                existing.remove();
+            }
+
+            const messageWindow = this.createHtmlElement("div","message-wrapper")
+            messageWindow.innerHTML += `
+                    <p class="message-header" >${type}!</p>
+                    <p class="message-text">${message}</p>
+                    <button class="message-button">Ok</button>`
+            messageWindow.querySelector(`.message-button`).addEventListener('click', function() { messageWindow.remove()})
+            return messageWindow;
         }
 
-        static getMessageWithSpinner() {
+        static getMessageWithSpinner(messageText) {
             const message = this.createHtmlElement("div", "loading-wrapper")
             message.innerHTML += `
             <div class="loading-wrapper">
                 <div class="loading-message">
-                    <p>Receiving transactions can take from a couple of seconds to 10 minutes.<br>Please wait and don't reload page</p>
+                    <p>${messageText}</p>
                     <div class="loading-slider"></div>
                 </div>
             </div>`
             return message;
         }
 
+        static openModalWindow(elementId) {
+            document.getElementById(elementId).classList.remove("hidden");
+        }
+
+        static closeModalWindow(elementId) {
+            document.getElementById(elementId).classList.add("hidden");
+        }
     }
 
     static Style = class {

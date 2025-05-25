@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile | Panoptium</title>
+    <link rel="stylesheet" th:href="@{/css/general.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="icon" type="image/png" href="/images/panoptium-icon.png">
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="logo">
+            <a th:href="@{/}">P</a>
+        </div>
+
+        <nav class="navigation-panel">
+            <ul>
+                <li><a class="market" th:href="@{/market}">Market</a></li>
+                <li><a class="btc" th:href="@{/bitcoin}">Bitcoin</a></li>
+                <li><a class="report" th:href="@{#}">Reports</a></li>
+                <li><a class="api-documentation" th:href="@{#}">API Documentation</a></li>
+            </ul>
+        </nav>
+        <div class="profile">
+            <img th:src="@{/images/profile.png}" alt="profile-icon">
+        </div>
+    </div>
+</header>
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <h2 id="main-header">Hi, <span th:text="${account.username}"></span></h2>
+        
+        <h2>Your Saved Wallets</h2>
+        <table id="wallets-table">
+            <thead>
+            <tr>
+                <th>Alias</th>
+                <th>Network</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <button class="default-button" id="add-wallet-button">Add Wallet</button>
+
+        <div id="modal-wallet" class="modal hidden">
+            <div class="modal-content">
+                <button id="close-wallet-button" class="red-button left">x</button>
+                <form id="wallet-form" data-action="">
+                    <fieldset>
+                        <legend>Add Wallet</legend>
+
+                        <label for="alias">Alias</label>
+                        <input type="text" id="alias" name="alias" required>
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" required>
+                        <label for="network">Network</label>
+                        <select id="network" name="network" required>
+                            <option th:each="network : ${networks}"
+                                    th:value="${network}"
+                                    th:text="${network}"></option>
+                        </select>
+                        <button type="submit">Submit</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<footer>
+    <p>&#169 2025 Panoptium Tech<br>All rights reserved</p>
+</footer>
+
+<script src="/js/profile.js" type="module"></script>
+</body>
+</html>

@@ -37,6 +37,12 @@
                     <legend>BTC Wallet Analyzer</legend>
                     <label for="address">BTC Address:</label>
                     <input type="text" id="address" name="address" required/>
+                    <label for="savedAddress">Or choose from your saved:</label>
+                    <select id="savedAddress" name="savedAddress">
+                        <option th:each="network : ${networks}"
+                                th:value="${network}"
+                                th:text="${network}"></option>
+                    </select>
                     <button type="submit">Search</button>
                 </fieldset>
             </form>

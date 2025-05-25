@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import panoptiumtech.panoptium.servicies.AccountDetailsService;
+import panoptiumtech.panoptium.servicies.Account.AccountDetailsService;
 
 @Configuration
 public class SecurityConfig {

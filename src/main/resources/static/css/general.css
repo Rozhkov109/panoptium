@@ -111,21 +111,21 @@ header {
 
 .button-container {
     display: flex;
-    flex-direction: column;
-    text-align: center;
-    padding: 20px 0;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
-.button-container a, .button-container button {
+.default-button {
+    display: block;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
-    padding: 15px 100px;
+    padding: 10px 60px;
     border-radius: 30px;
-    border: 4px solid black;
-    box-shadow: 4px 10px 0 black;
+    border: 3px solid black;
+    box-shadow: 3px 6px 0 black;
     background-color: #2488cd;
-    font-size: 30px;
+    font-size: 24px;
     text-decoration: none;
     color: white;
     transition:
@@ -133,9 +133,9 @@ header {
             font-size 0.5s;
 }
 
-.button-container a:hover, .button-container button:hover {
+.default-button:hover {
     color: #000000;
-    font-size: 36px;
+    font-size: 28px;
     cursor: pointer;
 }
 
@@ -143,10 +143,6 @@ a {
     text-decoration: none;
     color: white;
     transition: color 0.5s;
-}
-
-.button-container a:hover {
-    color: #000000;
 }
 
 .data-card-container {
@@ -226,7 +222,7 @@ footer p {
 
 /* Error Window */
 
-.error-message-wrapper {
+.message-wrapper {
     top: 0;
     margin-top: 30px;
     position: fixed;
@@ -237,39 +233,38 @@ footer p {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background: rgb(154, 0, 0);
+    background: #008db8;
     border-radius: 20px;
     padding: 10px 0;
     border: 5px solid black;
 }
 
-.error-header {
+.message-header {
     color: #ffffff;
     text-align: center;
     font-size: 30px;
 }
 
-.error-text {
+.message-text {
     color: #ffffff;
     text-align: center;
     font-size: 16px;
 }
 
-.error-button {
+.message-button {
     padding: 5px 20px;
     border-radius: 10px;
     border: 3px solid black;
     box-shadow: 1px 2px 0 black;
-    background-color: #b83000;
+    background-color: #0081b8;
     font-size: 16px;
     text-decoration: none;
     color: white;
     transition:
-            color 0.5s,
-            font-size 0.5s;
+            color 0.5s
 }
 
-.error-button:hover {
+.message-button:hover {
     color: #000000;
     cursor: pointer;
 }
@@ -316,14 +311,14 @@ footer p {
 
 /* Form */
 
-form {
+.authorization-form {
     align-items: center;
     margin: 0 auto;
     padding-bottom: 20px;
     text-align: center;
 }
 
-form fieldset {
+.authorization-form fieldset {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -333,7 +328,7 @@ form fieldset {
     border-radius: 20px;
 }
 
-form legend {
+.authorization-form legend {
     border: 4px solid #2488cd;
     padding: 5px 10px;
     border-radius: 20px;
@@ -341,7 +336,7 @@ form legend {
     font-size: 30px;
 }
 
-form label {
+.authorization-form label {
     margin-top: 12px;
     display: block;
     font-size: 24px;
@@ -360,7 +355,7 @@ input:hover {
     background-color: rgba(99, 98, 98, 0.32);
 }
 
-form button {
+.authorization-form button {
     margin: 20px auto;
     padding: 0 40px;
     border-radius: 30px;
@@ -373,7 +368,7 @@ form button {
     transition: color 0.5s;
 }
 
-form button:hover {
+.authorization-form button:hover {
     color: #000000;
     cursor: pointer;
 }
@@ -385,4 +380,59 @@ form button:hover {
 
 .form-link:hover {
     color: #084c7c;
+}
+
+/* Close Button */
+.red-button {
+    margin: 0 5px;
+    background-color: #e53935;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease;
+}
+
+.red-button:hover {
+    background-color: #c62828;
+}
+
+/* Modal Window */
+
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 70%;
+    position: relative;
+}
+
+/* Element Settings */
+
+.left {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+}
+
+.hidden {
+    display: none;
 }

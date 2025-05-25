@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.servicies;
+package panoptiumtech.panoptium.servicies.Account;
 
 import panoptiumtech.panoptium.entities.Account.Account;
 import panoptiumtech.panoptium.entities.Account.AccountDetails;

@@ -11,7 +11,7 @@
 <div class="wrapper">
     <div class="content-wrapper">
         <h2>Welcome to Panoptium!</h2>
-        <form th:action="@{/register}" method="post">
+        <form class="authorization-form" th:action="@{/register}" method="post">
             <fieldset>
                 <legend>Register</legend>
                 <label for="username">Nickname</label>
@@ -19,7 +19,7 @@
 
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
-                <button type="submit">Login</button>
+                <button type="submit">Register</button>
 
                 <p>Have an account? <a class="form-link" href="/login">Login</a></p>
             </fieldset>
