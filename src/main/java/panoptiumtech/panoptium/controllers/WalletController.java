@@ -38,8 +38,8 @@ public class WalletController {
         return walletService.updateWallet(walletDTO.getAlias(), walletDTO.getAddress(), walletDTO.getNetwork(), accountDetails);
     }
 
-    @PostMapping("/delete/{address}")
-    public void deleteWallet(@PathVariable String address) {
-        walletService.deleteWalletByAddress(address);
+    @PostMapping("/delete")
+    public void deleteWallet(@RequestBody String address, @AuthenticationPrincipal AccountDetails accountDetails) {
+        walletService.deleteWalletByAddress(address, accountDetails);
     }
 }

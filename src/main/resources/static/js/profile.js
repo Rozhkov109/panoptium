@@ -51,7 +51,7 @@ async function getAllWallets() {
     wallets.forEach((wallet) => {
         const tr = document.createElement("tr")
         const alias = Helper.HTML.createHtmlElement("td","",wallet.alias)
-        const network = Helper.HTML.createHtmlElement("td","",wallet.walletNetwork)
+        const network = Helper.HTML.createHtmlElement("td","",wallet.network)
         const address = Helper.HTML.createHtmlElement("td","wallet-address",wallet.address)
         const actions = Helper.HTML.createHtmlElement("td","")
 
@@ -68,7 +68,7 @@ async function getAllWallets() {
         editButton.className = "red-button";
         editButton.innerText = "✎";
         editButton.style.background = "#ffd300"
-        editButton.onclick = () => openWalletEditForm(wallet.alias,wallet.address,wallet.walletNetwork)
+        editButton.onclick = () => openWalletEditForm(wallet.alias,wallet.address,wallet.network)
         buttonContainer.append(editButton)
 
         actions.append(buttonContainer)

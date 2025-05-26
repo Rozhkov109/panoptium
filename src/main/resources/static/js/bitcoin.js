@@ -117,16 +117,27 @@ async function getWalletTransactions(walletAddress) {
         htmlWalletInfo.append(htmlTransactionWrapper)
         })
 
-
-
     contentWrapper.insertBefore(htmlWalletInfo,contentWrapper.querySelector("#btc-search-form").nextSibling)
 }
 
-document.getElementById("btc-search-form").addEventListener("submit", async (event) => {
+
+
+async function validateBtcForm(event) {
     event.preventDefault()
-    await getWalletTransactions(document.getElementById("address").value)
+
+    const manualAddress = document.getElementById("address").value.trim()
+    const savedAddress = document.getElementById("saved-addresses").value.trim()
+    const address = (manualAddress !== "") ? manualAddress : savedAddress
+
+    await getWalletTransactions(address)
+}
+
+document.getElementById("btc-search-form").addEventListener("submit", async (event) => {
+    await validateBtcForm(event)
+
 })
 
 document.addEventListener("DOMContentLoaded", async () => {
     await createCards()
+    await Helper.Account.getAccountWalletToSelect("saved-addresses","BITCOIN")
 })

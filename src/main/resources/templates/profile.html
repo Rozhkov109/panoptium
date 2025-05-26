@@ -5,6 +5,7 @@
     <title>Profile | Panoptium</title>
     <link rel="stylesheet" th:href="@{/css/general.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" href="/css/portfolio.css">
     <link rel="icon" type="image/png" href="/images/panoptium-icon.png">
 </head>
 <body>
@@ -30,7 +31,7 @@
 
 <div class="wrapper">
     <div class="content-wrapper">
-        <h2 id="main-header">Hi, <span th:text="${account.username}"></span></h2>
+        <h1 id="main-header">Hi, <span class="username" th:text="${account.username}"></span></h1>
         
         <h2>Your Saved Wallets</h2>
         <table id="wallets-table">
@@ -70,6 +71,24 @@
                 </form>
             </div>
         </div>
+
+        <h2>Your Portfolios</h2>
+
+        <div class="portfolio-container">
+            <button id="close-portfolio-button" class="red-button left">x</button>
+            <div class="portfolio">
+                <div class="portfolio-left">
+                    <div class="portfolio-header">Crypto</div>
+                    <div class="portfolio-data"></div>
+                </div>
+                <div class="portfolio-right">
+                    <div class="portfolio-table"></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="default-button" id="add-portfolio-button">Add Portfolio</button>
+
 
 
     </div>

@@ -28,4 +28,9 @@ public class Portfolio {
     @Length(min = 1, max = 50)
     @NotNull
     private String name;
+
+    @Column(name = "color", nullable = false)
+    @Length(max = 20)
+    @NotNull
+    private String color;
 }

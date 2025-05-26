@@ -1,3 +1,5 @@
+import {WalletManager} from "./wallet.js";
+
 export class Helper {
     static Color = class {
         static convertHEXtoRGBA(hex, alpha = 1) {
@@ -350,7 +352,7 @@ export class Helper {
 
             const messageWindow = this.createHtmlElement("div","message-wrapper")
             messageWindow.innerHTML += `
-                    <p class="message-header" >${type}!</p>
+                    <p class="message-header" >${type}</p>
                     <p class="message-text">${message}</p>
                     <button class="message-button">Ok</button>`
             messageWindow.querySelector(`.message-button`).addEventListener('click', function() { messageWindow.remove()})
@@ -497,6 +499,23 @@ export class Helper {
         static async getJSONResponse(url) {
             let responseBody = await fetch(url)
             return await responseBody.json()
+        }
+    }
+
+    static Account = class {
+        static async getAccountWalletToSelect(selectHtmlId,network) {
+            const savedAddressesField = document.getElementById(selectHtmlId)
+            const wallets = await WalletManager.getAllWallets()
+            console.log(wallets)
+
+            wallets.forEach((wallet) => {
+                if(wallet.network !== network) return;
+
+                const option = document.createElement("option")
+                option.value = wallet.address
+                option.textContent = `(${wallet.alias}) - ${wallet.address}`
+                savedAddressesField.append(option)
+            })
         }
     }
 }

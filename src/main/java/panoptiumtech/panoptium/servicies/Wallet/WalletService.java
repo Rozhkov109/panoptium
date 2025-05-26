@@ -23,11 +23,12 @@ public class WalletService {
     }
 
     public String addWallet(String alias, String address, String network, @AuthenticationPrincipal AccountDetails accountDetails) {
-        if(walletRepository.findByAddress(address).isPresent()) {
+        Account account = accountDetails.getAccount();
+
+        if(walletRepository.findByAddressAndAccount(address, account).isPresent()) {
             return "Wallet already exists";
         }
 
-        Account account = accountDetails.getAccount();
         Wallet wallet = new Wallet(null, account, alias, address, WalletNetwork.valueOf(network));
         walletRepository.save(wallet);
 
@@ -37,19 +38,17 @@ public class WalletService {
     public String updateWallet(String alias, String address, String network, @AuthenticationPrincipal AccountDetails accountDetails) {
         Account account = accountDetails.getAccount();
 
-        Wallet wallet = walletRepository.findByAddress(address).get();
+        Wallet wallet = walletRepository.findByAddressAndAccount(address,account).get();
         wallet.setAlias(alias);
         wallet.setAddress(address);
-        wallet.setWalletNetwork(WalletNetwork.valueOf(network));
+        wallet.setNetwork(WalletNetwork.valueOf(network));
 
         walletRepository.save(wallet);
 
         return "Wallet updated successfully";
     }
 
-
-
-    public void deleteWalletByAddress(String address) {
-        walletRepository.deleteById(walletRepository.findByAddress(address).get().getId());
+    public void deleteWalletByAddress(String address, @AuthenticationPrincipal AccountDetails accountDetails) {
+        walletRepository.deleteById(walletRepository.findByAddressAndAccount(address, accountDetails.getAccount()).get().getId());
     }
 }

@@ -35,5 +35,5 @@ public class Wallet {
     @Column(name = "wallet_type",nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private WalletNetwork walletNetwork;
+    private WalletNetwork network;
 }

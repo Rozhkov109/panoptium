@@ -1,10 +1,17 @@
 #main-header {
-    margin-bottom: 50px;
+    text-align: center;
     font-size: 60px;
 }
 
 h2  {
+    margin-top: 100px;
     font-size: 40px;
+}
+
+.username {
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: linear-gradient(to right, #8e2de2, #4a00e0, #00c6ff);
 }
 
 /* Form */

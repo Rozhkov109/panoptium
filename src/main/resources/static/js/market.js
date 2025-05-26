@@ -5,11 +5,19 @@ let fearAndGreedData
 let coinsData
 let stockMarketData
 
+const contentWrapper = document.querySelector(".content-wrapper")
+
 async function getData() {
+    contentWrapper.insertBefore(Helper.HTML.getMessageWithSpinner(""),document.getElementById("stock-data").nextSibling)
+    contentWrapper.insertBefore(Helper.HTML.getMessageWithSpinner(""),document.getElementById("crypto-data").nextSibling)
+
     cryptoData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/v1/market/crypto")
     fearAndGreedData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/v1/market/fear-and-greed")
     coinsData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/v1/market/top-100-crypto-currencies")
     stockMarketData = await Helper.FetchAPI.getJSONResponse("http://localhost:8080/api/v1/market/stock")
+
+    document.querySelector(".loading-wrapper").remove()
+    document.querySelector(".loading-wrapper").remove()
 }
 
 function createElements() {
@@ -22,7 +30,7 @@ function createElements() {
         Helper.HTML.getDataCard("market-cap", cryptoData),
     )
 
-    const contentWrapper = document.querySelector(".content-wrapper")
+
     if(cryptoMarketCardWrapper.hasChildNodes()) {
         contentWrapper.insertBefore(cryptoMarketCardWrapper,contentWrapper.querySelector("#crypto-data").nextSibling)
     }

@@ -39,10 +39,8 @@ export class WalletManager {
         return response.text();
     }
 
-
-
     static async deleteWallet(address) {
-        const response = await fetch(`/app/wallet/delete/${address}`, {
+        const response = await fetch(`/app/wallet/delete`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
