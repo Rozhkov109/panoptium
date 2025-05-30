@@ -30,7 +30,7 @@ public class PortfolioService {
 
         Portfolio portfolio = new Portfolio(null,account,name,color);
         portfolioRepository.save(portfolio);
-        return "Portfolio \"" + name  + "\" created successfully";
+        return "Portfolio created successfully";
     }
 
     public String updatePortfolio(String name, String color, @AuthenticationPrincipal final AccountDetails accountDetails) {
@@ -42,7 +42,7 @@ public class PortfolioService {
 
         portfolioRepository.save(portfolio);
 
-        return "Portfolio \"" + name  + "\" updated successfully";
+        return "Portfolio updated successfully";
     }
 
     public void deletePortfolio(String name, @AuthenticationPrincipal final AccountDetails accountDetails) {

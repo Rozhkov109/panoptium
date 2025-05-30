@@ -33,8 +33,8 @@
     <div class="content-wrapper">
         <h1 id="main-header">Hi, <span class="username" th:text="${account.username}"></span></h1>
         
-        <h2>Your Saved Wallets</h2>
-        <table id="wallets-table">
+        <h2>Saved Wallets</h2>
+        <table class="data-table" id="wallets-table">
             <thead>
             <tr>
                 <th>Alias</th>
@@ -72,24 +72,119 @@
             </div>
         </div>
 
-        <h2>Your Portfolios</h2>
+        <h2>Portfolios</h2>
 
-        <div class="portfolio-container">
-            <button id="close-portfolio-button" class="red-button left">x</button>
+        <div id="portfolio-wrapper" class="portfolio-container">
             <div class="portfolio">
                 <div class="portfolio-left">
                     <div class="portfolio-header">Crypto</div>
-                    <div class="portfolio-data"></div>
+                    <div class="portfolio-holdings">Holdings: 1200$</div>
+                    <button class="portfolio-button">Open</button>
                 </div>
                 <div class="portfolio-right">
-                    <div class="portfolio-table"></div>
+                        <table class="assets-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Total price</th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+                            <tr>
+                                <td>Ethereum</td>
+                                <td>Cryptocurrency</td>
+                                <td>10</td>
+                                <td>20000$</td>
+                            </tr>
+                            <tr>
+                                <td>Ethereum</td>
+                                <td>Cryptocurrency</td>
+                                <td>10</td>
+                                <td>20000$</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
                 </div>
             </div>
         </div>
 
-        <button class="default-button" id="add-portfolio-button">Add Portfolio</button>
+        <button class="default-button" id="add-portfolio-button">Create Portfolio</button>
 
+        <div id="modal-portfolio" class="modal hidden">
+            <div class="modal-content">
+                <button id="close-portfolio-button" class="red-button left">x</button>
+                <form id="portfolio-form" data-action="">
+                    <fieldset>
+                        <legend>Create Portfolio</legend>
 
+                        <label for="portfolio-name">Name</label>
+                        <input type="text" id="portfolio-name" name="portfolio-name" required>
+                        <label for="portfolio-color">Color</label>
+                        <input type="color" id="portfolio-color" name="portfolio-color" required>
+
+                        <button type="submit">Submit</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+        <h2>Assets</h2>
+
+        <table id="assets-table" class="data-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+            <tr>
+                <td>Ethereum</td>
+                <td>Cryptocurrency</td>
+            </tr>
+            <tr>
+                <td>Ethereum</td>
+                <td>Cryptocurrency</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <button class="default-button" id="add-asset-button">Add Asset</button>
+
+        <div id="modal-asset" class="modal hidden">
+            <div class="modal-content">
+                <button id="close-asset-button" class="red-button left">x</button>
+                <form id="asset-form" data-action="">
+                    <fieldset>
+                        <legend>Add Asset</legend>
+
+                        <label for="asset-name">Name</label>
+                        <input type="text" id="asset-name" name="asset-name" required>
+
+                        <label for="asset-type">Type</label>
+                        <select id="asset-type" name="asset-type" required>
+                            <option th:each="assetType : ${assetTypes}"
+                                    th:value="${assetType}"
+                                    th:text="${assetType}"></option>
+                        </select>
+
+                        <label for="asset-color">Color</label>
+                        <input type="color" id="asset-color" name="asset-color" required>
+
+                        <button type="submit">Submit</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
 
     </div>
 </div>

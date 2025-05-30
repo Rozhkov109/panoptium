@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import panoptiumtech.panoptium.entities.Account.Account;
 
 import java.math.BigDecimal;
 
@@ -19,18 +20,19 @@ public class Asset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "asset_type", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false, referencedColumnName = "id")
+    @NotNull
+    private Account account;
+
+    @Column(name = "name", nullable = false)
+    @NotNull
+    private String name;
+
+    @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private AssetType assetType;
-
-    @Column(name = "amount", nullable = false)
-    @NotNull
-    private BigDecimal amount;
-
-    @Column(name = "price_per_unit", nullable = false)
-    @NotNull
-    private BigDecimal PricePerUnit;
+    private AssetType type;
 
     @Column(name = "color", nullable = false)
     @NotNull

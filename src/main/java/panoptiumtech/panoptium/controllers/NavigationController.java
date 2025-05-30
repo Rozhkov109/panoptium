@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import panoptiumtech.panoptium.entities.Account.AccountDetails;
+import panoptiumtech.panoptium.entities.Asset.AssetType;
 import panoptiumtech.panoptium.entities.Wallet.WalletNetwork;
 
 @Controller
@@ -29,6 +30,7 @@ public class NavigationController {
     public String getProfilePage(Model model, @AuthenticationPrincipal AccountDetails accountDetails) {
         model.addAttribute("account", accountDetails.getAccount());
         model.addAttribute("networks", WalletNetwork.values());
+        model.addAttribute("assetTypes", AssetType.values());
         return "profile";
     }
 }

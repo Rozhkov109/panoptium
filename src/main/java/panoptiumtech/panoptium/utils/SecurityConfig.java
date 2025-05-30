@@ -34,7 +34,8 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/", true)
                         .permitAll())
-                .httpBasic(withDefaults -> {});
+                .httpBasic(withDefaults -> {})
+                .authenticationProvider(authenticationProvider());
 
         return http.build();
     }

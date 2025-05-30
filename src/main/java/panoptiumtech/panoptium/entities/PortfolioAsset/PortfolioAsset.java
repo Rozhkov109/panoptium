@@ -9,6 +9,8 @@ import lombok.Setter;
 import panoptiumtech.panoptium.entities.Asset.Asset;
 import panoptiumtech.panoptium.entities.Portfolio.Portfolio;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @Setter
@@ -28,4 +30,10 @@ public class PortfolioAsset {
     @JoinColumn(name = "portfolio_id", nullable = false, referencedColumnName = "id")
     @NotNull
     private Portfolio portfolio;
+
+    @Column(name = "amount")
+    private BigDecimal amount;
+
+    @Column(name = "price_per_unit")
+    private BigDecimal pricePerUnit;
 }

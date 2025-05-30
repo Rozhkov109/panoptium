@@ -211,7 +211,8 @@ a {
 }
 
 footer {
-    background-color: #008afa;
+    color: white;
+    background-color: rgb(0 105 255);
 }
 
 footer p {
@@ -223,7 +224,7 @@ footer p {
 /* Message Window */
 
 .message-wrapper {
-    z-index: 2;
+    z-index: 100;
     top: 0;
     margin-top: 30px;
     position: fixed;

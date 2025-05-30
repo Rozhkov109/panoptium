@@ -87,24 +87,28 @@ form button:hover {
     color: #084c7c;
 }
 
-table {
+.data-table {
     margin: 0 auto 20px auto;
     border-radius: 15px;
     overflow: hidden;
 }
 
-table, table th, table td {
-    border: 1px solid black;
+.data-table, .data-table th, .data-table td {
     background-color: #dcdcdc;
     border-collapse: collapse;
 }
 
-table th, table td {
+.data-table th, .data-table td {
     font-size: 18px;
-    padding: 10px 5px;
+    padding: 10px 20px;
     text-align: center;
 }
 
-table th {
-    background: rgba(30, 124, 152, 0.73);
+.data-table th {
+    background: rgba(20, 77, 149, 0.73);
+}
+
+.asset-name {
+    padding: 5px 10px;
+    border-radius: 20px;
 }

@@ -4,10 +4,8 @@
     flex-direction: column;
 }
 
-
 .portfolio {
     width: 65%;
-    height: 200px;
     border-radius: 30px;
     display: flex;
     justify-content: center;
@@ -15,29 +13,41 @@
     flex-direction: row;
     margin: 0 0 40px 0;
     background-color: #1e5498;
-}
-
-.portfolio-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    border: 3px solid black;
 }
 
 .portfolio-left, .portfolio-right {
-    justify-content: space-between;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90%;
     width: 50%;
 }
 
-.portfolio-data {
-
+.portfolio-right {
+    align-content: start;
 }
 
+.portfolio-left {
+    justify-content: space-between;
+}
 
+.portfolio-left * {
+    margin: 10px 0;
+}
+
+.portfolio-holdings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 95%;
+    font-size: 34px;
+    background-color: white;
+    border-radius: 20px;
+}
 
 .portfolio-header {
-    margin-top: 10px;
-    margin-left: 10px;
+    width: 95%;
     padding: 3px 6px;
     border-radius: 20px;
     text-align: center;
@@ -45,3 +55,80 @@
     float: left;
     background-color: white;
 }
+
+.portfolio-button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px 60px;
+    border-radius: 30px;
+    border: 3px solid black;
+    box-shadow: 3px 6px 0 black;
+    background: #008cff;
+    font-size: 20px;
+    text-decoration: none;
+    color: white;
+    transition: color 0.5s;
+}
+
+.portfolio-button:hover {
+    color: #000000;
+    cursor: pointer;
+}
+
+/* Asset */
+
+.assets-table {
+    width: 95%;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.assets-table, .assets-table th, .assets-table td {
+    background-color: #dcdcdc;
+    border-collapse: collapse;
+}
+
+.assets-table th, .assets-table td {
+    font-size: 18px;
+    padding: 10px 5px;
+    text-align: center;
+}
+
+.assets-table th {
+    padding: 5px 2px;
+    background: rgba(20, 77, 149, 0.73);
+}
+
+.assets-table td {
+    padding: 5px 2px;
+}
+
+.assets-table tr:last-child th:first-child {
+    border-top-left-radius: 20px;
+}
+
+.assets-table tr:last-child th:last-child {
+    border-top-right-radius: 20px;
+}
+
+.assets-table tr:last-child td:first-child {
+    border-bottom-left-radius: 20px;
+}
+
+.assets-table tr:last-child td:last-child {
+    border-bottom-right-radius: 20px;
+}
+
+.asset {
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin: 5px 0;
+    padding: 3px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+/* Dashboard */
