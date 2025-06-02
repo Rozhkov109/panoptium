@@ -1,16 +1,12 @@
 package panoptiumtech.panoptium.controllers;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import panoptiumtech.panoptium.dto.wallet.PortfolioAssetDTO;
+import org.springframework.web.bind.annotation.*;
+import panoptiumtech.panoptium.dto.wallet.portfolioAsset.PortfolioAssetDTO;
 import panoptiumtech.panoptium.entities.Account.AccountDetails;
 import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
 import panoptiumtech.panoptium.servicies.portfolioAsset.PortfolioAssetService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -23,28 +19,33 @@ public class PortfolioAssetController {
     }
 
     @GetMapping("/get-all")
-    public List<PortfolioAsset> getAllPortfolioAssets(String portfolioName,@AuthenticationPrincipal AccountDetails accountDetails) {
+    public List<PortfolioAsset> getAllPortfolioAssets(@RequestParam String portfolioName, @AuthenticationPrincipal AccountDetails accountDetails) {
         return portfolioAssetService.getAllPortfolioAssets(portfolioName, accountDetails);
     }
 
     @PostMapping("/add")
-    public String addPortfolioAsset(String assetName,
-                                    String portfolioName,
-                                    PortfolioAssetDTO portfolioAssetDTO,
+    public String addPortfolioAsset(@RequestBody PortfolioAssetDTO portfolioAssetDTO,
                                     @AuthenticationPrincipal AccountDetails accountDetails) {
-        return portfolioAssetService.addPortfolioAsset(assetName,portfolioName,portfolioAssetDTO.getAmount(),portfolioAssetDTO.getPricePerUnit(),accountDetails);
+        return portfolioAssetService.addPortfolioAsset(portfolioAssetDTO.getAssetName(),
+                portfolioAssetDTO.getPortfolioName(),
+                portfolioAssetDTO.getPortfolioAssetData().getAmount(),
+                portfolioAssetDTO.getPortfolioAssetData().getPricePerUnit(),
+                accountDetails);
     }
 
     @PostMapping("/edit")
-    public String updatePortfolioAsset(String assetName,
-                                       PortfolioAssetDTO portfolioAssetDTO,
+    public String updatePortfolioAsset(@RequestBody PortfolioAssetDTO portfolioAssetDTO,
                                        @AuthenticationPrincipal AccountDetails accountDetails) {
-        return portfolioAssetService.updatePortfolioAsset(assetName,portfolioAssetDTO.getAmount(),portfolioAssetDTO.getPricePerUnit(),accountDetails);
+        return portfolioAssetService.updatePortfolioAsset(portfolioAssetDTO.getAssetName(),
+                portfolioAssetDTO.getPortfolioName(),
+                portfolioAssetDTO.getPortfolioAssetData().getAmount(),
+                portfolioAssetDTO.getPortfolioAssetData().getPricePerUnit(),
+                accountDetails);
     }
 
     @PostMapping("/delete")
-    public void deletePortfolioAsset(String assetName,@AuthenticationPrincipal AccountDetails accountDetails) {
-        portfolioAssetService.deletePortfolioAsset(assetName,accountDetails);
+    public void deletePortfolioAsset(@RequestBody PortfolioAssetDTO portfolioAssetDTO,@AuthenticationPrincipal AccountDetails accountDetails) {
+        portfolioAssetService.deletePortfolioAsset(portfolioAssetDTO.getAssetName(),portfolioAssetDTO.getPortfolioName(),accountDetails);
     }
 
 }

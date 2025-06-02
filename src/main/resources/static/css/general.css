@@ -385,7 +385,14 @@ input:hover {
 }
 
 /* Close Button */
-.red-button {
+.action-buttons-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.action-button {
     margin: 0 5px;
     background-color: #e53935;
     color: white;
@@ -400,7 +407,7 @@ input:hover {
     transition: background-color 0.2s ease;
 }
 
-.red-button:hover {
+.action-button:hover {
     background-color: #c62828;
 }
 
@@ -437,4 +444,31 @@ input:hover {
 
 .hidden {
     display: none;
+}
+
+.logout-button-container {
+    margin-top: 120px;
+    display: flex;
+    justify-content: center;
+}
+
+.logout-button {
+    text-align: center;
+    padding: 10px 60px;
+    border-radius: 30px;
+    border: 3px solid black;
+    box-shadow: 3px 6px 0 black;
+    background: #cc3f3f;
+    font-size: 24px;
+    text-decoration: none;
+    color: white;
+    transition:
+            color 0.5s,
+            font-size 0.5s;
+}
+
+.logout-button:hover {
+    color: #000000;
+    font-size: 28px;
+    cursor: pointer;
 }

@@ -1,11 +1,15 @@
-import {Helper} from "./helper.js"
-
 export class PortfolioManager {
 
     static async getAllPortfolios() {
         const response = await fetch("/app/portfolio/get-all")
         return response.json();
     }
+
+    static async getAllPortfolioAssets(portfolioName) {
+        const response = await fetch(`/app/portfolio/assets/get-all?portfolioName=${portfolioName}`)
+        return response.json();
+    }
+
 
     static async addPortfolio(name, color) {
         const portfolioDTO = {

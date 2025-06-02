@@ -1,5 +1,6 @@
 package panoptiumtech.panoptium.entities.Portfolio;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import panoptiumtech.panoptium.entities.Account.Account;
+import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,4 +38,8 @@ public class Portfolio {
     @Length(max = 20)
     @NotNull
     private String color;
+
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<PortfolioAsset> portfolioAssets = new ArrayList<>();
 }

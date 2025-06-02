@@ -248,7 +248,7 @@ export class Helper {
                 card.querySelector(`#${cardId}-main-data`).style.fontSize = "40px"
             }
             else if(cardId === "btc-price") {
-                card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToCoinPrice(jsonResponse.price)
+                card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToAssetPrice(jsonResponse.price)
                 card.querySelector(`#${cardId}-main-data`).style.fontSize = "40px"
 
                 Helper.Format.formatNumberToPercentWithColor(jsonResponse.priceChange1d,card.querySelector(`#${cardId}-day-change`))
@@ -277,19 +277,19 @@ export class Helper {
             const cardConfig = this.dataCardsConfig.find(config => config.id === cardId)
             const asset = jsonResponse.stockMarketData.find(assetData => assetData.ticker === cardConfig.ticker)
 
-            card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[0].closePrice)
+            card.querySelector(`#${cardId}-main-data`).textContent = Helper.Format.formatNumberToAssetPrice(asset.data[0].closePrice)
 
-            card.querySelector(`#${cardId}-day-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[1].closePrice)
+            card.querySelector(`#${cardId}-day-ago-price`).textContent = Helper.Format.formatNumberToAssetPrice(asset.data[1].closePrice)
             let dayPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[1].closePrice)
             Helper.Format.formatNumberToPercentWithColor(dayPercentChange,card.querySelector(`#${cardId}-day-change`))
             this.setTrendIconDataByNumber(dayPercentChange, card.querySelector(`#${cardId}-day-trend-icon`))
 
-            card.querySelector(`#${cardId}-week-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[2].closePrice)
+            card.querySelector(`#${cardId}-week-ago-price`).textContent = Helper.Format.formatNumberToAssetPrice(asset.data[2].closePrice)
             let weekPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[2].closePrice)
             Helper.Format.formatNumberToPercentWithColor(weekPercentChange,card.querySelector(`#${cardId}-week-change`))
             this.setTrendIconDataByNumber(weekPercentChange, card.querySelector(`#${cardId}-week-trend-icon`))
 
-            card.querySelector(`#${cardId}-month-ago-price`).textContent = Helper.Format.formatNumberToCoinPrice(asset.data[3].closePrice)
+            card.querySelector(`#${cardId}-month-ago-price`).textContent = Helper.Format.formatNumberToAssetPrice(asset.data[3].closePrice)
             let monthPercentChange = Helper.Format.getPercentChangeByTwoNumbers(asset.data[0].closePrice,asset.data[3].closePrice)
             Helper.Format.formatNumberToPercentWithColor(monthPercentChange,card.querySelector(`#${cardId}-month-change`))
             this.setTrendIconDataByNumber(monthPercentChange, card.querySelector(`#${cardId}-month-trend-icon`))
@@ -426,10 +426,20 @@ export class Helper {
                 return "$" + marketCap.toLocaleString();
             }
        }
-        static formatNumberToCoinPrice(price) {
+        static formatNumberToAssetPrice(price) {
+            if(price === null || price === 0) {
+                return "$0";
+            }
+
             let normalizedPrice = parseFloat(price).toFixed(15)
 
-            if (normalizedPrice >= 1e3) {
+            if (normalizedPrice >= 1e12) {
+                return "$" + (normalizedPrice / 1e12).toFixed(3) + "T";
+            } else if (normalizedPrice >= 1e9) {
+                return "$" + (normalizedPrice / 1e9).toFixed(3) + "B";
+            } else if (normalizedPrice >= 1e6) {
+                return "$" + (normalizedPrice / 1e6).toFixed(3) + "M";
+            } else if (normalizedPrice >= 1e3) {
                 return "$" + parseInt(normalizedPrice);
             } else if (normalizedPrice >= 1e2) {
                 return "$" + parseFloat(normalizedPrice).toFixed(1);
@@ -517,5 +527,9 @@ export class Helper {
                 savedAddressesField.append(option)
             })
         }
+    }
+
+    static Portfolio = class {
+
     }
 }

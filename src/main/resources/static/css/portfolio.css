@@ -5,11 +5,11 @@
 }
 
 .portfolio {
+    position: relative;
     width: 65%;
     border-radius: 30px;
     display: flex;
     justify-content: center;
-    align-items: center;
     flex-direction: row;
     margin: 0 0 40px 0;
     background-color: #1e5498;
@@ -24,8 +24,13 @@
     width: 50%;
 }
 
+.portfolio-right .action-buttons-container {
+    margin-bottom: 10px;
+    justify-content: flex-end;
+}
+
 .portfolio-right {
-    align-content: start;
+    justify-content: space-between;
 }
 
 .portfolio-left {

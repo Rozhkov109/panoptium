@@ -1,5 +1,6 @@
 package panoptiumtech.panoptium.entities.PortfolioAsset;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class PortfolioAsset {
     @ManyToOne
     @JoinColumn(name = "portfolio_id", nullable = false, referencedColumnName = "id")
     @NotNull
+    @JsonBackReference
     private Portfolio portfolio;
 
     @Column(name = "amount")

@@ -39,10 +39,14 @@ public class PortfolioAssetService {
                                     @AuthenticationPrincipal AccountDetails accountDetails) {
         Account account = accountDetails.getAccount();
 
+        if(assetRepository.findByNameAndAccount(assetName,account).isEmpty()) {
+            return "That asset doesn't exist. Select an asset from your saved.";
+        }
+
         Asset asset = assetRepository.findByNameAndAccount(assetName,account).get();
         Portfolio portfolio = portfolioRepository.findByNameAndAccount(portfolioName,account).get();
 
-        if(portfolioAssetRepository.findByAsset(asset).isPresent()) {
+        if(portfolioAssetRepository.findByAssetAndPortfolio(asset,portfolio).isPresent()) {
             return "Asset already exists in portfolio";
         }
 
@@ -52,14 +56,20 @@ public class PortfolioAssetService {
     }
 
     public String updatePortfolioAsset(String assetName,
+                                       String portfolioName,
                                        BigDecimal amount,
                                        BigDecimal pricePerUnit,
                                        @AuthenticationPrincipal AccountDetails accountDetails) {
         Account account = accountDetails.getAccount();
 
-        Asset asset = assetRepository.findByNameAndAccount(assetName,account).get();
+        if(assetRepository.findByNameAndAccount(assetName,account).isEmpty()) {
+            return "That asset doesn't exist. Select an asset from your saved.";
+        }
 
-        PortfolioAsset portfolioAsset = portfolioAssetRepository.findByAsset(asset).get();
+        Asset asset = assetRepository.findByNameAndAccount(assetName,account).get();
+        Portfolio portfolio = portfolioRepository.findByNameAndAccount(portfolioName,account).get();
+
+        PortfolioAsset portfolioAsset = portfolioAssetRepository.findByAssetAndPortfolio(asset,portfolio).get();
 
         portfolioAsset.setAmount(amount);
         portfolioAsset.setPricePerUnit(pricePerUnit);
@@ -69,10 +79,12 @@ public class PortfolioAssetService {
         return "Asset in your portfolio updated successfully";
     }
 
-    public void deletePortfolioAsset(String assetName,@AuthenticationPrincipal AccountDetails accountDetails) {
-        portfolioAssetRepository
-                .deleteById(portfolioAssetRepository
-                        .findByAsset(assetRepository
-                                .findByNameAndAccount(assetName,accountDetails.getAccount()).get()).get().getId());
+    public void deletePortfolioAsset(String assetName, String portfolioName, @AuthenticationPrincipal AccountDetails accountDetails) {
+        Account account = accountDetails.getAccount();
+
+        Asset asset = assetRepository.findByNameAndAccount(assetName,account).get();
+        Portfolio portfolio = portfolioRepository.findByNameAndAccount(portfolioName,account).get();
+
+        portfolioAssetRepository.deleteById(portfolioAssetRepository.findByAssetAndPortfolio(asset,portfolio).get().getId());
     }
 }

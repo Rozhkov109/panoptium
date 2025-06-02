@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import panoptiumtech.panoptium.dto.wallet.PortfolioDTO;
 import panoptiumtech.panoptium.entities.Account.AccountDetails;
 import panoptiumtech.panoptium.entities.Portfolio.Portfolio;
+import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
 import panoptiumtech.panoptium.servicies.portfolio.PortfolioService;
 
 import java.util.List;
@@ -23,12 +24,17 @@ public class PortfolioController {
         return portfolioService.getAllPortfolios(accountDetails);
     }
 
+    @GetMapping("assets/get-all")
+    public List<PortfolioAsset> getAllPortfolioAssets(@RequestParam String portfolioName, @AuthenticationPrincipal AccountDetails accountDetails) {
+        return portfolioService.getAllPortfolioAssets(portfolioName,accountDetails);
+    }
+
     @PostMapping("/add")
     public String addPortfolio(@RequestBody final PortfolioDTO portfolioDTO, @AuthenticationPrincipal AccountDetails accountDetails) {
         return portfolioService.addPortfolio(portfolioDTO.getName(),portfolioDTO.getColor(),accountDetails);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/edit")
     public String updatePortfolio(@RequestBody final PortfolioDTO portfolioDTO, @AuthenticationPrincipal AccountDetails accountDetails) {
         return portfolioService.updatePortfolio(portfolioDTO.getName(),portfolioDTO.getColor(),accountDetails);
     }

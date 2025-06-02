@@ -109,7 +109,7 @@ function createCryptoCurrenciesTable(coinsData) {
 
         // Price
         const tdPrice = document.createElement("td")
-        tdPrice.textContent = Helper.Format.formatNumberToCoinPrice(coinData.price)
+        tdPrice.textContent = Helper.Format.formatNumberToAssetPrice(coinData.price)
 
         // Market Cap
         const tdMarketCap = document.createElement("td")

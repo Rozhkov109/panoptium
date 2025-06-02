@@ -5,6 +5,7 @@
     <title>Profile | Panoptium</title>
     <link rel="stylesheet" th:href="@{/css/general.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" href="/css/portfolio-dashboard.css">
     <link rel="stylesheet" href="/css/portfolio.css">
     <link rel="icon" type="image/png" href="/images/panoptium-icon.png">
 </head>
@@ -51,7 +52,7 @@
 
         <div id="modal-wallet" class="modal hidden">
             <div class="modal-content">
-                <button id="close-wallet-button" class="red-button left">x</button>
+                <button id="close-wallet-button" class="action-button left">x</button>
                 <form id="wallet-form" data-action="">
                     <fieldset>
                         <legend>Add Wallet</legend>
@@ -73,51 +74,13 @@
         </div>
 
         <h2>Portfolios</h2>
-
-        <div id="portfolio-wrapper" class="portfolio-container">
-            <div class="portfolio">
-                <div class="portfolio-left">
-                    <div class="portfolio-header">Crypto</div>
-                    <div class="portfolio-holdings">Holdings: 1200$</div>
-                    <button class="portfolio-button">Open</button>
-                </div>
-                <div class="portfolio-right">
-                        <table class="assets-table">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                                <th>Total price</th>
-                            </tr>
-
-                            </thead>
-
-                            <tbody>
-                            <tr>
-                                <td>Ethereum</td>
-                                <td>Cryptocurrency</td>
-                                <td>10</td>
-                                <td>20000$</td>
-                            </tr>
-                            <tr>
-                                <td>Ethereum</td>
-                                <td>Cryptocurrency</td>
-                                <td>10</td>
-                                <td>20000$</td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                </div>
-            </div>
-        </div>
+        <div id="portfolio-wrapper" class="portfolio-container"></div>
 
         <button class="default-button" id="add-portfolio-button">Create Portfolio</button>
 
         <div id="modal-portfolio" class="modal hidden">
             <div class="modal-content">
-                <button id="close-portfolio-button" class="red-button left">x</button>
+                <button id="close-portfolio-button" class="action-button left">x</button>
                 <form id="portfolio-form" data-action="">
                     <fieldset>
                         <legend>Create Portfolio</legend>
@@ -137,24 +100,13 @@
 
         <table id="assets-table" class="data-table">
             <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Actions</th>
-            </tr>
-
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
-
             <tbody>
-            <tr>
-                <td>Ethereum</td>
-                <td>Cryptocurrency</td>
-            </tr>
-            <tr>
-                <td>Ethereum</td>
-                <td>Cryptocurrency</td>
-            </tr>
-
             </tbody>
         </table>
 
@@ -162,7 +114,7 @@
 
         <div id="modal-asset" class="modal hidden">
             <div class="modal-content">
-                <button id="close-asset-button" class="red-button left">x</button>
+                <button id="close-asset-button" class="action-button left">x️</button>
                 <form id="asset-form" data-action="">
                     <fieldset>
                         <legend>Add Asset</legend>
@@ -186,6 +138,65 @@
             </div>
         </div>
 
+        <div id="modal-portfolio-dashboard" class="modal hidden">
+            <div class="modal-content">
+                <div id="portfolio-dashboard" class="portfolio-dashboard">
+                    <button id="close-portfolio-dashboard-button" class="action-button left">x️</button>
+
+                    <div class="portfolio-data">
+                        <p id="dashboard-portfolio-name"></p>
+                        <p id="dashboard-portfolio-holdings"></p>
+                    </div>
+
+                    <button class="default-button" id="add-portfolio-asset-button">Add Asset</button>
+
+                    <div id="modal-portfolio-asset-form" class="modal hidden">
+                        <div class="modal-content">
+                    <button id="close-portfolio-asset-form-button" class="action-button left">x️</button>
+                    <form id="portfolio-asset-form" data-action="">
+                        <fieldset>
+                            <legend>Add Asset to Portfolio</legend>
+
+                            <label for="portfolio-asset">Asset</label>
+                            <select id="portfolio-asset" name="asset" required>
+                                <option value="Not Selected">Not Selected</option>
+                            </select>
+
+                            <input type="hidden" id="portfolio-dashboard-name" name="portfolio-dashboard-name" required>
+
+                            <label for="amount">Amount</label>
+                            <input type="text" id="amount" name="amount" required>
+                            <input type="hidden" id="amount-old" name="amount-old">
+
+                            <label for="price-per-unit">Price Per Unit ($)</label>
+                            <input type="text" id="price-per-unit" name="price-per-unit" required>
+                            <input type="hidden" id="price-per-unit-old" name="price-per-unit-old">
+
+                            <button type="submit">Submit</button>
+                        </fieldset>
+                    </form>
+                        </div>
+                    </div>
+
+                    <table id="dashboard-assets-table" class = "data-table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Avg. Buy Price</th>
+                            <th>Holdings</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="logout-button-container"><a href="/logout" class="logout-button">Logout</a></div>
     </div>
 </div>
 

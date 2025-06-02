@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.dto.wallet;
+package panoptiumtech.panoptium.dto.wallet.portfolioAsset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PortfolioAssetDTO {
+public class PortfolioAssetData {
     BigDecimal amount;
     BigDecimal pricePerUnit;
 }

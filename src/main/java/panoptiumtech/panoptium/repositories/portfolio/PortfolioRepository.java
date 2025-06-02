@@ -3,7 +3,9 @@ package panoptiumtech.panoptium.repositories.portfolio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import panoptiumtech.panoptium.entities.Account.Account;
+import panoptiumtech.panoptium.entities.Asset.Asset;
 import panoptiumtech.panoptium.entities.Portfolio.Portfolio;
+import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
 
 import java.util.List;
 import java.util.Optional;
