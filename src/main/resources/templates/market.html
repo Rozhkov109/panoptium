@@ -11,19 +11,19 @@
     <header>
         <div class="header-inner">
             <div class="logo">
-                <a th:href="@{/}">P</a>
+                <a href="/">P</a>
             </div>
 
             <nav class="navigation-panel">
                 <ul>
-                    <li><a class="market" th:href="@{/market}">Market</a></li>
-                    <li><a class="btc" th:href="@{/bitcoin}">Bitcoin</a></li>
-                    <li><a class="report" th:href="@{#}">Reports</a></li>
-                    <li><a class="api-documentation" th:href="@{#}">API Documentation</a></li>
+                    <li><a class="market" href="/market">Market</a></li>
+                    <li><a class="btc" href="/bitcoin">Bitcoin</a></li>
+                    <li><a class="report" href="/reports">Reports</a></li>
+                    <li><a class="api-documentation" href="/api-doc">API Documentation</a></li>
                 </ul>
             </nav>
             <div class="profile">
-                <img th:src="@{/images/profile.png}" alt="profile-icon">
+                <a th:href="@{/profile}"><img src="/images/profile.png" alt="profile-icon"></a>
             </div>
         </div>
     </header>
@@ -35,9 +35,7 @@
         </div>
     </div>
 
-    <footer>
-        <p>&#169 2025 Panoptium Tech<br>All rights reserved</p>
-    </footer>
+    <footer>&#169 2025 Panoptium Tech<br>All rights reserved</footer>
 
 <script type="module" src="/js/market.js"></script>
 </body>

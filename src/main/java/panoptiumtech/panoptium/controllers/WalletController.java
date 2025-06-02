@@ -1,5 +1,6 @@
 package panoptiumtech.panoptium.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import panoptiumtech.panoptium.dto.wallet.WalletDTO;
@@ -9,6 +10,7 @@ import panoptiumtech.panoptium.servicies.Wallet.WalletService;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequestMapping("/app/wallet")
 public class WalletController {

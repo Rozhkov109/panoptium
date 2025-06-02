@@ -3,38 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Panoptium</title>
-    <link th:href="@{/css/general.css}" rel="stylesheet" type="text/css">
+    <link href="/css/general.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/png" href="/images/panoptium-icon.png">
 </head>
 <body>
     <header>
         <div class="header-inner">
             <div class="logo">
-                <a th:href="@{/}">P</a>
+                <a href="/">P</a>
             </div>
 
             <nav class="navigation-panel">
                 <ul>
-                    <li><a class="market" th:href="@{/market}">Market</a></li>
-                    <li><a class="btc" th:href="@{/bitcoin}">Bitcoin</a></li>
-                    <li><a class="report" th:href="@{#}">Reports</a></li>
-                    <li><a class="api-documentation" th:href="@{#}">API Documentation</a></li>
+                    <li><a class="market" href="/market">Market</a></li>
+                    <li><a class="btc" href="/bitcoin">Bitcoin</a></li>
+                    <li><a class="report" href="/reports">Reports</a></li>
+                    <li><a class="api-documentation" href="/api-doc">API Documentation</a></li>
                 </ul>
             </nav>
             <div class="profile">
-                <a th:href="@{/profile}"><img th:src="@{/images/profile.png}" alt="profile-icon"></a>
+                <a th:href="@{/profile}"><img src="/images/profile.png" alt="profile-icon"></a>
             </div>
         </div>
     </header>
 
     <div class="wrapper">
         <div class="content-wrapper">
+            <h1 class="main-header">Panoptium - everything about crypto in one place!</h1>
+
+            <p>
+                Panoptium is a modern web platform that helps you track financial markets in one place.
+                You can view real-time data from the stock market and cryptocurrencies, check important indexes
+                and generate detailed reports in PDF format.
+                Easily manage your portfolios, see how your assets perform,
+                and stay updated with smart tools designed for both beginners and experienced users.
+                Everything is simple and fast.
+            </p>
+
+            <h2 class="disclaimer-header">Disclaimer</h2>
+            <ul class="disclaimer-list">
+                <li>The information presented on this platform <b>is not financial advice</b> and should not be used as a basis for investment decisions</li>
+                <li>All market data and analytics are gathered from public and open sources, and may not always reflect the most accurate or up-to-date values</li>
+            </ul>
+
+
+            <p>Panoptium is a course work, that has been made by <b>Mykhailo Rozhkov from National Technical University «Kharkiv Polytechnic Institute»</b>.
+                You can download the source code via GitHub:</p>
+
+
+            <div class="links-container">
+                <a class="link" target="_blank" href="https://github.com/Rozhkov109/panoptium"><img src="/images/github-icon.png" alt="github-icon.png"></a>
+            </div>
 
         </div>
     </div>
 
-    <footer>
-        <p>&#169 2025 Panoptium Tech<br>All rights reserved</p>
-    </footer>
+    <footer>&#169 2025 Panoptium Tech<br>All rights reserved</footer>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package panoptiumtech.panoptium.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import panoptiumtech.panoptium.servicies.Account.AccountDetailsService;
 
+@Hidden
 @Controller
 public class AuthController {
 

@@ -1,5 +1,6 @@
 package panoptiumtech.panoptium.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import panoptiumtech.panoptium.dto.wallet.portfolioAsset.PortfolioAssetDTO;
@@ -9,6 +10,7 @@ import panoptiumtech.panoptium.servicies.portfolioAsset.PortfolioAssetService;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequestMapping("/app/portfolio-asset")
 public class PortfolioAssetController {
