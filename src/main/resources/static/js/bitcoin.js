@@ -140,4 +140,5 @@ document.getElementById("btc-search-form").addEventListener("submit", async (eve
 document.addEventListener("DOMContentLoaded", async () => {
     await createCards()
     await Helper.Account.getAccountWalletToSelect("saved-addresses","BITCOIN")
+    Helper.HTML.createTradingViewWidget("BTC","tradingview_bitcoin")
 })

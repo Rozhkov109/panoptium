@@ -455,6 +455,11 @@ input:hover {
     position: relative;
 }
 
+.tradingview-widget-container {
+    width: 90%;
+    margin: 20px auto;
+}
+
 /* Element Settings */
 
 .left {

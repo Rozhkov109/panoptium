@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import panoptiumtech.panoptium.api.services.api.MarketApiService;
 
@@ -28,6 +29,11 @@ public class MarketApiController {
             "<br>The data is not a financial recommendation!")
     @GetMapping("/fear-and-greed")
     public Map<String, Object> getFearAndIndex() { return marketApiService.getFearAndGreedIndex(); }
+
+    @Operation(summary = "Gives the list of fear and greed index", description = "Returns the list of the fear and greed index." +
+            "<br>The data is not a financial recommendation!")
+    @GetMapping("/fear-and-greed-list")
+    public Map<String, Object> getFearAndIndexList(@RequestParam("limit") int limit) { return marketApiService.getFearAndGreedDuringTimePeriod(limit); }
 
     @Operation(summary = "Gives main information about crypto market", description = "Gives a set of one the most important metrics in crypto market, such as: " +
             "<br>BTC,ETH market cap<br>BTC,ETH 1d market cap change<br>BTC,ETH domination" +

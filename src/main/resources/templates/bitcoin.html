@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/general.css}">
     <link rel="stylesheet" th:href="@{/css/bitcoin.css}">
     <link rel="icon" type="image/png" href="/images/panoptium-icon.png">
+    <script src="https://s3.tradingview.com/tv.js"></script>
 </head>
 <body>
 <header>
@@ -31,6 +32,10 @@
     <div class="wrapper">
         <div class="content-wrapper">
             <h2 id="bitcoin-header">Bitcoin</h2>
+
+            <div class="tradingview-widget-container">
+                <div id="tradingview_bitcoin"></div>
+            </div>
 
             <form class="search-form" id="btc-search-form">
                 <fieldset>

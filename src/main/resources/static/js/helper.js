@@ -378,6 +378,102 @@ export class Helper {
         static closeModalWindow(elementId) {
             document.getElementById(elementId).classList.add("hidden");
         }
+
+        static createTradingViewWidget(assetTicker, containerId) {
+                const container = document.getElementById(containerId);
+                if(container.innerHTML !== null) {
+                    container.innerHTML = "";
+                }
+
+                const chartId = "tv_chart_" + assetTicker.toLowerCase();
+                const chartDiv = document.createElement("div");
+                chartDiv.id = chartId;
+                container.append(chartDiv)
+
+                new TradingView.widget({
+                    container_id: chartId,
+                    width: "100%",
+                    height: 500,
+                    symbol: `BINANCE:${assetTicker}USDT`,
+                    interval: "D",
+                    timezone: "Etc/UTC",
+                    theme: "dark",
+                    style: "1",
+                    locale: "en",
+                    toolbar_bg: "#f1f3f6",
+                    enable_publishing: false,
+                    allow_symbol_change: false,
+                    hide_top_toolbar: false,
+                    hide_side_toolbar: false,
+                    hide_legend: false,
+                    save_image: false,
+                    studies: []
+                });
+        }
+
+        static getFearGreedChartElement(rawData) {
+            const container = this.createHtmlElement("div","fear-and-greed-chart");
+            container.style.width = "100%";
+            container.style.margin = "40px auto";
+
+            const canvas = document.createElement("canvas");
+            container.appendChild(canvas);
+
+            const data = rawData.data.reverse();
+
+            const labels = data.map(item => item.date);
+            const values = data.map(item => item.index);
+            const classifications = data.map(item => item.classification);
+
+            const getColor = (type) => {
+                switch (type.toLowerCase()) {
+                    case "extreme fear": return "#ff0000";
+                    case "fear": return "#ff6a00";
+                    case "neutral": return "#aaaaaa";
+                    case "greed": return "#00b300";
+                    case "extreme greed": return "#009900";
+                    default: return "#000000";
+                }
+            };
+
+            const pointColors = classifications.map(getColor);
+
+            new Chart(canvas.getContext("2d"), {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Fear And Greed Index",
+                        data: values,
+                        borderColor: "#0e46ff",
+                        backgroundColor: "rgba(14, 79, 255, 0.1)",
+                        pointBackgroundColor: pointColors,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: (ctx) => `Classification: ${classifications[ctx.dataIndex]}`
+                            }
+                        }
+                    }
+                }
+            });
+            return container;
+        }
+
     }
 
     static Style = class {
@@ -529,7 +625,154 @@ export class Helper {
         }
     }
 
-    static Portfolio = class {
+    static Market = class {
+        static analyzeStockMarketData(data) {
+            const lines = [];
+            const trends = {
+                stocks: 0,
+                gold: 0,
+                silver: 0,
+                volatility: 0
+            };
+
+            const getChange = (cur, prev) => cur - prev;
+            const formatPct = (cur, prev) => (((cur - prev) / prev) * 100).toFixed(2);
+
+            let indexChanges = 0;
+
+            for (const asset of data.stockMarketData) {
+                const ticker = asset.ticker;
+                const nameMap = {
+                    "SPY": "S&P 500",
+                    "QQQ": "NASDAQ 100",
+                    "DIA": "Dow Jones",
+                    "IWM": "Russell 2000",
+                    "VXX": "VIX (Volatility)",
+                    "XAUUSD": "Gold",
+                    "XAGUSD": "Silver"
+                };
+                const name = nameMap[ticker] || ticker;
+
+                const today = parseFloat(asset.data[0]?.closePrice || 0);
+                const monthAgo = parseFloat(asset.data[3]?.closePrice || 0);
+                const change = getChange(today, monthAgo);
+                const pct = formatPct(today, monthAgo);
+                const trend = change > 0 ? "📈" : change < 0 ? "📉" : "➖";
+
+                lines.push(`<strong>${name}</strong>: ${trend} ${pct}% over the last month`);
+
+                if (["SPY", "QQQ", "DIA", "IWM"].includes(ticker)) {
+                    trends.stocks += change;
+                    indexChanges++;
+                }
+                if (ticker === "XAUUSD") trends.gold = change;
+                if (ticker === "XAGUSD") trends.silver = change;
+                if (ticker === "VXX") trends.volatility = change;
+            }
+
+            lines.push("<br><strong>Market Summary:</strong>");
+
+            if (trends.gold > 0 || trends.silver > 0) {
+                lines.push("🟥 Gold and Silver are rising — suggesting demand for safe-haven assets.");
+            }
+
+            if (trends.stocks > 0) {
+                lines.push("🟩 Stock indices are gaining — indicating general optimism.");
+            } else if (trends.stocks < 0) {
+                lines.push("📉 Major indices are falling — could signal caution or correction.");
+            } else {
+                lines.push("➖ Stock indices remain flat — indicating neutrality or indecision.");
+            }
+
+            if (trends.volatility > 0) {
+                lines.push("🟥 Volatility is increasing — market uncertainty is growing.");
+            } else if (trends.volatility < 0) {
+                lines.push("🟩 Volatility is declining — the market appears more stable.");
+            }
+
+            let verdict = "Neutral";
+            if (trends.stocks > 0 && trends.volatility < 0) {
+                verdict = "Bullish";
+            } else if (trends.stocks < 0 && trends.volatility > 0) {
+                verdict = "Bearish";
+            }
+
+            lines.push(`<br><strong>Overall Market Sentiment: <span style="color:${verdict === "Bullish" ? "green" : verdict === "Bearish" ? "red" : "gray"}">${verdict}</span></strong>`);
+
+            return lines.join("<br>");
+        }
+
+        static analyzeCryptoMarketData(cryptoData, fearGreedData, coinList) {
+            const lines = [];
+
+            // --- BTC / ETH ---
+            const btc = coinList.coins.find(c => c.symbol === "BTC");
+            const eth = coinList.coins.find(c => c.symbol === "ETH");
+
+            const formatPct = val => parseFloat(val).toFixed(2) + "%";
+
+            lines.push(`<strong>📊 Bitcoin</strong>: ${formatPct(btc.priceChange30d)} (30d), ${formatPct(btc.priceChange7d)} (7d), ${formatPct(btc.priceChange1d)} (24h)`);
+            lines.push(`<strong>📊 Ethereum</strong>: ${formatPct(eth.priceChange30d)} (30d), ${formatPct(eth.priceChange7d)} (7d), ${formatPct(eth.priceChange1d)} (24h)`);
+
+            // --- Fear and Greed Index ---
+            const recentIndex = fearGreedData.data[0];
+            const pastIndex = fearGreedData.data[fearGreedData.data.length - 1];
+            const indexDiff = recentIndex.index - pastIndex.index;
+            const sentimentChange = indexDiff > 0 ? "increased" : indexDiff < 0 ? "decreased" : "remained stable";
+
+            lines.push(`<br><strong>Fear & Greed Index</strong>: ${recentIndex.index} (${recentIndex.classification}) — ${sentimentChange} over the past year`);
+
+            // --- Dominance ---
+            const btcDom = parseFloat(cryptoData.btc_dominance);
+            const btcDomChg = parseFloat(cryptoData.btc_dominance_24h_percentage_change);
+            const ethDom = parseFloat(cryptoData.eth_dominance);
+            const ethDomChg = parseFloat(cryptoData.eth_dominance_24h_percentage_change);
+
+            lines.push(`<br><strong>📈 BTC Dominance</strong>: ${btcDom.toFixed(2)}% (${btcDomChg > 0 ? "🔼" : "🔽"} ${btcDomChg.toFixed(2)}%)`);
+            lines.push(`<strong>📉 ETH Dominance</strong>: ${ethDom.toFixed(2)}% (${ethDomChg > 0 ? "🔼" : "🔽"} ${ethDomChg.toFixed(2)}%)`);
+
+            // --- Market Cap ---
+            const cap = cryptoData.market_cap;
+            const capChg = cryptoData.market_cap_24h_percentage_change;
+
+            lines.push(`<br><strong>💰 Total Market Cap</strong>: $${(cap / 1e12).toFixed(2)}T (${capChg > 0 ? "🔼" : "🔽"} ${capChg.toFixed(2)}%)`);
+
+            // --- Market Summary ---
+            lines.push("<br><strong>Market Summary:</strong>");
+
+            if (btc.priceChange30d > 0 && eth.priceChange30d > 0) {
+                lines.push("🟩 Both BTC and ETH have shown strong gains over the last month — indicating healthy market momentum.");
+            } else if (btc.priceChange30d < 0 && eth.priceChange30d < 0) {
+                lines.push("🟥 Both BTC and ETH are declining — a sign of market correction or cooling.");
+            } else {
+                lines.push("🟨 Mixed signals from BTC and ETH — market sentiment may be fragmented.");
+            }
+
+            if (capChg < 0) {
+                lines.push("🟥 Total crypto market cap is down — suggesting outflows or cooling demand.");
+            } else {
+                lines.push("🟩 Market cap is increasing — capital is flowing into crypto assets.");
+            }
+
+            if (recentIndex.index >= 70) {
+                lines.push("🟩 Extreme Greed — potential overbought conditions.");
+            } else if (recentIndex.index <= 30) {
+                lines.push("🟥 Extreme Fear — potential undervaluation or panic.");
+            }
+
+            // --- Verdict ---
+            let verdict = "Neutral";
+            if (btc.priceChange30d > 5 && eth.priceChange30d > 5 && capChg > 0 && recentIndex.index > 50) {
+                verdict = "Bullish";
+            } else if (btc.priceChange30d < 0 && eth.priceChange30d < 0 && capChg < 0 && recentIndex.index < 40) {
+                verdict = "Bearish";
+            }
+
+            lines.push(`<br><strong>Local Crypto Market Sentiment: <span style="color:${verdict === "Bullish" ? "green" : verdict === "Bearish" ? "red" : "gray"}">${verdict}</span></strong>`);
+
+            return lines.join("<br>");
+        }
+
 
     }
 }

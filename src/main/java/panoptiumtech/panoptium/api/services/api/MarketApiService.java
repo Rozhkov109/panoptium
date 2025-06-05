@@ -75,6 +75,40 @@ public class MarketApiService {
         return answer;
     }
 
+    public Map<String,Object> getFearAndGreedDuringTimePeriod(int limit) {
+        Map<String,Object> json = apiCacheManager.getCachedResponse(ApiCacheType.FEAR_AND_GREED_LIST);
+        if(!json.isEmpty())  {
+            System.out.println(ApiCacheType.FEAR_AND_GREED_LIST + " has been taken from cache");
+            return json;
+        }
+        Map<String,Object> apiResponse = alternativeMeClient.getFearAndGreedIndexDuringTimePeriod(limit,"world");
+        List<Map<String,Object>> response = objectMapper.convertValue(apiResponse.get("data"), new TypeReference<>(){});
+
+        Map<String, Object> answer = new LinkedHashMap<>();
+        List<Map<String,Object>> fearAndGreedlist = new ArrayList<>();
+
+        for(Map<String,Object> fearAndGreed : response) {
+            Map<String, Object> fearAndGreedValue = new LinkedHashMap<>();
+
+            int index = Integer.parseInt(fearAndGreed.get("value").toString());
+            String classification = fearAndGreed.get("value_classification").toString();
+            String date = fearAndGreed.get("timestamp").toString();
+
+            fearAndGreedValue.put("index", index);
+            fearAndGreedValue.put("classification", classification);
+            fearAndGreedValue.put("date", date);
+
+            fearAndGreedlist.add(fearAndGreedValue);
+        }
+        answer.put("data", fearAndGreedlist);
+
+        if(apiCacheManager.cacheRequest(ApiCacheType.FEAR_AND_GREED_LIST, answer)) {
+            System.out.println(ApiCacheType.FEAR_AND_GREED_LIST + " has been taken from API and cached");
+        }
+
+        return answer;
+    }
+
     public Map<String,Object> getCryptoData() {
         Map<String,Object> json = apiCacheManager.getCachedResponse(ApiCacheType.CRYPTO_MARKET);
         if(!json.isEmpty())  {
