@@ -14,6 +14,9 @@ class PanoptiumApplicationTests {
 	@Test
 	void contextLoads() {
 		reportService.addReportType("StockMarket",true);
+		reportService.addReportType("FearAndGreedIndex",true);
+		reportService.addReportType("CryptoData",true);
+		reportService.addReportType("Top100CryptoCurrencies",true);
 	}
 
 }

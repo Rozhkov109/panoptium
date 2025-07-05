@@ -71,16 +71,6 @@ p {
     border-radius: 50%;
 }
 
-.fear-and-greed-chart {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    border: 7px solid rgba(30, 152, 152, 0.73);
-    border-radius: 30px;
-    max-width: 90%;
-}
-
 #asset-chart {
     padding: 30px 0;
 }

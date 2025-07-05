@@ -292,6 +292,16 @@ footer {
     cursor: pointer;
 }
 
+.chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 7px solid rgba(30, 152, 152, 0.73);
+    border-radius: 30px;
+    max-width: 90%;
+}
+
 /* Message with spinner */
 
 .loading-wrapper {

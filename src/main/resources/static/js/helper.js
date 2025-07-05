@@ -412,7 +412,7 @@ export class Helper {
         }
 
         static getFearGreedChartElement(rawData) {
-            const container = this.createHtmlElement("div","fear-and-greed-chart");
+            const container = this.createHtmlElement("div","chart");
             container.style.width = "100%";
             container.style.margin = "40px auto";
 
@@ -474,6 +474,89 @@ export class Helper {
             return container;
         }
 
+        static getWalletBalanceChartElement(walletData) {
+            const container = document.createElement("div");
+            container.className = "chart";
+            container.style.width = "100%";
+            container.style.margin = "40px auto";
+
+            const canvas = document.createElement("canvas");
+            container.appendChild(canvas);
+
+            const sortedTransactions = [...walletData.transactions].sort(
+                (a, b) => a.status.confirmedAt - b.status.confirmedAt
+            );
+
+            const dataPoints = sortedTransactions.map(tx => ({
+                x: new Date(tx.status.confirmedAt * 1000),
+                y: tx.btcBalance,
+                rawTimestamp: tx.status.confirmedAt
+            }));
+
+            new Chart(canvas.getContext("2d"), {
+                type: "scatter",
+                data: {
+                    datasets: [{
+                        label: "Wallet Balance (BTC)",
+                        data: dataPoints,
+                        borderColor: "#ff8f0e",
+                        backgroundColor: "#ff870e",
+                        showLine: true,
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: "time",
+                            time: {
+                                unit: "day",
+                                tooltipFormat: "dd.MM.yyyy",
+                                displayFormats: {
+                                    day: "dd.MM.yyyy"
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: "Date"
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: "BTC"
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const balance = ctx.parsed.y;
+                                    const ts = ctx.raw.rawTimestamp * 1000;
+                                    const date = new Date(ts);
+                                    const dd = String(date.getDate()).padStart(2, '0');
+                                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                                    const yyyy = date.getFullYear();
+                                    const formattedDate = `${dd}.${mm}.${yyyy}`;
+                                    return [`Balance: ${balance} BTC`, `Date: ${formattedDate}`];
+                                }
+                            }
+                        },
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+
+            return container;
+        }
     }
 
     static Style = class {
@@ -612,7 +695,6 @@ export class Helper {
         static async getAccountWalletToSelect(selectHtmlId,network) {
             const savedAddressesField = document.getElementById(selectHtmlId)
             const wallets = await WalletManager.getAllWallets()
-            console.log(wallets)
 
             wallets.forEach((wallet) => {
                 if(wallet.network !== network) return;
@@ -705,7 +787,7 @@ export class Helper {
         static analyzeCryptoMarketData(cryptoData, fearGreedData, coinList) {
             const lines = [];
 
-            // --- BTC / ETH ---
+            // BTC / ETH
             const btc = coinList.coins.find(c => c.symbol === "BTC");
             const eth = coinList.coins.find(c => c.symbol === "ETH");
 
@@ -714,15 +796,15 @@ export class Helper {
             lines.push(`<strong>📊 Bitcoin</strong>: ${formatPct(btc.priceChange30d)} (30d), ${formatPct(btc.priceChange7d)} (7d), ${formatPct(btc.priceChange1d)} (24h)`);
             lines.push(`<strong>📊 Ethereum</strong>: ${formatPct(eth.priceChange30d)} (30d), ${formatPct(eth.priceChange7d)} (7d), ${formatPct(eth.priceChange1d)} (24h)`);
 
-            // --- Fear and Greed Index ---
-            const recentIndex = fearGreedData.data[0];
-            const pastIndex = fearGreedData.data[fearGreedData.data.length - 1];
-            const indexDiff = recentIndex.index - pastIndex.index;
+            // Fear and Greed Index
+            const currentIndex = fearGreedData.data[fearGreedData.data.length - 1];
+            const monthAgoIndex = fearGreedData.data[fearGreedData.data.length - 31];
+            const indexDiff = currentIndex.index - monthAgoIndex.index;
             const sentimentChange = indexDiff > 0 ? "increased" : indexDiff < 0 ? "decreased" : "remained stable";
 
-            lines.push(`<br><strong>Fear & Greed Index</strong>: ${recentIndex.index} (${recentIndex.classification}) — ${sentimentChange} over the past year`);
+            lines.push(`<br><strong>Fear & Greed Index</strong>: ${currentIndex.index} (${currentIndex.classification}) — ${sentimentChange} over the past month`);
 
-            // --- Dominance ---
+            // Dominance
             const btcDom = parseFloat(cryptoData.btc_dominance);
             const btcDomChg = parseFloat(cryptoData.btc_dominance_24h_percentage_change);
             const ethDom = parseFloat(cryptoData.eth_dominance);
@@ -731,13 +813,13 @@ export class Helper {
             lines.push(`<br><strong>📈 BTC Dominance</strong>: ${btcDom.toFixed(2)}% (${btcDomChg > 0 ? "🔼" : "🔽"} ${btcDomChg.toFixed(2)}%)`);
             lines.push(`<strong>📉 ETH Dominance</strong>: ${ethDom.toFixed(2)}% (${ethDomChg > 0 ? "🔼" : "🔽"} ${ethDomChg.toFixed(2)}%)`);
 
-            // --- Market Cap ---
+            // Market Cap
             const cap = cryptoData.market_cap;
             const capChg = cryptoData.market_cap_24h_percentage_change;
 
             lines.push(`<br><strong>💰 Total Market Cap</strong>: $${(cap / 1e12).toFixed(2)}T (${capChg > 0 ? "🔼" : "🔽"} ${capChg.toFixed(2)}%)`);
 
-            // --- Market Summary ---
+            // Market Summary
             lines.push("<br><strong>Market Summary:</strong>");
 
             if (btc.priceChange30d > 0 && eth.priceChange30d > 0) {
@@ -754,21 +836,21 @@ export class Helper {
                 lines.push("🟩 Market cap is increasing — capital is flowing into crypto assets.");
             }
 
-            if (recentIndex.index >= 70) {
+            if (currentIndex.index >= 70) {
                 lines.push("🟩 Extreme Greed — potential overbought conditions.");
-            } else if (recentIndex.index <= 30) {
+            } else if (currentIndex.index <= 30) {
                 lines.push("🟥 Extreme Fear — potential undervaluation or panic.");
             }
 
-            // --- Verdict ---
+            // Verdict
             let verdict = "Neutral";
-            if (btc.priceChange30d > 5 && eth.priceChange30d > 5 && capChg > 0 && recentIndex.index > 50) {
+            if (btc.priceChange30d > 5 && eth.priceChange30d > 5 && capChg > 0 && currentIndex.index > 50) {
                 verdict = "Bullish";
-            } else if (btc.priceChange30d < 0 && eth.priceChange30d < 0 && capChg < 0 && recentIndex.index < 40) {
+            } else if (btc.priceChange30d < 0 && eth.priceChange30d < 0 && capChg < 0 && currentIndex.index < 40) {
                 verdict = "Bearish";
             }
 
-            lines.push(`<br><strong>Local Crypto Market Sentiment: <span style="color:${verdict === "Bullish" ? "green" : verdict === "Bearish" ? "red" : "gray"}">${verdict}</span></strong>`);
+            lines.push(`<br><strong>Current Crypto Market Sentiment: <span style="color:${verdict === "Bullish" ? "green" : verdict === "Bearish" ? "red" : "gray"}">${verdict}</span></strong>`);
 
             return lines.join("<br>");
         }

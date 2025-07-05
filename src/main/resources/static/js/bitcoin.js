@@ -39,6 +39,10 @@ async function getWalletTransactions(walletAddress) {
         document.querySelector(`.wallet-info-wrapper`).remove()
     }
 
+    if(document.querySelector(`#bitcoin-chart .chart`) != null) {
+        document.querySelector(`#bitcoin-chart .chart`).remove()
+    }
+
     if(!isValidBitcoinAddress(walletAddress)) {
       document.body.append(Helper.HTML.getMessageWindow("Error","The wallet address does not exist or incorrect. Try again!"))
       return
@@ -50,6 +54,8 @@ async function getWalletTransactions(walletAddress) {
     const walletData = await Helper.FetchAPI.getJSONResponse(`http://localhost:8080/api/v1/bitcoin/wallet/${walletAddress}`)
 
     document.querySelector(".loading-wrapper").remove()
+
+    document.getElementById("bitcoin-chart").append(Helper.HTML.getWalletBalanceChartElement(walletData))
 
     const htmlWalletInfo = Helper.HTML.createHtmlElement("div","wallet-info-wrapper")
     htmlWalletInfo.innerHTML += `
@@ -117,7 +123,7 @@ async function getWalletTransactions(walletAddress) {
         htmlWalletInfo.append(htmlTransactionWrapper)
         })
 
-    contentWrapper.insertBefore(htmlWalletInfo,contentWrapper.querySelector("#btc-search-form").nextSibling)
+    contentWrapper.insertBefore(htmlWalletInfo,document.getElementById("bitcoin-chart").nextSibling)
 }
 
 
