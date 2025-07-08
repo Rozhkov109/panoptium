@@ -58,7 +58,7 @@ function createElements() {
     // Table
     const top100CoinsTable = createCryptoCurrenciesTable(coinsData)
     if(top100CoinsTable.hasChildNodes()) {
-        contentWrapper.insertBefore(top100CoinsTable,contentWrapper.querySelector("#crypto-analysis").nextSibling)
+        contentWrapper.insertBefore(top100CoinsTable,contentWrapper.querySelector("#fear-and-greed-chart").nextSibling)
     }
 }
 
@@ -167,14 +167,6 @@ document.getElementById("close-asset-chart-button").addEventListener("click", ()
     Helper.HTML.closeModalWindow("modal-asset-chart-container")
 })
 
-function fillMarketAnalysis() {
-    document.querySelector("#market-analysis .market-analysis-content").innerHTML =
-        Helper.Market.analyzeStockMarketData(stockMarketData)
-
-    document.querySelector("#crypto-analysis .market-analysis-content").innerHTML =
-        Helper.Market.analyzeCryptoMarketData(cryptoData,fearAndGreedList,coinsData)
-}
-
 
 document.addEventListener("DOMContentLoaded", async () => {
     await getData()
@@ -184,6 +176,5 @@ document.addEventListener("DOMContentLoaded", async () => {
             openCoinChart(elem.id);
         });
     })
-    fillMarketAnalysis()
     updateTableDisplay()
 })

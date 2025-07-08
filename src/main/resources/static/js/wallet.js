@@ -8,7 +8,7 @@ export class WalletManager {
     static async addWallet(alias, address, network) {
         const walletDTO = {
             alias: alias,
-            address: address,
+            newAddress: address,
             network: network
         };
 
@@ -22,10 +22,11 @@ export class WalletManager {
         return response.text();
     }
 
-    static async editWallet(alias, address, network) {
+    static async editWallet(alias, oldAddress, newAddress, network) {
         const walletDTO = {
             alias: alias,
-            address: address,
+            oldAddress: oldAddress,
+            newAddress: newAddress,
             network: network
         };
 

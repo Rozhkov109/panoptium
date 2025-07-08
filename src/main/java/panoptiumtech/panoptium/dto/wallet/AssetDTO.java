@@ -8,7 +8,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class AssetDTO {
-    String name;
+    String oldName;
+    String newName;
     String type;
     String color;
 }

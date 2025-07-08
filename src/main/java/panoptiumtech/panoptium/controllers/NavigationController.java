@@ -5,8 +5,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import panoptiumtech.panoptium.entities.Account.AccountDetails;
-import panoptiumtech.panoptium.entities.Asset.AssetType;
+import panoptiumtech.panoptium.entities.account.AccountDetails;
+import panoptiumtech.panoptium.entities.asset.AssetType;
 import panoptiumtech.panoptium.entities.Wallet.WalletNetwork;
 
 @Hidden

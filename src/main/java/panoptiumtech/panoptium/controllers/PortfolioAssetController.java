@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import panoptiumtech.panoptium.dto.wallet.portfolioAsset.PortfolioAssetDTO;
-import panoptiumtech.panoptium.entities.Account.AccountDetails;
-import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
+import panoptiumtech.panoptium.entities.account.AccountDetails;
+import panoptiumtech.panoptium.entities.portfolioAsset.PortfolioAsset;
 import panoptiumtech.panoptium.servicies.portfolioAsset.PortfolioAssetService;
 
 import java.util.List;

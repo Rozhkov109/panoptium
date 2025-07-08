@@ -100,3 +100,7 @@ p {
     border-radius: 30px;
     text-align: center;
 }
+
+#toggle-button {
+    margin-top: 15px;
+}

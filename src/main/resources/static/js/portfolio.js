@@ -13,7 +13,7 @@ export class PortfolioManager {
 
     static async addPortfolio(name, color) {
         const portfolioDTO = {
-            name: name,
+            newName: name,
             color: color,
         };
 
@@ -27,9 +27,10 @@ export class PortfolioManager {
         return response.text();
     }
 
-    static async editPortfolio(name, color) {
+    static async editPortfolio(oldName, newName, color) {
         const portfolioDTO = {
-            name: name,
+            oldName: oldName,
+            newName: newName,
             color: color,
         };
 

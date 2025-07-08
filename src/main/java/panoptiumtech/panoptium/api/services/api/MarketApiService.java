@@ -9,7 +9,7 @@ import panoptiumtech.panoptium.api.clients.market.AlphaVantageClient;
 import panoptiumtech.panoptium.api.clients.market.AlternativeMeClient;
 import panoptiumtech.panoptium.api.clients.market.CoinMarketCapClient;
 import panoptiumtech.panoptium.api.clients.market.CoinRankingClient;
-import panoptiumtech.panoptium.api.entities.ApiCache.ApiCacheType;
+import panoptiumtech.panoptium.api.entities.apiCache.ApiCacheType;
 import panoptiumtech.panoptium.api.utils.ApiCacheManager;
 
 import java.util.*;

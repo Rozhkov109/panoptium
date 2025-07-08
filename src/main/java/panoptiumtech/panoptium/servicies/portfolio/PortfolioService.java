@@ -2,15 +2,13 @@ package panoptiumtech.panoptium.servicies.portfolio;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import panoptiumtech.panoptium.entities.Account.Account;
-import panoptiumtech.panoptium.entities.Account.AccountDetails;
-import panoptiumtech.panoptium.entities.Asset.Asset;
-import panoptiumtech.panoptium.entities.Portfolio.Portfolio;
-import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
+import panoptiumtech.panoptium.entities.account.Account;
+import panoptiumtech.panoptium.entities.account.AccountDetails;
+import panoptiumtech.panoptium.entities.portfolio.Portfolio;
+import panoptiumtech.panoptium.entities.portfolioAsset.PortfolioAsset;
 import panoptiumtech.panoptium.repositories.portfolio.PortfolioRepository;
 import panoptiumtech.panoptium.servicies.portfolioAsset.PortfolioAssetService;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,11 +42,11 @@ public class PortfolioService {
         return "Portfolio created successfully";
     }
 
-    public String updatePortfolio(String name, String color, @AuthenticationPrincipal final AccountDetails accountDetails) {
+    public String updatePortfolio(String oldName, String newName, String color, @AuthenticationPrincipal final AccountDetails accountDetails) {
         Account account = accountDetails.getAccount();
 
-        Portfolio portfolio = portfolioRepository.findByNameAndAccount(name,account).get();
-        portfolio.setName(name);
+        Portfolio portfolio = portfolioRepository.findByNameAndAccount(oldName,account).get();
+        portfolio.setName(newName);
         portfolio.setColor(color);
 
         portfolioRepository.save(portfolio);

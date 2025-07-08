@@ -9,6 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class WalletDTO {
     private String alias;
-    private String address;
+    private String oldAddress;
+    private String newAddress;
     private String network;
 }

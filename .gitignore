@@ -33,7 +33,7 @@ build/
 .vscode/
 
 ### Private Data ###
-/src/main/resources/application-dev.properties
+/src/main/resources/application-api.properties
 
 ### Others ###
 /documentation/diagrams/.$Panoptium.drawio.bkp

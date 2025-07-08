@@ -20,8 +20,6 @@
             <ul>
                 <li><a class="market" href="/market">Market</a></li>
                 <li><a class="btc" href="/bitcoin">Bitcoin</a></li>
-                <li><a class="report" href="/reports">Reports</a></li>
-                <li><a class="api-documentation" href="/api-doc">API Documentation</a></li>
             </ul>
         </nav>
         <div class="profile">
@@ -34,7 +32,7 @@
     <div class="content-wrapper">
         <h1 id="main-header">Hi, <span class="username" th:text="${account.username}"></span></h1>
         
-        <h2>Saved Wallets</h2>
+        <h2>Wallets</h2>
         <table class="data-table" id="wallets-table">
             <thead>
             <tr>
@@ -59,8 +57,9 @@
 
                         <label for="alias">Alias</label>
                         <input type="text" id="alias" name="alias" required>
-                        <label for="address">Address</label>
-                        <input type="text" id="address" name="address" required>
+                        <input type="hidden" id="old-address" name="old-address">
+                        <label for="new-address">Address</label>
+                        <input type="text" id="new-address" name="new-address" required>
                         <label for="network">Network</label>
                         <select id="network" name="network" required>
                             <option th:each="network : ${networks}"
@@ -85,8 +84,9 @@
                     <fieldset>
                         <legend>Create Portfolio</legend>
 
-                        <label for="portfolio-name">Name</label>
-                        <input type="text" id="portfolio-name" name="portfolio-name" required>
+                        <input type="hidden" id="old-portfolio-name" name="old-portfolio-name">
+                        <label for="new-portfolio-name">Name</label>
+                        <input type="text" id="new-portfolio-name" name="new-portfolio-name" required>
                         <label for="portfolio-color">Color</label>
                         <input type="color" id="portfolio-color" name="portfolio-color" required>
 
@@ -119,8 +119,9 @@
                     <fieldset>
                         <legend>Add Asset</legend>
 
-                        <label for="asset-name">Name</label>
-                        <input type="text" id="asset-name" name="asset-name" required>
+                        <input type="hidden" id="old-asset-name" name="old-asset-name">
+                        <label for="new-asset-name">Name</label>
+                        <input type="text" id="new-asset-name" name="new-asset-name" required>
 
                         <label for="asset-type">Type</label>
                         <select id="asset-type" name="asset-type" required>

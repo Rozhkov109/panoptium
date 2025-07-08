@@ -7,7 +7,7 @@ export class AssetManager {
 
     static async addAsset(name, type, color) {
         const assetDTO = {
-            name: name,
+            newName: name,
             type: type,
             color: color
         };
@@ -22,9 +22,10 @@ export class AssetManager {
         return response.text();
     }
 
-    static async editAsset(name, type, color) {
+    static async editAsset(oldName, newName, type, color) {
         const assetDTO = {
-            name: name,
+            oldName: oldName,
+            newName: newName,
             type: type,
             color: color
         };

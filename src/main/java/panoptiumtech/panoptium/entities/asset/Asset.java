@@ -1,19 +1,19 @@
-package panoptiumtech.panoptium.entities.Wallet;
+package panoptiumtech.panoptium.entities.asset;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import panoptiumtech.panoptium.entities.account.Account;
 
 @Entity
-@Table(name = "wallet")
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class Wallet {
+@NoArgsConstructor
+public class Asset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,17 +23,16 @@ public class Wallet {
     @NotNull
     private Account account;
 
-    @Column(name = "alias")
-    @Size(min = 1, max = 40)
-    String alias;
-
-    @Column(name = "address",nullable = false)
+    @Column(name = "name", nullable = false)
     @NotNull
-    @Size(min = 5, max = 128)
-    private String address;
+    private String name;
 
-    @Column(name = "wallet_type",nullable = false)
+    @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private WalletNetwork network;
+    private AssetType type;
+
+    @Column(name = "color", nullable = false)
+    @NotNull
+    private String color;
 }

@@ -2,10 +2,10 @@ package panoptiumtech.panoptium.servicies.asset;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import panoptiumtech.panoptium.entities.Account.Account;
-import panoptiumtech.panoptium.entities.Account.AccountDetails;
-import panoptiumtech.panoptium.entities.Asset.Asset;
-import panoptiumtech.panoptium.entities.Asset.AssetType;
+import panoptiumtech.panoptium.entities.account.Account;
+import panoptiumtech.panoptium.entities.account.AccountDetails;
+import panoptiumtech.panoptium.entities.asset.Asset;
+import panoptiumtech.panoptium.entities.asset.AssetType;
 import panoptiumtech.panoptium.repositories.asset.AssetRepository;
 
 import java.util.List;
@@ -22,22 +22,23 @@ public class AssetService {
         return assetRepository.findAllByAccount(accountDetails.getAccount());
     }
 
-    public String addAsset(String name, String type, String color, @AuthenticationPrincipal AccountDetails accountDetails) {
+    public String addAsset(String newName, String type, String color, @AuthenticationPrincipal AccountDetails accountDetails) {
         Account account = accountDetails.getAccount();
 
-        if(assetRepository.findByNameAndAccount(name, account).isPresent()) {
+        if(assetRepository.findByNameAndAccount(newName, account).isPresent()) {
             return "Asset already exists";
         }
 
-        Asset asset = new Asset(null, account, name, AssetType.valueOf(type), color);
+        Asset asset = new Asset(null, account, newName, AssetType.valueOf(type), color);
         assetRepository.save(asset);
         return "Asset added successfully";
     }
 
-    public String updateAsset(String name, String type, String color, @AuthenticationPrincipal AccountDetails accountDetails) {
+    public String updateAsset(String oldName, String newName, String type, String color, @AuthenticationPrincipal AccountDetails accountDetails) {
         Account account = accountDetails.getAccount();
 
-        Asset asset = assetRepository.findByNameAndAccount(name, account).get();
+        Asset asset = assetRepository.findByNameAndAccount(oldName, account).get();
+        asset.setName(newName);
         asset.setType(AssetType.valueOf(type));
         asset.setColor(color);
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import panoptiumtech.panoptium.api.clients.bitcoin.BlockstreamClient;
-import panoptiumtech.panoptium.api.entities.ApiCache.ApiCacheType;
+import panoptiumtech.panoptium.api.entities.apiCache.ApiCacheType;
 import panoptiumtech.panoptium.api.utils.ApiCacheManager;
 
 import java.math.BigDecimal;

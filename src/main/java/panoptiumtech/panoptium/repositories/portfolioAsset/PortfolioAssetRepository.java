@@ -1,12 +1,10 @@
 package panoptiumtech.panoptium.repositories.portfolioAsset;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Repository;
-import panoptiumtech.panoptium.entities.Asset.Asset;
-import panoptiumtech.panoptium.entities.Asset.AssetType;
-import panoptiumtech.panoptium.entities.Portfolio.Portfolio;
-import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
+import panoptiumtech.panoptium.entities.asset.Asset;
+import panoptiumtech.panoptium.entities.portfolio.Portfolio;
+import panoptiumtech.panoptium.entities.portfolioAsset.PortfolioAsset;
 
 import java.util.List;
 import java.util.Optional;

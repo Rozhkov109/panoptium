@@ -2,11 +2,11 @@ package panoptiumtech.panoptium.servicies.portfolioAsset;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import panoptiumtech.panoptium.entities.Account.Account;
-import panoptiumtech.panoptium.entities.Account.AccountDetails;
-import panoptiumtech.panoptium.entities.Asset.Asset;
-import panoptiumtech.panoptium.entities.Portfolio.Portfolio;
-import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
+import panoptiumtech.panoptium.entities.account.Account;
+import panoptiumtech.panoptium.entities.account.AccountDetails;
+import panoptiumtech.panoptium.entities.asset.Asset;
+import panoptiumtech.panoptium.entities.portfolio.Portfolio;
+import panoptiumtech.panoptium.entities.portfolioAsset.PortfolioAsset;
 import panoptiumtech.panoptium.repositories.asset.AssetRepository;
 import panoptiumtech.panoptium.repositories.portfolio.PortfolioRepository;
 import panoptiumtech.panoptium.repositories.portfolioAsset.PortfolioAssetRepository;

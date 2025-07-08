@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import panoptiumtech.panoptium.api.entities.ApiCache.ApiCache;
-import panoptiumtech.panoptium.api.entities.ApiCache.ApiCacheType;
-import panoptiumtech.panoptium.api.services.db.ApiCache.ApiCacheServiceImpl;
+import panoptiumtech.panoptium.api.entities.apiCache.ApiCache;
+import panoptiumtech.panoptium.api.entities.apiCache.ApiCacheType;
+import panoptiumtech.panoptium.api.services.db.apiCache.ApiCacheServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

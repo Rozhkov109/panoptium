@@ -8,11 +8,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import panoptiumtech.panoptium.entities.Account.Account;
-import panoptiumtech.panoptium.repositories.Account.AccountRepository;
+import panoptiumtech.panoptium.entities.account.Account;
+import panoptiumtech.panoptium.repositories.account.AccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import panoptiumtech.panoptium.servicies.Account.AccountDetailsService;
+import panoptiumtech.panoptium.servicies.account.AccountDetailsService;
 
 @Hidden
 @Controller

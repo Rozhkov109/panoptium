@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import panoptiumtech.panoptium.dto.wallet.PortfolioDTO;
-import panoptiumtech.panoptium.entities.Account.AccountDetails;
-import panoptiumtech.panoptium.entities.Portfolio.Portfolio;
-import panoptiumtech.panoptium.entities.PortfolioAsset.PortfolioAsset;
+import panoptiumtech.panoptium.entities.account.AccountDetails;
+import panoptiumtech.panoptium.entities.portfolio.Portfolio;
+import panoptiumtech.panoptium.entities.portfolioAsset.PortfolioAsset;
 import panoptiumtech.panoptium.servicies.portfolio.PortfolioService;
 
 import java.util.List;
@@ -33,12 +33,12 @@ public class PortfolioController {
 
     @PostMapping("/add")
     public String addPortfolio(@RequestBody final PortfolioDTO portfolioDTO, @AuthenticationPrincipal AccountDetails accountDetails) {
-        return portfolioService.addPortfolio(portfolioDTO.getName(),portfolioDTO.getColor(),accountDetails);
+        return portfolioService.addPortfolio(portfolioDTO.getNewName(),portfolioDTO.getColor(),accountDetails);
     }
 
     @PostMapping("/edit")
     public String updatePortfolio(@RequestBody final PortfolioDTO portfolioDTO, @AuthenticationPrincipal AccountDetails accountDetails) {
-        return portfolioService.updatePortfolio(portfolioDTO.getName(),portfolioDTO.getColor(),accountDetails);
+        return portfolioService.updatePortfolio(portfolioDTO.getOldName(), portfolioDTO.getNewName(),portfolioDTO.getColor(),accountDetails);
     }
 
     @PostMapping("/delete")

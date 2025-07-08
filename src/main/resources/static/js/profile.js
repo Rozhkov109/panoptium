@@ -14,10 +14,7 @@ function openWalletAddForm() {
     walletForm.querySelector("legend").textContent = "Add Wallet"
 
     document.getElementById("alias").value = ""
-
-    document.getElementById("address").value = ""
-    document.getElementById("address").readOnly = false
-
+    document.getElementById("new-address").value = ""
     document.getElementById("network").value = ""
 
     Helper.HTML.openModalWindow("modal-wallet")
@@ -26,11 +23,10 @@ function openWalletAddForm() {
 
 function openWalletEditForm(alias, address, network) {
     walletForm.querySelector("legend").textContent = "Edit Wallet"
+
     document.getElementById("alias").value = alias
-
-    document.getElementById("address").value = address
-    document.getElementById("address").readOnly = true
-
+    document.getElementById("old-address").value = address
+    document.getElementById("new-address").value = address
     document.getElementById("network").value = network
 
     Helper.HTML.openModalWindow("modal-wallet")
@@ -104,7 +100,8 @@ async function editWallet(event) {
 
     const text = await WalletManager.editWallet(
         document.getElementById("alias").value,
-        document.getElementById("address").value,
+        document.getElementById("old-address").value,
+        document.getElementById("new-address").value,
         document.getElementById("network").value)
 
     if(text === "Wallet updated successfully") {
@@ -141,9 +138,7 @@ const portfolioForm = document.getElementById("portfolio-form")
 function openPortfolioAddForm() {
     portfolioForm.querySelector("legend").textContent = "Add Portfolio"
 
-    document.getElementById("portfolio-name").value = ""
-    document.getElementById("portfolio-name").readOnly = false
-
+    document.getElementById("new-portfolio-name").value = ""
     document.getElementById("portfolio-color").value = ""
 
     Helper.HTML.openModalWindow("modal-portfolio")
@@ -153,8 +148,8 @@ function openPortfolioAddForm() {
 function openPortfolioEditForm(name, color) {
     portfolioForm.querySelector("legend").textContent = "Edit Portfolio"
 
-    document.getElementById("portfolio-name").value = name
-    document.getElementById("portfolio-name").readOnly = true
+    document.getElementById("old-portfolio-name").value = name
+    document.getElementById("new-portfolio-name").value = name
 
     document.getElementById("portfolio-color").value = color
 
@@ -253,7 +248,7 @@ async function addPortfolio(event) {
     event.preventDefault()
 
     const text = await PortfolioManager.addPortfolio(
-        document.getElementById("portfolio-name").value,
+        document.getElementById("new-portfolio-name").value,
         document.getElementById("portfolio-color").value)
 
     if(text === "Portfolio created successfully") {
@@ -269,7 +264,8 @@ async function editPortfolio(event) {
     event.preventDefault()
 
     const text = await PortfolioManager.editPortfolio(
-        document.getElementById("portfolio-name").value,
+        document.getElementById("old-portfolio-name").value,
+        document.getElementById("new-portfolio-name").value,
         document.getElementById("portfolio-color").value,)
 
     if(text === "Portfolio updated successfully") {
@@ -568,11 +564,8 @@ const assetForm = document.querySelector("#asset-form")
 function openAssetAddForm() {
     assetForm.querySelector("legend").textContent = "Add Asset"
 
-    document.getElementById("asset-name").value = ""
-    document.getElementById("asset-name").readOnly = false
-
+    document.getElementById("new-asset-name").value = ""
     document.getElementById("asset-type").value = ""
-
     document.getElementById("asset-color").value = ""
 
     Helper.HTML.openModalWindow("modal-asset")
@@ -583,7 +576,7 @@ async function addAsset(event) {
     event.preventDefault()
 
     const text = await AssetManager.addAsset(
-        document.getElementById("asset-name").value,
+        document.getElementById("new-asset-name").value,
         document.getElementById("asset-type").value,
         document.getElementById("asset-color").value)
 
@@ -647,11 +640,10 @@ async function deleteAsset(name) {
 
 function openAssetEditForm(name, type, color) {
     assetForm.querySelector("legend").textContent = "Edit Asset"
-    document.getElementById("asset-name").value = name
-    document.getElementById("asset-name").readOnly = true
 
+    document.getElementById("old-asset-name").value = name
+    document.getElementById("new-asset-name").value = name
     document.getElementById("asset-type").value = type
-
     document.getElementById("asset-color").value = color
 
     Helper.HTML.openModalWindow("modal-asset")
@@ -662,7 +654,8 @@ async function editAsset(event) {
     event.preventDefault()
 
     const text = await AssetManager.editAsset(
-        document.getElementById("asset-name").value,
+        document.getElementById("old-asset-name").value,
+        document.getElementById("new-asset-name").value,
         document.getElementById("asset-type").value,
         document.getElementById("asset-color").value)
 

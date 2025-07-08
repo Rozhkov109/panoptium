@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import panoptiumtech.panoptium.dto.wallet.WalletDTO;
-import panoptiumtech.panoptium.entities.Account.AccountDetails;
+import panoptiumtech.panoptium.entities.account.AccountDetails;
 import panoptiumtech.panoptium.entities.Wallet.Wallet;
-import panoptiumtech.panoptium.servicies.Wallet.WalletService;
+import panoptiumtech.panoptium.servicies.wallet.WalletService;
 
 import java.util.List;
 
@@ -30,14 +30,14 @@ public class WalletController {
     public String addWallet(
             @AuthenticationPrincipal AccountDetails accountDetails,
             @RequestBody WalletDTO walletDTO) {
-        return walletService.addWallet(walletDTO.getAlias(), walletDTO.getAddress(), walletDTO.getNetwork(), accountDetails);
+        return walletService.addWallet(walletDTO.getAlias(), walletDTO.getNewAddress(), walletDTO.getNetwork(), accountDetails);
     }
 
     @PostMapping("/edit")
     public String editWallet(
             @AuthenticationPrincipal AccountDetails accountDetails,
             @RequestBody WalletDTO walletDTO) {
-        return walletService.updateWallet(walletDTO.getAlias(), walletDTO.getAddress(), walletDTO.getNetwork(), accountDetails);
+        return walletService.updateWallet(walletDTO.getAlias(), walletDTO.getOldAddress() ,walletDTO.getNewAddress(), walletDTO.getNetwork(), accountDetails);
     }
 
     @PostMapping("/delete")
