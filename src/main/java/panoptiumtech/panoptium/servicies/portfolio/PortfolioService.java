@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import panoptiumtech.panoptium.entities.account.Account;
 import panoptiumtech.panoptium.entities.account.AccountDetails;
 import panoptiumtech.panoptium.entities.portfolio.Portfolio;
-import panoptiumtech.panoptium.entities.portfolioAsset.PortfolioAsset;
+import panoptiumtech.panoptium.entities.transaction.Transaction;
 import panoptiumtech.panoptium.repositories.portfolio.PortfolioRepository;
-import panoptiumtech.panoptium.servicies.portfolioAsset.PortfolioAssetService;
+import panoptiumtech.panoptium.servicies.transaction.TransactionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,19 +15,19 @@ import java.util.List;
 @Service
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
-    private final PortfolioAssetService portfolioAssetService;
+    private final TransactionService transactionService;
 
-    public PortfolioService(final PortfolioRepository portfolioRepository, final PortfolioAssetService portfolioAssetService) {
+    public PortfolioService(final PortfolioRepository portfolioRepository, final TransactionService transactionService) {
         this.portfolioRepository = portfolioRepository;
-        this.portfolioAssetService = portfolioAssetService;
+        this.transactionService = transactionService;
     }
 
     public List<Portfolio> getAllPortfolios(@AuthenticationPrincipal final AccountDetails accountDetails) {
         return portfolioRepository.findAllByAccount(accountDetails.getAccount());
     }
 
-    public List<PortfolioAsset> getAllPortfolioAssets(String name, @AuthenticationPrincipal final AccountDetails accountDetails) {
-        return portfolioRepository.findByNameAndAccount(name,accountDetails.getAccount()).get().getPortfolioAssets();
+    public List<Transaction> getAllPortfolioAssets(String name, @AuthenticationPrincipal final AccountDetails accountDetails) {
+        return portfolioRepository.findByNameAndAccount(name,accountDetails.getAccount()).get().getTransactions();
     }
 
     public String addPortfolio(String name, String color, @AuthenticationPrincipal final AccountDetails accountDetails) {

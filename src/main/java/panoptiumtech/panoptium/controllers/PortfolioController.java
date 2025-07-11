@@ -3,10 +3,10 @@ package panoptiumtech.panoptium.controllers;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import panoptiumtech.panoptium.dto.wallet.PortfolioDTO;
+import panoptiumtech.panoptium.dto.portfolio.PortfolioDTO;
 import panoptiumtech.panoptium.entities.account.AccountDetails;
 import panoptiumtech.panoptium.entities.portfolio.Portfolio;
-import panoptiumtech.panoptium.entities.portfolioAsset.PortfolioAsset;
+import panoptiumtech.panoptium.entities.transaction.Transaction;
 import panoptiumtech.panoptium.servicies.portfolio.PortfolioService;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class PortfolioController {
     }
 
     @GetMapping("assets/get-all")
-    public List<PortfolioAsset> getAllPortfolioAssets(@RequestParam String portfolioName, @AuthenticationPrincipal AccountDetails accountDetails) {
+    public List<Transaction> getAllPortfolioAssets(@RequestParam String portfolioName, @AuthenticationPrincipal AccountDetails accountDetails) {
         return portfolioService.getAllPortfolioAssets(portfolioName,accountDetails);
     }
 

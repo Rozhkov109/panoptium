@@ -3,7 +3,7 @@ package panoptiumtech.panoptium.controllers;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import panoptiumtech.panoptium.dto.wallet.AssetDTO;
+import panoptiumtech.panoptium.dto.asset.AssetDTO;
 import panoptiumtech.panoptium.entities.account.AccountDetails;
 import panoptiumtech.panoptium.entities.asset.Asset;
 import panoptiumtech.panoptium.servicies.asset.AssetService;

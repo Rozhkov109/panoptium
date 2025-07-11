@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.entities.portfolioAsset;
+package panoptiumtech.panoptium.entities.transaction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -11,13 +11,14 @@ import panoptiumtech.panoptium.entities.asset.Asset;
 import panoptiumtech.panoptium.entities.portfolio.Portfolio;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PortfolioAsset {
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,9 +34,15 @@ public class PortfolioAsset {
     @JsonBackReference
     private Portfolio portfolio;
 
-    @Column(name = "amount")
+    @Column(name = "time", nullable = false)
+    @NotNull
+    private LocalDateTime time;
+
+    @Column(name = "amount", nullable = false)
+    @NotNull
     private BigDecimal amount;
 
-    @Column(name = "price_per_unit")
+    @Column(name = "price_per_unit", nullable = false)
+    @NotNull
     private BigDecimal pricePerUnit;
 }

@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.dto.wallet.portfolioAsset;
+package panoptiumtech.panoptium.dto.transaction;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PortfolioAssetDTO {
+public class TransactionDTO {
     String assetName;
     String portfolioName;
-    PortfolioAssetData portfolioAssetData;
+    TransactionData transactionData;
 }
 
 

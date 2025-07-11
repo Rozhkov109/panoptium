@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import panoptiumtech.panoptium.entities.account.Account;
-import panoptiumtech.panoptium.entities.portfolioAsset.PortfolioAsset;
+import panoptiumtech.panoptium.entities.transaction.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +41,5 @@ public class Portfolio {
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<PortfolioAsset> portfolioAssets = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>();
 }

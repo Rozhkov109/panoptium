@@ -148,22 +148,24 @@
                         <p id="dashboard-portfolio-name"></p>
                         <p id="dashboard-portfolio-holdings"></p>
                     </div>
+                    <button class="default-button" id="add-transaction-button">Add Transaction</button>
 
-                    <button class="default-button" id="add-portfolio-asset-button">Add Asset</button>
-
-                    <div id="modal-portfolio-asset-form" class="modal hidden">
+                    <div id="modal-transaction-form" class="modal hidden">
                         <div class="modal-content">
-                    <button id="close-portfolio-asset-form-button" class="action-button left">x️</button>
-                    <form id="portfolio-asset-form" data-action="">
+                    <button id="close-transaction-form-button" class="action-button left">x️</button>
+                    <form id="transaction-form" data-action="">
                         <fieldset>
-                            <legend>Add Asset to Portfolio</legend>
+                            <legend>Add Transaction</legend>
 
-                            <label for="portfolio-asset">Asset</label>
-                            <select id="portfolio-asset" name="asset" required>
+                            <label for="asset">Asset</label>
+                            <select id="asset" name="asset" required>
                                 <option value="Not Selected">Not Selected</option>
                             </select>
 
                             <input type="hidden" id="portfolio-dashboard-name" name="portfolio-dashboard-name" required>
+
+                            <label for="time">Time</label>
+                            <input type="datetime-local" id="time" name="time" required>
 
                             <label for="amount">Amount</label>
                             <input type="text" id="amount" name="amount" required>
@@ -179,7 +181,7 @@
                         </div>
                     </div>
 
-                    <table id="dashboard-assets-table" class = "data-table">
+                    <table id="dashboard-assets-table" class="data-table">
                         <thead>
                         <tr>
                             <th>Name</th>

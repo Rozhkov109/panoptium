@@ -2,7 +2,7 @@ import {Helper} from "./helper.js";
 import {WalletManager} from "./wallet.js";
 import {PortfolioManager} from "./portfolio.js";
 import {AssetManager} from "./asset.js";
-import {PortfolioAssetManager} from "./portfolioAsset.js";
+import {TransactionManager} from "./transaction.js";
 
 // Wallet
 
@@ -38,7 +38,7 @@ async function addWallet(event) {
 
     const text = await WalletManager.addWallet(
         document.getElementById("alias").value,
-        document.getElementById("address").value,
+        document.getElementById("new-address").value,
         document.getElementById("network").value)
 
     if(text === "Wallet added successfully") {
@@ -168,13 +168,13 @@ async function getAllPortfolios() {
     }
     portfolioWrapper.classList.remove("hidden")
 
-    portfolios.forEach((portfolio) => {
+    for (const portfolio of portfolios) {
         const portfolioHtml = Helper.HTML.createHtmlElement("div", "portfolio")
         portfolioHtml.style.background = portfolio.color
 
         const portfolioLeft = Helper.HTML.createHtmlElement("div", "portfolio-left")
 
-        const holdings = portfolio.portfolioAssets.reduce((sum, asset) => sum + asset.amount * asset.pricePerUnit, 0);
+        const holdings = portfolio.transactions.reduce((sum, asset) => sum + asset.amount * asset.pricePerUnit, 0);
 
         portfolioLeft.innerHTML += `
                 <div class="portfolio-header">${portfolio.name}</div>
@@ -192,24 +192,24 @@ async function getAllPortfolios() {
         const portfolioRight = Helper.HTML.createHtmlElement("div", "portfolio-right")
             const actionButtonsContainer = Helper.HTML.createHtmlElement("div", "action-buttons-container")
 
-                const deleteButton = document.createElement("button");
-                deleteButton.className = "action-button";
-                deleteButton.innerText = "🗑";
-                deleteButton.onclick = async () => await deletePortfolio(portfolio.name)
-                actionButtonsContainer.append(deleteButton)
-
                 const editButton = document.createElement("button");
                 editButton.className = "action-button";
                 editButton.innerText = "✎";
                 editButton.style.background = "#ffd300"
                 editButton.onclick = () => openPortfolioEditForm(portfolio.name, portfolio.color)
 
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "action-button";
+                deleteButton.innerText = "🗑";
+                deleteButton.onclick = async () => await deletePortfolio(portfolio.name)
+                actionButtonsContainer.append(deleteButton)
+
             actionButtonsContainer.append(editButton,deleteButton)
 
         portfolioRight.append(actionButtonsContainer)
 
-        const portfolioAssets = portfolio.portfolioAssets
-        if(portfolioAssets.length !== 0) {
+        const portfolioTransactions = portfolio.transactions
+        if(portfolioTransactions.length !== 0) {
             const assetsTable = Helper.HTML.createHtmlElement("table", "assets-table")
             assetsTable.innerHTML += `
                 <thead>
@@ -220,28 +220,47 @@ async function getAllPortfolios() {
                     </tr>
                 </thead>`
 
-            const topAssets = portfolioAssets
-                .sort((a, b) => (b.pricePerUnit * b.amount) - (a.pricePerUnit * a.amount))
-                .slice(0, 3);
-
             const assetsTableBody = document.createElement("tbody")
-                topAssets.forEach((portfolioAsset) => {
-                    const tr = document.createElement("tr")
-                    const name = Helper.HTML.createHtmlElement("td","",portfolioAsset.asset.name)
-                    const type = Helper.HTML.createHtmlElement("td","",portfolioAsset.asset.type.replace(/_/g, " "))
-                    const holdings = Helper.HTML
-                        .createHtmlElement("td","",Helper.Format.formatNumberToAssetPrice(portfolioAsset.pricePerUnit * portfolioAsset.amount))
+            let assetsList = []
+            let portfolioAssetList = []
 
-                    tr.append(name,type,holdings)
-                    assetsTableBody.append(tr)
-                })
+            for (const transaction of portfolioTransactions) {
+                if(!assetsList.includes(transaction.asset.name)) {
+                    assetsList.push(transaction.asset.name)
+                    let assetTransactions = await TransactionManager.getAllTransactionsByAsset(transaction.asset.name, portfolio.name)
+                    let assetHoldings = 0
+                    if (assetTransactions !== 0) {
+                        assetTransactions.forEach((transaction) => {
+                            assetHoldings += transaction.pricePerUnit * transaction.amount
+                        })
+                    }
+                    let portfolioAsset = {
+                        name: transaction.asset.name,
+                        type: transaction.asset.type,
+                        holdings: assetHoldings
+                    }
+                    portfolioAssetList.push(portfolioAsset)
+                }
+            }
+            portfolioAssetList.sort((a,b) => b.holdings - a.holdings)
+
+            for (let i = 0; i < portfolioAssetList.length; i++) {
+                if(i === 3) break
+                const tr = document.createElement("tr")
+                const name = Helper.HTML.createHtmlElement("td","",portfolioAssetList[i].name)
+                const type = Helper.HTML.createHtmlElement("td","",portfolioAssetList[i].type.replace(/_/g, " "))
+                const holdings = Helper.HTML.createHtmlElement("td","",Helper.Format.formatNumberToAssetPrice(portfolioAssetList[i].holdings))
+
+                tr.append(name,type,holdings)
+                assetsTableBody.append(tr)
+            }
             assetsTable.append(assetsTableBody)
             portfolioRight.append(assetsTable)
         }
 
         portfolioHtml.append(portfolioRight)
         portfolioWrapper.append(portfolioHtml)
-    })
+    }
 }
 
 async function addPortfolio(event) {
@@ -307,10 +326,10 @@ document.getElementById("portfolio-form").addEventListener("submit", async (even
 // Portfolio Dashboard
 const portfolioAssetsTable = document.getElementById("dashboard-assets-table")
 const portfolioAssetsTableBody = document.querySelector("#dashboard-assets-table tbody")
-const portfolioAssetForm = document.getElementById("portfolio-asset-form")
+const portfolioAssetForm = document.getElementById("transaction-form")
 
-async function fillPortfolioAssetForm(portfolioName) {
-    const assetSelect = document.getElementById("portfolio-asset")
+async function fillTransactionForm(portfolioName) {
+    const assetSelect = document.getElementById("asset")
 
     assetSelect.innerHTML = ""
 
@@ -332,62 +351,33 @@ async function fillPortfolioAssetForm(portfolioName) {
     document.getElementById("portfolio-dashboard-name").value = portfolioName
 }
 
-function openPortfolioAssetAddForm() {
-    document.querySelector("#portfolio-asset-form legend").textContent = "Add Asset to Portfolio"
+function openTransactionAddForm() {
+    document.querySelector("#transaction-form legend").textContent = "Add Transaction"
 
-    document.querySelector('label[for="portfolio-asset"]').classList.remove("hidden")
-    document.getElementById("portfolio-asset").classList.remove("hidden")
+    document.querySelector('label[for="asset"]').classList.remove("hidden")
+    document.getElementById("asset").classList.remove("hidden")
 
     document.querySelector('label[for="price-per-unit"]').classList.remove("hidden")
     document.getElementById("price-per-unit").classList.remove("hidden")
 
     portfolioAssetForm.dataset.action = "add"
-    Helper.HTML.openModalWindow("modal-portfolio-asset-form")
+    Helper.HTML.openModalWindow("modal-transaction-form")
 }
 
-function openPortfolioAssetBuyForm(assetName,currentAmount,currentPricePerUnit) {
-    document.querySelector("#portfolio-asset-form legend").textContent = "Buy Asset"
-
-    document.querySelector('label[for="portfolio-asset"]').classList.add("hidden")
-    document.getElementById("portfolio-asset").classList.add("hidden")
-    document.getElementById("portfolio-asset").value = assetName;
-
-    document.getElementById("amount-old").value = currentAmount
-
-    document.querySelector('label[for="price-per-unit"]').classList.remove("hidden")
-    document.getElementById("price-per-unit").classList.remove("hidden")
-    document.getElementById("price-per-unit-old").value = currentPricePerUnit
-
-    portfolioAssetForm.dataset.action = "buy"
-    Helper.HTML.openModalWindow("modal-portfolio-asset-form")
+async function getAllTransactionsByAsset(assetName,portfolioName) {
+    return await TransactionManager.getAllTransactionsByAsset(assetName,portfolioName)
 }
 
-function openPortfolioAssetSellForm(assetName,currentAmount, currentPricePerUnit) {
-    document.querySelector("#portfolio-asset-form legend").textContent = "Sell Asset"
-
-    document.querySelector('label[for="portfolio-asset"]').classList.add("hidden")
-    document.getElementById("portfolio-asset").classList.add("hidden")
-    document.getElementById("portfolio-asset").value = assetName;
-
-    document.getElementById("amount-old").value = currentAmount
-
-    document.querySelector('label[for="price-per-unit"]').classList.add("hidden")
-    document.getElementById("price-per-unit").classList.add("hidden")
-    document.getElementById("price-per-unit").value = currentPricePerUnit
-
-    portfolioAssetForm.dataset.action = "sell"
-    Helper.HTML.openModalWindow("modal-portfolio-asset-form")
-}
 
 async function fillPortfolioDashboard(portfolioName) {
+    let assetsList = [];
     portfolioAssetsTableBody.innerHTML = ""
     const portfolioHoldings = document.getElementById("dashboard-portfolio-holdings")
-    portfolioHoldings.textContent = "Holdings: $0"
-
+    portfolioHoldings.textContent = "Holdings: "
 
     Helper.HTML.openModalWindow("modal-portfolio-dashboard")
 
-    await fillPortfolioAssetForm(portfolioName)
+    await fillTransactionForm(portfolioName)
 
     const portfolioHeader = document.getElementById("dashboard-portfolio-name")
     portfolioHeader.textContent = portfolioName
@@ -399,74 +389,72 @@ async function fillPortfolioDashboard(portfolioName) {
     } else {
         portfolioAssetsTable.classList.remove("hidden")
     }
+    let portfolioHold = 0
+    for (const portfolioAsset of portfolioAssets) {
 
-    const holdings = portfolioAssets.reduce((sum, asset) => sum + asset.amount * asset.pricePerUnit, 0);
-    portfolioHoldings.textContent = "Holdings: " + Helper.Format.formatNumberToAssetPrice(holdings)
+        if(!assetsList.includes(portfolioAsset.asset.name)) {
+            assetsList.push(portfolioAsset.asset.name)
+            let assetTransactions = await getAllTransactionsByAsset(portfolioAsset.asset.name, portfolioName)
+            if(assetTransactions.length > 0) {
+                const tr = document.createElement("tr")
 
-    portfolioAssets.sort((a, b) => (b.pricePerUnit * b.amount) - (a.pricePerUnit * a.amount))
+                const name = Helper.HTML.createHtmlElement("td","",portfolioAsset.asset.name)
+                const type = Helper.HTML.createHtmlElement("td","",portfolioAsset.asset.type.replace(/_/g, " "))
 
-    portfolioAssets.forEach((portfolioAsset) => {
-        const tr = document.createElement("tr")
+                let assetAmount = 0
+                let assetAvgPrice = 0
+                let assetHoldings = 0
 
-        const name = Helper.HTML.createHtmlElement("td","",portfolioAsset.asset.name)
-        const type = Helper.HTML.createHtmlElement("td","",portfolioAsset.asset.type.replace(/_/g, " "))
-        const amount = Helper.HTML.createHtmlElement("td","",portfolioAsset.amount)
-        const avgPrice = Helper.HTML.createHtmlElement("td","",Helper.Format.formatNumberToAssetPrice(portfolioAsset.pricePerUnit))
+                assetTransactions.forEach((assetTransaction) => {
+                    assetAmount += assetTransaction.amount
+                    assetHoldings += assetTransaction.pricePerUnit * assetTransaction.amount
+                    assetAvgPrice = assetHoldings / assetAmount
+                })
+                portfolioHold += assetHoldings
 
-        const holdings = Helper.HTML.createHtmlElement("td","",Helper.Format.formatNumberToAssetPrice(portfolioAsset.amount * portfolioAsset.pricePerUnit))
+                const amount = Helper.HTML.createHtmlElement("td","",assetAmount)
+                const avgPrice = Helper.HTML.createHtmlElement("td","",Helper.Format.formatNumberToAssetPrice(assetAvgPrice))
+                const holdings = Helper.HTML.createHtmlElement("td","",Helper.Format.formatNumberToAssetPrice(assetHoldings))
+                const actions = Helper.HTML.createHtmlElement("td","",)
 
-        const actions = Helper.HTML.createHtmlElement("td","",)
+                const actionButtonsContainer = Helper.HTML.createHtmlElement("div", "action-buttons-container")
 
-        const actionButtonsContainer = Helper.HTML.createHtmlElement("div", "action-buttons-container")
+                const transactionsButton = document.createElement("button");
+                transactionsButton.className = "action-button";
+                transactionsButton.style.background = "#ddcd01"
+                transactionsButton.innerHTML = "📋"
+                transactionsButton.onclick = () => openPortfolioAssetBuyForm(portfolioAsset.asset.name,  portfolioAsset.amount, portfolioAsset.pricePerUnit)
 
-        const deleteButton = document.createElement("button");
-        deleteButton.className = "action-button";
-        deleteButton.innerText = "🗑";
-        deleteButton.onclick = async () => await deletePortfolioAsset(portfolioAsset.asset.name, portfolioName)
-        actionButtonsContainer.append(deleteButton)
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "action-button";
+                deleteButton.innerText = "🗑";
+                deleteButton.onclick = async () => await deleteTransaction(portfolioAsset.asset.name, portfolioName, )
+                actionButtonsContainer.append(deleteButton)
 
-        const buyButton = document.createElement("button");
-        buyButton.className = "action-button";
-        buyButton.style.background = "#009309"
-        const buyImage = document.createElement("img")
-        buyImage.setAttribute("src","/images/green-arrow.png")
-        buyImage.setAttribute("alt","green-arrow.png")
-        buyImage.style.width="70%"
-        buyImage.style.height="70%"
-        buyButton.append(buyImage)
-        buyButton.onclick = () => openPortfolioAssetBuyForm(portfolioAsset.asset.name,  portfolioAsset.amount, portfolioAsset.pricePerUnit)
+                actionButtonsContainer.append(transactionsButton,deleteButton)
+                actions.append(actionButtonsContainer)
 
-        const sellButton = document.createElement("button");
-        sellButton.className = "action-button";
-        sellButton.style.background = "rgba(255,0,128,0.55)"
-        const sellImage = document.createElement("img")
-        sellImage.setAttribute("src","/images/red-arrow.png")
-        sellImage.setAttribute("alt","red-arrow.png")
-        sellImage.style.width="70%"
-        sellImage.style.height="70%"
-        sellButton.append(sellImage)
-        sellButton.onclick = () => openPortfolioAssetSellForm(portfolioAsset.asset.name, portfolioAsset.amount, portfolioAsset.pricePerUnit)
+                tr.append(name,type,amount,avgPrice,holdings,actions)
 
-        actionButtonsContainer.append(buyButton,sellButton,deleteButton)
-        actions.append(actionButtonsContainer)
-
-        tr.append(name,type,amount,avgPrice,holdings,actions)
-
-        portfolioAssetsTableBody.append(tr)
-    })
+                portfolioAssetsTableBody.append(tr)
+            }
+        }
+    }
+    portfolioHoldings.textContent = Helper.Format.formatNumberToMarketCap(portfolioHold)
 }
 
 
-async function addPortfolioAsset(event){
+async function addTransaction(event){
     event.preventDefault()
 
-    const text = await PortfolioAssetManager.addPortfolioAsset(
-        document.getElementById("portfolio-asset").value,
+    const text = await TransactionManager.addTransaction(
+        document.getElementById("asset").value,
         document.getElementById("portfolio-dashboard-name").value,
+        document.getElementById("time").value,
         parseFloat(document.getElementById("amount").value),
         parseFloat(document.getElementById("price-per-unit").value))
 
-    if(text === "Asset successfully added to your portfolio") {
+    if(text === "Transaction created successfully") {
         document.body.append(Helper.HTML.getMessageWindow("Message",text));
     }
     else {
@@ -490,9 +478,10 @@ async function editPortfolioAsset(event) {
         }
         const amount = currentAmount - amountToSell
 
-        text = await PortfolioAssetManager.editPortfolioAsset(
-            document.getElementById("portfolio-asset").value,
+        text = await TransactionManager.editTransaction(
+            document.getElementById("asset").value,
             document.getElementById("portfolio-dashboard-name").value,
+            document.getElementById("time").value,
             amount,
             document.getElementById("price-per-unit").value)
     }
@@ -507,14 +496,14 @@ async function editPortfolioAsset(event) {
         const amount = currentAmount + amountToBuy
         const avgPrice = (currentAmount * currentAVGPrice + amountToBuy * newAVGPrice) / (amount)
 
-        text = await PortfolioAssetManager.editPortfolioAsset(
-            document.getElementById("portfolio-asset").value,
+        text = await TransactionManager.editTransaction(
+            document.getElementById("transaction").value,
             document.getElementById("portfolio-dashboard-name").value,
             amount,
             avgPrice)
     }
 
-    if(text === "Asset in your portfolio updated successfully") {
+    if(text === "Transaction updated successfully") {
         document.body.append(Helper.HTML.getMessageWindow("Message",text));
     }
     else {
@@ -523,22 +512,22 @@ async function editPortfolioAsset(event) {
     await fillPortfolioDashboard(document.getElementById("portfolio-dashboard-name").value);
 }
 
-async function deletePortfolioAsset(assetName,portfolioName) {
-    await PortfolioAssetManager.deletePortfolioAsset(assetName,portfolioName)
+async function deleteTransaction(assetName,portfolioName,time) {
+    await TransactionManager.deleteTransaction(assetName,portfolioName,time)
     await getAllPortfolios()
     await fillPortfolioDashboard(document.getElementById("portfolio-dashboard-name").value);
 }
 
 
 
-document.getElementById("add-portfolio-asset-button").addEventListener("click", () => openPortfolioAssetAddForm())
-document.getElementById("close-portfolio-asset-form-button").addEventListener("click", () => Helper.HTML.closeModalWindow("modal-portfolio-asset-form"))
+document.getElementById("add-transaction-button").addEventListener("click", () => openTransactionAddForm())
+document.getElementById("close-transaction-form-button").addEventListener("click", () => Helper.HTML.closeModalWindow("modal-transaction-form"))
 
-document.getElementById("portfolio-asset-form").addEventListener("submit", async (event) => {
+document.getElementById("transaction-form").addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const action = portfolioAssetForm.dataset.action
-    if(action === "add") await addPortfolioAsset(event)
+    if(action === "add") await addTransaction(event)
     else if(action === "buy" || action === "sell") await editPortfolioAsset(event);
     await getAllPortfolios()
 });

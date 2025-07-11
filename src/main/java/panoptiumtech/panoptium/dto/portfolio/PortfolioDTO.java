@@ -1,4 +1,4 @@
-package panoptiumtech.panoptium.dto.wallet;
+package panoptiumtech.panoptium.dto.portfolio;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
